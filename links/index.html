@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>links</title>
+  <style>
+	  h1 {
+			border-bottom: 1px solid #c0c0c0;
+			margin-bottom: 10px;
+			padding-bottom: 10px;
+			white-space: nowrap;
+	  }
+	  table {
+			border-collapse: collapse;
+	  }
+	  th {
+			cursor: pointer;
+	  }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+  <h1 id="header">Index of https://blaiselarmee.com/links/</h1>
+  <div style="display: block; margin-bottom: 10px; padding-bottom: 10px;">
+    <a href="../">[parent directory]</a>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Date Modified</th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+      <tr>
+        <td>
+          <a href='http://2dcloud.com/blaise-larmee-sketchbook'>http://2dcloud.com/blaise-larmee-sketchbook</a>
+        </td>
+        <td>4/27/17</td>
+      </tr>
+      <tr>
+        <td>
+          <a href='http://www.drawinghomework.net/blaise.html'>http://www.drawinghomework.net/blaise.html</a>
+        </td>
+        <td>4/7/17</td>
+      </tr>
+    </tbody>
+  </table>
+  <script>
+  $(function() {
+  String.prototype.decodeHTML = function() {
+    return $("<div>", {html: "" + this}).html();
+  };
+
+  var $body = $("body"),
+
+  ajaxLoad = function(html) {
+    document.title = html
+      .match(/<title>(.*?)<\/title>/)[1]
+      .trim()
+      .decodeHTML();
+
+    init();
+  },
+
+  loadPage = function(href) {
+    $body.load(href + " body>*", ajaxLoad);
+  };
+
+  $(window).on("popstate", function(e) {
+    if (e.originalEvent.state !== null) {
+      loadPage(location.href);
+    }
+  });
+
+  $(document).on("click", "a, area", function() {
+    var href = $(this).attr("href");
+
+    if (href.indexOf(document.dobody) > -1
+      || href.indexOf(':') === -1)
+    {
+      history.pushState({}, '', href);
+      loadPage(href);
+      $(window).scrollTop(0);
+      return false;
+    }
+  });
+
+  // Store the initial content so we can revisit it later
+  history.replaceState({
+  }, document.title, document.location.href);
+
+  });
+  </script>
+</body>
+</html>

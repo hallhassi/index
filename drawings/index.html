@@ -15,7 +15,7 @@
 <body>
   <h1>Index of https://blaiselarmee.com/drawings/</h1>
   <div style="display: block; margin-bottom: 10px; padding-bottom: 10px;">
-    <a href="../">[parent directory]</a>
+    <a href="../index.html">[parent directory]</a>
   </div>
   <a href='o/p-01.jpg'><picture><source media="(max-width: 1000px)" srcset="s/p-01.jpg, m/p-01.jpg 1.5x, l/p-01.jpg 2x"><source media="(max-width: 1500px)" srcset="m/p-01.jpg, l/p-01.jpg 1.3x"><source media="(max-width: 2000px)" srcset="l/p-01.jpg, o/p-01.jpg 3.3x"><source media="(min-width: 2001px)" srcset="o/p-01.jpg"><img src="s/p-01.jpg" alt="Drawing by Blaise Larmee and Paul Peng"></picture></a>
   <a href='o/w-10.jpg'><picture><source media="(max-width: 1000px)" srcset="o/w-10.jpg, o/w-10.jpg 2x"><source media="(min-width: 1001px)" srcset="o/w-10.jpg"><img src="s/w-10.jpg" alt="Drawing by Blaise Larmee"></picture></a>
@@ -34,53 +34,6 @@
   <a href='o/dumb.jpg'><picture><source media="(max-width: 1000px)" srcset="o/dumb.jpg, o/dumb.jpg 2x"><source media="(min-width: 1001px)" srcset="o/dumb.jpg"><img src="s/dumb.jpg" alt="Drawing by Blaise Larmee"></picture></a>
   <a href='o/p-02.jpg'><picture><source media="(max-width: 1000px)" srcset="s/p-02.jpg, m/p-02.jpg 1.5x, l/p-02.jpg 2x"><source media="(max-width: 1500px)" srcset="m/p-02.jpg, l/p-02.jpg 1.3x"><source media="(max-width: 2000px)" srcset="l/p-02.jpg, o/p-02.jpg 3.3x"><source media="(min-width: 2001px)" srcset="o/p-02.jpg"><img src="s/p-02.jpg" alt="Drawing by Blaise Larmee and Paul Peng"></picture></a>
 
-
-  <script>
-
-  $(function() {
-  String.prototype.decodeHTML = function() {
-    return $("<div>", {html: "" + this}).html();
-  };
-
-  var $body = $("body"),
-
-  ajaxLoad = function(html) {
-    document.title = html
-      .match(/<title>(.*?)<\/title>/)[1]
-      .trim()
-      .decodeHTML();
-
-    init();
-  },
-
-  loadPage = function(href) {
-    $body.load(href + " body>*", ajaxLoad);
-  };
-
-  $(window).on("popstate", function(e) {
-    if (e.originalEvent.state !== null) {
-      loadPage(location.href);
-    }
-  });
-
-  $(document).on("click", "a, area", function() {
-    var href = $(this).attr("href");
-
-    if (href.indexOf(document.dobody) > -1
-      || href.indexOf(':') === -1)
-    {
-      history.pushState({}, '', href);
-      loadPage(href);
-      $(window).scrollTop(0);
-      return false;
-    }
-  });
-
-  // Store the initial content so we can revisit it later
-  history.replaceState({
-  }, document.title, document.location.href);
-
-  });
-  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </body>
 </html>

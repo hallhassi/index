@@ -15,7 +15,7 @@
 <body>
   <h1>Index of https://blaiselarmee.com/2001/</h1>
   <div style="display: block; margin-bottom: 10px; padding-bottom: 10px;">
-    <a href="../">[parent directory]</a>
+    <a href="../index.html">[parent directory]</a>
   </div>
   <a href='o/01.jpg'><picture><source media="(max-width: 1000px)" srcset="s/01.jpg, m/01.jpg 1.5x, l/01.jpg 2x"><source media="(max-width: 1500px)" srcset="m/01.jpg, l/01.jpg 1.3x"><source media="(max-width: 2000px)" srcset="l/01.jpg, o/01.jpg 3.3x"><source media="(min-width: 2001px)" srcset="o/01.jpg"><img src="s/01.jpg" alt="2001 is a book by Blaise Larmee. It was published by 2dcloud in 2017 in an edition of 2000. It is 176 pages, B5 (6.9 by 9.8 inches), bound with thread and glue, and offset printed."></picture></a>
   <a href='o/02.jpg'><picture><source media="(max-width: 1000px)" srcset="s/02.jpg, m/02.jpg 1.5x, l/02.jpg 2x"><source media="(max-width: 1500px)" srcset="m/02.jpg, l/02.jpg 1.3x"><source media="(max-width: 2000px)" srcset="l/02.jpg, o/02.jpg 3.3x"><source media="(min-width: 2001px)" srcset="o/02.jpg"><img src="s/02.jpg" alt="2001 is a book by Blaise Larmee. It was published by 2dcloud in 2017 in an edition of 2000. It is 176 pages, B5 (6.9 by 9.8 inches), bound with thread and glue, and offset printed."></picture></a>
@@ -108,53 +108,6 @@
   <a href='o/89.jpg'><picture><source media="(max-width: 1000px)" srcset="s/89.jpg, m/89.jpg 1.5x, l/89.jpg 2x"><source media="(max-width: 1500px)" srcset="m/89.jpg, l/89.jpg 1.3x"><source media="(max-width: 2000px)" srcset="l/89.jpg, o/89.jpg 3.3x"><source media="(min-width: 2001px)" srcset="o/89.jpg"><img src="s/89.jpg" alt="2001 is a book by Blaise Larmee. It was published by 2dcloud in 2017 in an edition of 2000. It is 176 pages, B5 (6.9 by 9.8 inches), bound with thread and glue, and offset printed."></picture></a>
   <a href='o/90.jpg'><picture><source media="(max-width: 1000px)" srcset="s/90.jpg, m/90.jpg 1.5x, l/90.jpg 2x"><source media="(max-width: 1500px)" srcset="m/90.jpg, l/90.jpg 1.3x"><source media="(max-width: 2000px)" srcset="l/90.jpg, o/90.jpg 3.3x"><source media="(min-width: 2001px)" srcset="o/90.jpg"><img src="s/90.jpg" alt="2001 is a book by Blaise Larmee. It was published by 2dcloud in 2017 in an edition of 2000. It is 176 pages, B5 (6.9 by 9.8 inches), bound with thread and glue, and offset printed."></picture></a>
   <a href='o/91.jpg'><picture><source media="(max-width: 1000px)" srcset="s/91.jpg, m/91.jpg 1.5x, l/91.jpg 2x"><source media="(max-width: 1500px)" srcset="m/91.jpg, l/91.jpg 1.3x"><source media="(max-width: 2000px)" srcset="l/91.jpg, o/91.jpg 3.3x"><source media="(min-width: 2001px)" srcset="o/91.jpg"><img src="s/91.jpg" alt="2001 is a book by Blaise Larmee. It was published by 2dcloud in 2017 in an edition of 2000. It is 176 pages, B5 (6.9 by 9.8 inches), bound with thread and glue, and offset printed."></picture></a>
-
-  <script>
-
-  $(function() {
-  String.prototype.decodeHTML = function() {
-    return $("<div>", {html: "" + this}).html();
-  };
-
-  var $body = $("body"),
-
-  ajaxLoad = function(html) {
-    document.title = html
-      .match(/<title>(.*?)<\/title>/)[1]
-      .trim()
-      .decodeHTML();
-
-    init();
-  },
-
-  loadPage = function(href) {
-    $body.load(href + " body>*", ajaxLoad);
-  };
-
-  $(window).on("popstate", function(e) {
-    if (e.originalEvent.state !== null) {
-      loadPage(location.href);
-    }
-  });
-
-  $(document).on("click", "a, area", function() {
-    var href = $(this).attr("href");
-
-    if (href.indexOf(document.dobody) > -1
-      || href.indexOf(':') === -1)
-    {
-      history.pushState({}, '', href);
-      loadPage(href);
-      $(window).scrollTop(0);
-      return false;
-    }
-  });
-
-  // Store the initial content so we can revisit it later
-  history.replaceState({
-  }, document.title, document.location.href);
-
-  });
-  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </body>
 </html>

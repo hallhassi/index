@@ -10,8 +10,9 @@ for (let year of years) {
   const defs = ['index', '404'];
   for (let def of defs) {
     fs.promises.writeFile(`${def}.html`, `<!-- blaiselarmee@gmail.com -->
-    <html>
+    <!DOCTYPE html>
     <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>${def}</title> 
     </head>
     <body>
@@ -34,8 +35,9 @@ fs.promises
       } else {}
     }
     fs.promises.writeFile(year + `/index.html`, `<!-- blaiselarmee@gmail.com -->
-    <html>
+    <!DOCTYPE html>
     <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>${year}</title> 
     </head>
     <body>

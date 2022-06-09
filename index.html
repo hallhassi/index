@@ -1,7 +1,162 @@
 <!-- @media(hover:none){pre{overflow-y:scroll;scroll-snap-type:y mandatory;height:100vh;}img{top:1em;}.year{text-align:right;}a,span{position:sticky;top:0;background:white;scroll-snap-align:start;}} -->
-<!DOCTYPE html><html><head><title>blaiselarmee</title><style>*{margin:0;padding:0;}body{line-height:1em;border: 10px solid white;}pre{background-color:white;display:grid;}img{right:0;top:0;pointer-events:none;position:fixed;z-index:1;max-width:100%;max-height:100%;display:none;}.on{display:block;}</style></head><body><pre>6/7/22
-    
-</pre><script>let string = `
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>blaiselarmee</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            line-height: 1em;
+            display: grid;
+        }
+
+        pre {
+            background-color: white;
+        }
+
+        img {
+            right: 0;
+            top: 0;
+            pointer-events: none;
+            position: fixed;
+            z-index: 1;
+            max-width: 100%;
+            max-height: 100%;
+            display: none;
+        }
+
+        a {
+            white-space: pre;
+            font-family: monospace;
+        }
+        
+        div {
+            position: fixed;
+            top: 0;
+        }
+
+        div>pre, div>a {
+            display: none;
+        }
+
+        .on {
+            display: block;
+        }
+
+        @media (hover:hover) {
+            body {
+                border: 10px solid white;
+            }
+        }
+
+        @media (hover:none) {
+            img {
+                top: 1em
+            }
+        }
+
+</style>
+</head>
+<body>
+    <pre>6/8/22</pre>
+<script>
+let srcBase = 'http://blaiselarmee.mo.cloudinary.net/1600/'
+let hrefBase = 'https://raw.githubusercontent.com/hallhassi/index/main/'
+const arrays = string().match(/\d{4}\n[\s\S]+?(?=^\d{4}$)/gm).map(a => a.match(/[^\n]+?(?=\n)/g));
+// const arrays = [];
+// arrays.push(string.match(/[\s\S]+?(?=\n)/gm));
+function mobile(action) {
+    if (window.matchMedia('(hover:none)').matches) {
+        action()
+    }
+}
+function turnoff() {
+    let ons = document.getElementsByClassName('on');
+    if (ons) {
+        Array.from(ons).forEach(on => {
+            on.hidden = true;
+            on.classList.remove('on');
+        })
+    }
+}
+let count = 1;
+for (let array of arrays) {                             // for each year
+    array.forEach((v, i, array) => {                    // for each line
+        let a;
+        let img;
+        let dir = array[0];
+        let pre = document.createElement('pre');
+        let ext = v.slice(v.indexOf('.') + 1);
+        let id = 'a' + count
+        pre.append(v);
+        pre.classList.add(id)                          // pre.id
+        pre.addEventListener("mouseover", turnoff);
+        document.body.append(pre);     // add pre to 
+        if (i == 0) pre.classList.add('year');
+        mobile(function () {
+            let d = document.querySelector('div') || document.createElement('div') 
+            d.append(pre.cloneNode(true))
+            document.body.append(d)                     // mobile : add pre clone to div
+        })
+        pre.classList.add('a')                         // pre.a
+        if (ext.match(/jpg|jpeg|gif|png/gi)) {
+            a = document.createElement('a');
+            a.append(v);
+            a.classList.add('a')                        // a.a
+            a.href = hrefBase + dir + '/' + v;
+            a.dataset.id = id;                          // a.data-id
+            img = new Image();
+            img.id = id;
+            img.onload = function () {                  // img load
+                let pres = document.querySelectorAll('pre.a')
+                for (let pre of pres) {               // replaces pres.id with a.id
+                    if (pre.classList.contains(id)) pre.replaceWith(a.cloneNode(true));
+                    a.classList.add(id);                
+                }
+            }
+            img.src = srcBase + dir + '/' + v;
+            document.body.append(img);                                      // add img
+            document.body.addEventListener("mouseover", function (e) {      // on hover
+                if (e.target.tagName.toLowerCase() === 'a') {               
+                    turnoff();                          
+                    let el = document.getElementById(e.target.dataset.id);  // get img
+                    el.classList.add('on');                                 // turn on
+                    el.hidden = false;
+                }
+            });
+        }
+        count += 1;
+    });
+}
+if (window.matchMedia('(hover:none)').matches) {
+    document.addEventListener('scroll', function a() {
+        let height = document.querySelectorAll('body>pre')[0].getBoundingClientRect().height
+        let yi = window.scrollY / height
+        let y = Math.floor(yi)
+        let da = document.querySelectorAll(`div>pre.a${y}, div>a.a${y}`)[0]
+        let img = document.querySelectorAll(`img#a${y}`)[0]
+        if (yi < height) turnoff()
+        if (da || img) {
+            turnoff()
+            if (da) {
+                da.classList.add('on')
+                da.hidden = false;
+            }
+            if (img) {
+                img.classList.add('on')
+                img.hidden = false;
+            }
+        }
+    })
+    document.body.style.marginBottom = window.innerHeight + 'px'
+}
+function string() { return `
 2008
 untitled-10001.jpg
 untitled-10002.jpg
@@ -393,63 +548,11 @@ w-10-blaiselarmee.jpg
 660737502296031232_5-blaiselarmee.jpg
 671389626037092352_0-blaiselarmee.jpg
 672300201122430976_2-blaiselarmee.jpg`
-let srcBase = 'http://blaiselarmee.mo.cloudinary.net/1600/'
-let hrefBase = 'https://raw.githubusercontent.com/hallhassi/index/main/'
-const arrays = string.match(/\d{4}\n[\s\S]+?(?=^\d{4}$)/gm).map(a => a.match(/[^\n]+?(?=\n)/g));
-// const arrays = [];
-// arrays.push(string.match(/[\s\S]+?(?=\n)/gm));
-console.log(arrays)
-function turnoff() {
- let on = document.getElementsByClassName('on');
- if (on.length > 0) {
-  on.hidden=true;
-  on[0].classList.remove('on');
- }
 }
-let count = 1;
-for (let array of arrays) {
- array.forEach((v, i, array) => {
-  let dir = array[0];
-  let span = document.createElement('span');
-  span.append(v);
-  span.addEventListener("mouseover", turnoff);
-  if (i == 0) {
-   span.classList.add('year');
-  } else {
-   let a;
-   let img;
-   let ext = v.slice(v.indexOf('.') + 1);
-   if (ext.match(/jpg|jpeg|gif|png/gi)) {
-    a = document.createElement('a');
-    a.append(v);
-    a.href = hrefBase + dir + '/' + v;
-    a.dataset.id = 'a' + count;
-    img = new Image();
-    img.onload = function() {span.replaceWith(a);}
-    img.src = srcBase + dir + '/' + v;
-    img.id = 'a' + count;
-    img.style.zIndex = 1;
-    document.body.append(img);
-    a.addEventListener("mouseover", function(e) {
-     turnoff();
-     document.getElementById(e.target.dataset.id).classList.add('on');
-     document.getElementById(e.target.dataset.id).hidden = false;
-    });
-    count += 1;
-   }
-  }
-  document.querySelector('pre').append(span);
- });
-}
-const screenWidth = window.screen.width
-
-if (window.matchMedia('(hover:none)')) { // for mobile
- 
-}
-
-
 const imgs = document.querySelectorAll('img')
-const pre = document.querySelector('pre');
 const d = document.documentElement;
 // pre.insertAdjacentHTML("beforeend", d.outerHTML.replace(/^(.*)\n/g, "&amp;").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"));
-</script></body></html>
+    </script>
+</body>
+
+</html>

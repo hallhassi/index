@@ -16,8 +16,10 @@
             display: grid;
         }
 
-        pre {
+        pre, a {
             background-color: white;
+            white-space: pre;
+            font-family: monospace;
         }
 
         img {
@@ -28,25 +30,17 @@
             z-index: 1;
             max-width: 100%;
             max-height: 100%;
-            display: none;
-        }
-
-        a {
-            white-space: pre;
-            font-family: monospace;
+            visibility: hidden;
         }
         
-        div {
-            position: fixed;
-            top: 0;
-        }
-
         div>pre, div>a {
-            display: none;
+            visibility: hidden;
+            top: 0;
+            position: fixed;
         }
 
         .on {
-            display: block;
+            visibility: visible;
         }
 
         @media (hover:hover) {
@@ -56,6 +50,11 @@
         }
 
         @media (hover:none) {
+
+            a {
+                pointer-events: none;
+            }
+
             img {
                 top: 1em
             }
@@ -64,13 +63,11 @@
 </style>
 </head>
 <body>
-    <pre>6/8/22</pre>
+    <pre>6/11/22</pre>
 <script>
 let srcBase = 'http://blaiselarmee.mo.cloudinary.net/1600/'
 let hrefBase = 'https://raw.githubusercontent.com/hallhassi/index/main/'
 const arrays = string().match(/\d{4}\n[\s\S]+?(?=^\d{4}$)/gm).map(a => a.match(/[^\n]+?(?=\n)/g));
-// const arrays = [];
-// arrays.push(string.match(/[\s\S]+?(?=\n)/gm));
 function mobile(action) {
     if (window.matchMedia('(hover:none)').matches) {
         action()
@@ -80,7 +77,6 @@ function turnoff() {
     let ons = document.getElementsByClassName('on');
     if (ons) {
         Array.from(ons).forEach(on => {
-            on.hidden = true;
             on.classList.remove('on');
         })
     }
@@ -96,7 +92,7 @@ for (let array of arrays) {                             // for each year
         let id = 'a' + count
         pre.append(v);
         pre.classList.add(id)                          // pre.id
-        pre.addEventListener("mouseover", turnoff);
+        if (window.matchMedia('(hover:hover)').matches) pre.addEventListener("mouseover", turnoff);
         document.body.append(pre);     // add pre to 
         if (i == 0) pre.classList.add('year');
         mobile(function () {
@@ -114,7 +110,7 @@ for (let array of arrays) {                             // for each year
             img = new Image();
             img.id = id;
             img.onload = function () {                  // img load
-                let pres = document.querySelectorAll('pre.a')
+                let pres = document.querySelectorAll('pre')
                 for (let pre of pres) {               // replaces pres.id with a.id
                     if (pre.classList.contains(id)) pre.replaceWith(a.cloneNode(true));
                     a.classList.add(id);                
@@ -122,38 +118,48 @@ for (let array of arrays) {                             // for each year
             }
             img.src = srcBase + dir + '/' + v;
             document.body.append(img);                                      // add img
-            document.body.addEventListener("mouseover", function (e) {      // on hover
-                if (e.target.tagName.toLowerCase() === 'a') {               
-                    turnoff();                          
-                    let el = document.getElementById(e.target.dataset.id);  // get img
-                    el.classList.add('on');                                 // turn on
-                    el.hidden = false;
-                }
-            });
+            if (window.matchMedia('(hover:hover)').matches) {
+                document.body.addEventListener("mouseover", function (e) {      // on hover
+                    if (e.target.tagName.toLowerCase() === 'a') {               
+                        turnoff();                          
+                        let el = document.getElementById(e.target.dataset.id);  // get img
+                        el.classList.add('on');                                 // turn on
+                    }
+                });
+            }
         }
         count += 1;
     });
 }
-if (window.matchMedia('(hover:none)').matches) {
-    document.addEventListener('scroll', function a() {
-        let height = document.querySelectorAll('body>pre')[0].getBoundingClientRect().height
-        let yi = window.scrollY / height
-        let y = Math.floor(yi)
-        let da = document.querySelectorAll(`div>pre.a${y}, div>a.a${y}`)[0]
-        let img = document.querySelectorAll(`img#a${y}`)[0]
-        if (yi < height) turnoff()
-        if (da || img) {
-            turnoff()
-            if (da) {
-                da.classList.add('on')
-                da.hidden = false;
-            }
-            if (img) {
-                img.classList.add('on')
-                img.hidden = false;
-            }
+let exy
+const href = function(e) {
+    let h = document.querySelector(`a.a${e.currentTarget.y}`)
+    if (h) window.open(h, '_blank')
+    console.log('a2')
+}
+const scroll = function() {
+    let yi = window.scrollY / height
+    let y = Math.floor(yi)
+    window.y = y
+    let da = document.querySelectorAll(`div>pre.a${y}, div>a.a${y}`)[0]
+    let img = document.querySelectorAll(`img#a${y}`)[0]
+    if (y !== exy) {
+        turnoff()
+        window.removeEventListener('click', href, false)
+        window.addEventListener('click', href, false)
+        console.log('a3')
+        exy = y
+    }
+    if (da) {
+        da.classList.add('on')
+        if (img) {
+            img.classList.add('on')
         }
-    })
+    }
+}
+let height = document.querySelectorAll('body>pre')[0].getBoundingClientRect().height
+if (window.matchMedia('(hover:none)').matches) {
+    document.addEventListener('scroll', scroll)
     document.body.style.marginBottom = window.innerHeight + 'px'
 }
 function string() { return `

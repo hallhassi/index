@@ -65,7 +65,9 @@
 <body>
     <pre>6/11/22</pre>
 <script>
-let srcBase = 'http://blaiselarmee.mo.cloudinary.net/1600/'
+let src1600 = 'http://blaiselarmee.mo.cloudinary.net/1600/'
+let src1200 = 'http://blaiselarmee.mo.cloudinary.net/1200/'
+let src800 = 'http://blaiselarmee.mo.cloudinary.net/800/'
 let hrefBase = 'https://raw.githubusercontent.com/hallhassi/index/main/'
 const arrays = string().match(/\d{4}\n[\s\S]+?(?=^\d{4}$)/gm).map(a => a.match(/[^\n]+?(?=\n)/g));
 function mobile(action) {
@@ -116,7 +118,11 @@ for (let array of arrays) {                             // for each year
                     a.classList.add(id);                
                 }
             }
-            img.src = srcBase + dir + '/' + v;
+            let src = (s) => {return `${s}${dir}/${v}`}
+            console.log(`${src800}${dir}/${v}`)
+            img.src = src(src800);
+            img.srcset = src(src800) + ' 800w,' + src(src1200) + ' 1200w,' + src(src1600) + ' 1600w';
+            img.sizes = '(max-width: 1200px) 800px, (max-width: 1600px) 1200px, 100vw';
             document.body.append(img);                                      // add img
             if (window.matchMedia('(hover:hover)').matches) {
                 document.body.addEventListener("mouseover", function (e) {      // on hover
@@ -135,7 +141,6 @@ let exy
 const href = function(e) {
     let h = document.querySelector(`a.a${e.currentTarget.y}`)
     if (h) window.open(h, '_blank')
-    console.log('a2')
 }
 const scroll = function() {
     let yi = window.scrollY / height
@@ -147,7 +152,6 @@ const scroll = function() {
         turnoff()
         window.removeEventListener('click', href, false)
         window.addEventListener('click', href, false)
-        console.log('a3')
         exy = y
     }
     if (da) {

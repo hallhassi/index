@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>blaiselarmee</title>
@@ -79,6 +78,7 @@ for (let array of arrays) {                             // for each year
             pre.classList.add(id)
             a.classList.add(id)
             a.href = hrefBase + dir + '/' + v;
+            a.target = "_blank"
             d.append(a.cloneNode(true))
             document.body.append(pre);     
             if (ext.match(/jpg|jpeg|gif|png/gi)) {

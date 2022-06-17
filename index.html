@@ -69,7 +69,6 @@ for (let array of arrays) {                             // for each year
             console.log(`matched ${array}`)
         }
         else if (i !== 0) {
-            let img;
             let dir = array[0];
             let id = 'a' + count
             let pre = document.createElement('pre');
@@ -83,17 +82,22 @@ for (let array of arrays) {                             // for each year
             d.append(a.cloneNode(true))
             document.body.append(pre);     
             if (ext.match(/jpg|jpeg|gif|png/gi)) {
-                img = new Image();
+                let img = new Image();
                 img.id = id;
                 img.onload = function (e) {      
                     a.classList.add('visible')
                     pre.classList.add('visible')
                 }
                 let src = (s) => {return `${s}${dir}/${v}`}
-                img.src = src(src800);
-                img.srcset = src(src800) + ' 800w,' + src(src1600) + ' 1600w,' + hrefBase + dir + '/' + v;
-                img.sizes = '(min-width: 0px) 800px, (min-width: 800px) 1600px, (min-width: 3200px) 3200px';
-                document.body.append(img);                                      // add img
+                if (ext.match(/gif/gi)) {
+                    img.src = src(hrefBase);
+                }
+                else {
+                    img.src = src(src800);
+                    img.srcset = src(src800) + ' 800w,' + src(src1600) + ' 1600w,' + hrefBase + dir + '/' + v;
+                    img.sizes = '(min-width: 0px) 800px, (min-width: 800px) 1600px, (min-width: 3200px) 3200px';
+                }
+                document.body.append(img);
             } else {
                 a.classList.add('visible')                       
                 pre.replaceWith(a.cloneNode(true))

@@ -17,7 +17,8 @@
         pre, a {
             white-space: pre;
             font-family: monospace;
-            visibility: hidden;
+            display: none;
+            overflow: hidden;
         }
 
         img {
@@ -36,16 +37,22 @@
             background-color: white;
             top: 0;
             position: fixed;
+            visibility: hidden;
+            display: initial;
         }
 
-        .on, .visible {
+        .initial {
+            display: initial;
+        }
+
+        .on {
             visibility: visible;
         }
 
 </style>
 </head>
 <body>
-<pre class="visible">6/16/22</pre>
+<pre class="initial">6/17/22</pre>
 <script>
 let src1600 = 'https://blaiselarmee.mo.cloudinary.net/1600/'
 let src800 = 'https://blaiselarmee.mo.cloudinary.net/800/'
@@ -65,7 +72,7 @@ document.body.append(d)
 for (let array of arrays) {                             // for each year
     array.forEach((v, i, array) => {                    // for each line
         if (v.match(/../)[0] == ['//']) {
-            console.log(`matched ${array}`)
+            console.log(`matched ${v}`)
         }
         else if (i !== 0) {
             let dir = array[0];
@@ -85,8 +92,8 @@ for (let array of arrays) {                             // for each year
                 let img = new Image();
                 img.id = id;
                 img.onload = function (e) {      
-                    a.classList.add('visible')
-                    pre.classList.add('visible')
+                    a.classList.add('initial')
+                    pre.classList.add('initial')
                 }
                 let src = (s) => {return `${s}${dir}/${v}`}
                 if (ext.match(/gif/gi)) {
@@ -99,7 +106,7 @@ for (let array of arrays) {                             // for each year
                 }
                 document.body.append(img);
             } else {
-                a.classList.add('visible')                       
+                a.classList.add('initial')                       
                 pre.replaceWith(a.cloneNode(true))
             }
             count += 1;

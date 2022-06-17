@@ -39,7 +39,7 @@
             position: fixed;
         }
 
-        .on {
+        .on, .visible {
             visibility: visible;
         }
 
@@ -52,7 +52,7 @@
         /* @media (hover:none) { */
 
             a {
-                pointer-events: none;
+                /* pointer-events: none; */
             }
 
             img {
@@ -89,43 +89,44 @@ for (let array of arrays) {                             // for each year
         if (v.match(/../)[0] == ['//']) {
             console.log(`matched ${array}`)
         }
-        else {
+        else if (i !== 0) {
             let a;
             let img;
             let dir = array[0];
             let pre = document.createElement('pre');
             let ext = v.slice(v.indexOf('.') + 1);
             let id = 'a' + count
-            pre.append(v);
+            pre.append(dir + '/', v);
             pre.classList.add(id)                          // pre.id
             // if (window.matchMedia('(hover:hover)').matches) {
                 // pre.addEventListener("mouseover", turnoff);
             // }
-            document.body.append(pre);     // add pre to 
-            if (i == 0) pre.classList.add('year');
             // mobile(function () {
                 let d = document.querySelector('div') || document.createElement('div') 
-                d.append(pre.cloneNode(true))
                 document.body.append(d)                     // mobile : add pre clone to div
             // })
             pre.classList.add('a')                         // pre.a
+            document.body.append(pre);     // add pre to 
+            a = document.createElement('a');
+            a.append(v);
+            a.classList.add('a')                        // a.a
+            a.href = hrefBase + dir + '/' + v;
+            a.dataset.id = id;                          // a.data-id
             if (ext.match(/jpg|jpeg|gif|png/gi)) {
-                a = document.createElement('a');
-                a.append(v);
-                a.classList.add('a')                        // a.a
-                a.href = hrefBase + dir + '/' + v;
-                a.dataset.id = id;                          // a.data-id
+                d.append(pre.cloneNode(true))
                 img = new Image();
                 img.id = id;
-                img.onload = function () {                  // img load
-                    let pres = document.querySelectorAll('pre')
-                    for (let pre of pres) {               // replaces pres.id with a.id
-                        if (pre.classList.contains(id)) pre.replaceWith(a.cloneNode(true));
-                        a.classList.add(id);                
-                    }
+                img.onload = function (e) {      
+                    pre.classList.add('visible')
+                    pre.classList.add('visible')
+                    // img load                    
+                    // let pres = document.querySelectorAll('pre')
+                    // for (let pre of pres) {               // replaces pres.id with a.id
+                    //     if (pre.classList.contains(id)) pre.replaceWith(a.cloneNode(true));
+                    //     a.classList.add(id);                
+                    // }
                 }
                 let src = (s) => {return `${s}${dir}/${v}`}
-                console.log(`${src800}${dir}/${v}`)
                 img.src = src(src800);
                 img.srcset = src(src800) + ' 800w,' + src(src1600) + ' 1600w,' + hrefBase + dir + '/' + v;
                 img.sizes = '(min-width: 0px) 800px, (min-width: 800px) 1600px, (min-width: 3200px) 3200px';
@@ -139,6 +140,9 @@ for (let array of arrays) {                             // for each year
                     //     }
                     // });
                 // }
+            } else {
+                pre.replaceWith(a.cloneNode(true))
+                d.append(a.cloneNode(true))
             }
             count += 1;
         }
@@ -176,7 +180,7 @@ const scroll = function() {
 let height = document.querySelectorAll('body>pre')[0].getBoundingClientRect().height
 // if (window.matchMedia('(hover:none)').matches) {
     document.addEventListener('scroll', scroll)
-    document.body.style.marginBottom = window.innerHeight + 'px'
+    document.body.style.marginBottom = window.innerHeight -1 + 'px'
 // }
 function string() { return `
 2008

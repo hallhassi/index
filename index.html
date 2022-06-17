@@ -24,7 +24,7 @@
 
         img {
             right: 0;
-            top: 0;
+            /* top: 0; */
             pointer-events: none;
             position: fixed;
             z-index: 1;
@@ -43,13 +43,13 @@
             visibility: visible;
         }
 
-        @media (hover:hover) {
+        /* @media (hover:hover) {
             body {
                 border: 10px solid white;
             }
-        }
+        } */
 
-        @media (hover:none) {
+        /* @media (hover:none) { */
 
             a {
                 pointer-events: none;
@@ -58,23 +58,23 @@
             img {
                 top: 1em
             }
-        }
+        /* } */
 
 </style>
 </head>
 <body>
-    <pre>6/11/22</pre>
+    <pre>6/16/22</pre>
 <script>
-let src1600 = 'http://blaiselarmee.mo.cloudinary.net/1600/'
-let src1200 = 'http://blaiselarmee.mo.cloudinary.net/1200/'
-let src800 = 'http://blaiselarmee.mo.cloudinary.net/800/'
+let src1600 = 'https://blaiselarmee.mo.cloudinary.net/1600/'
+// let src1200 = 'https://blaiselarmee.mo.cloudinary.net/1200/'
+let src800 = 'https://blaiselarmee.mo.cloudinary.net/800/'
 let hrefBase = 'https://raw.githubusercontent.com/hallhassi/index/main/'
 const arrays = string().match(/\d{4}\n[\s\S]+?(?=^\d{4}$)/gm).map(a => a.match(/[^\n]+?(?=\n)/g));
-function mobile(action) {
-    if (window.matchMedia('(hover:none)').matches) {
-        action()
-    }
-}
+// function mobile(action) {
+    // if (window.matchMedia('(hover:none)').matches) {
+    //     action()
+    // }
+// }
 function turnoff() {
     let ons = document.getElementsByClassName('on');
     if (ons) {
@@ -86,58 +86,70 @@ function turnoff() {
 let count = 1;
 for (let array of arrays) {                             // for each year
     array.forEach((v, i, array) => {                    // for each line
-        let a;
-        let img;
-        let dir = array[0];
-        let pre = document.createElement('pre');
-        let ext = v.slice(v.indexOf('.') + 1);
-        let id = 'a' + count
-        pre.append(v);
-        pre.classList.add(id)                          // pre.id
-        if (window.matchMedia('(hover:hover)').matches) pre.addEventListener("mouseover", turnoff);
-        document.body.append(pre);     // add pre to 
-        if (i == 0) pre.classList.add('year');
-        mobile(function () {
-            let d = document.querySelector('div') || document.createElement('div') 
-            d.append(pre.cloneNode(true))
-            document.body.append(d)                     // mobile : add pre clone to div
-        })
-        pre.classList.add('a')                         // pre.a
-        if (ext.match(/jpg|jpeg|gif|png/gi)) {
-            a = document.createElement('a');
-            a.append(v);
-            a.classList.add('a')                        // a.a
-            a.href = hrefBase + dir + '/' + v;
-            a.dataset.id = id;                          // a.data-id
-            img = new Image();
-            img.id = id;
-            img.onload = function () {                  // img load
-                let pres = document.querySelectorAll('pre')
-                for (let pre of pres) {               // replaces pres.id with a.id
-                    if (pre.classList.contains(id)) pre.replaceWith(a.cloneNode(true));
-                    a.classList.add(id);                
-                }
-            }
-            let src = (s) => {return `${s}${dir}/${v}`}
-            console.log(`${src800}${dir}/${v}`)
-            img.src = src(src800);
-            img.srcset = src(src800) + ' 800w,' + src(src1200) + ' 1200w,' + src(src1600) + ' 1600w';
-            img.sizes = '(max-width: 1200px) 800px, (max-width: 1600px) 1200px, 100vw';
-            document.body.append(img);                                      // add img
-            if (window.matchMedia('(hover:hover)').matches) {
-                document.body.addEventListener("mouseover", function (e) {      // on hover
-                    if (e.target.tagName.toLowerCase() === 'a') {               
-                        turnoff();                          
-                        let el = document.getElementById(e.target.dataset.id);  // get img
-                        el.classList.add('on');                                 // turn on
-                    }
-                });
-            }
+        if (v.match(/../)[0] == ['//']) {
+            console.log(`matched ${array}`)
         }
-        count += 1;
+        else {
+            let a;
+            let img;
+            let dir = array[0];
+            let pre = document.createElement('pre');
+            let ext = v.slice(v.indexOf('.') + 1);
+            let id = 'a' + count
+            pre.append(v);
+            pre.classList.add(id)                          // pre.id
+            // if (window.matchMedia('(hover:hover)').matches) {
+                // pre.addEventListener("mouseover", turnoff);
+            // }
+            document.body.append(pre);     // add pre to 
+            if (i == 0) pre.classList.add('year');
+            // mobile(function () {
+                let d = document.querySelector('div') || document.createElement('div') 
+                d.append(pre.cloneNode(true))
+                document.body.append(d)                     // mobile : add pre clone to div
+            // })
+            pre.classList.add('a')                         // pre.a
+            if (ext.match(/jpg|jpeg|gif|png/gi)) {
+                a = document.createElement('a');
+                a.append(v);
+                a.classList.add('a')                        // a.a
+                a.href = hrefBase + dir + '/' + v;
+                a.dataset.id = id;                          // a.data-id
+                img = new Image();
+                img.id = id;
+                img.onload = function () {                  // img load
+                    let pres = document.querySelectorAll('pre')
+                    for (let pre of pres) {               // replaces pres.id with a.id
+                        if (pre.classList.contains(id)) pre.replaceWith(a.cloneNode(true));
+                        a.classList.add(id);                
+                    }
+                }
+                let src = (s) => {return `${s}${dir}/${v}`}
+                console.log(`${src800}${dir}/${v}`)
+                img.src = src(src800);
+                img.srcset = src(src800) + ' 800w,' + src(src1600) + ' 1600w,' + hrefBase + dir + '/' + v;
+                img.sizes = '(min-width: 0px) 800px, (min-width: 800px) 1600px, (min-width: 3200px) 3200px';
+                document.body.append(img);                                      // add img
+                // if (window.matchMedia('(hover:hover)').matches) {
+                    // document.body.addEventListener("mouseover", function (e) {      // on hover
+                    //     if (e.target.tagName.toLowerCase() === 'a') {               
+                    //         turnoff();                          
+                    //         let el = document.getElementById(e.target.dataset.id);  // get img
+                    //         el.classList.add('on');                                 // turn on
+                    //     }
+                    // });
+                // }
+            }
+            count += 1;
+        }
     });
 }
 let exy
+let rec = function (e) {
+    let y = window.scrollY
+    console.log(y)
+}
+window.addEventListener('scroll', rec)
 const href = function(e) {
     let h = document.querySelector(`a.a${e.currentTarget.y}`)
     if (h) window.open(h, '_blank')
@@ -162,10 +174,10 @@ const scroll = function() {
     }
 }
 let height = document.querySelectorAll('body>pre')[0].getBoundingClientRect().height
-if (window.matchMedia('(hover:none)').matches) {
+// if (window.matchMedia('(hover:none)').matches) {
     document.addEventListener('scroll', scroll)
     document.body.style.marginBottom = window.innerHeight + 'px'
-}
+// }
 function string() { return `
 2008
 untitled-10001.jpg
@@ -265,102 +277,102 @@ bernie-02-blaiselarmee.jpg
 bernie-03-blaiselarmee.jpg
 inkstuds-blaiselarmee.m4a
 mirror-mirror-01-blaiselarmee.jpg
-mirror-mirror-02-blaiselarmee.jpg
-mirror-mirror-03-blaiselarmee.jpg
-mirror-mirror-04-blaiselarmee.jpg
-mirror-mirror-05-blaiselarmee.jpg
-mirror-mirror-06-blaiselarmee.jpg
-mirror-mirror-07-blaiselarmee.jpg
-mirror-mirror-08-blaiselarmee.jpg
-mirror-mirror-09-blaiselarmee.jpg
-mirror-mirror-10-blaiselarmee.jpg
-mirror-mirror-11-blaiselarmee.jpg
-mirror-mirror-12-blaiselarmee.jpg
-mirror-mirror-13-blaiselarmee.jpg
-mirror-mirror-14-blaiselarmee.jpg
-mirror-mirror-15-blaiselarmee.jpg
-mirror-mirror-16-blaiselarmee.jpg
-mirror-mirror-17-blaiselarmee.jpg
-mirror-mirror-18-blaiselarmee.jpg
-mirror-mirror-19-blaiselarmee.jpg
-mirror-mirror-20-blaiselarmee.jpg
-mirror-mirror-21-blaiselarmee.jpg
-mirror-mirror-22-blaiselarmee.jpg
-mirror-mirror-23-blaiselarmee.jpg
-mirror-mirror-24-blaiselarmee.jpg
-mirror-mirror-25-blaiselarmee.jpg
-mirror-mirror-26-blaiselarmee.jpg
-mirror-mirror-27-blaiselarmee.jpg
-mirror-mirror-28-blaiselarmee.jpg
-mirror-mirror-29-blaiselarmee.jpg
-mirror-mirror-30-blaiselarmee.jpg
-mirror-mirror-31-blaiselarmee.jpg
-mirror-mirror-32-blaiselarmee.jpg
-mirror-mirror-33-blaiselarmee.jpg
-mirror-mirror-34-blaiselarmee.jpg
-mirror-mirror-35-blaiselarmee.jpg
-mirror-mirror-36-blaiselarmee.jpg
-mirror-mirror-37-blaiselarmee.jpg
-mirror-mirror-38-blaiselarmee.jpg
-mirror-mirror-39-blaiselarmee.jpg
-mirror-mirror-40-blaiselarmee.jpg
-mirror-mirror-41-blaiselarmee.jpg
-mirror-mirror-42-blaiselarmee.jpg
-mirror-mirror-43-blaiselarmee.jpg
-mirror-mirror-44-blaiselarmee.jpg
-mirror-mirror-45-blaiselarmee.jpg
-mirror-mirror-46-blaiselarmee.jpg
-mirror-mirror-47-blaiselarmee.jpg
-mirror-mirror-48-blaiselarmee.jpg
-mirror-mirror-49-blaiselarmee.jpg
-mirror-mirror-50-blaiselarmee.jpg
-mirror-mirror-51-blaiselarmee.jpg
-mirror-mirror-52-blaiselarmee.jpg
-mirror-mirror-53-blaiselarmee.jpg
-mirror-mirror-54-blaiselarmee.jpg
-mirror-mirror-55-blaiselarmee.jpg
-mirror-mirror-56-blaiselarmee.jpg
-mirror-mirror-57-blaiselarmee.jpg
-mirror-mirror-58-blaiselarmee.jpg
-mirror-mirror-59-blaiselarmee.jpg
-mirror-mirror-60-blaiselarmee.jpg
-mirror-mirror-61-blaiselarmee.jpg
-mirror-mirror-62-blaiselarmee.jpg
-mirror-mirror-63-blaiselarmee.jpg
-mirror-mirror-64-blaiselarmee.jpg
-mirror-mirror-65-blaiselarmee.jpg
-mirror-mirror-66-blaiselarmee.jpg
-mirror-mirror-67-blaiselarmee.jpg
-mirror-mirror-68-blaiselarmee.jpg
-mirror-mirror-69-blaiselarmee.jpg
-mirror-mirror-70-blaiselarmee.jpg
-mirror-mirror-71-blaiselarmee.jpg
-mirror-mirror-72-blaiselarmee.jpg
-mirror-mirror-73-blaiselarmee.jpg
-mirror-mirror-74-blaiselarmee.jpg
-mirror-mirror-75-blaiselarmee.jpg
-mirror-mirror-76-blaiselarmee.jpg
-mirror-mirror-77-blaiselarmee.jpg
-mirror-mirror-78-blaiselarmee.jpg
-mirror-mirror-79-blaiselarmee.jpg
-mirror-mirror-80-blaiselarmee.jpg
-mirror-mirror-81-blaiselarmee.jpg
-mirror-mirror-82-blaiselarmee.jpg
-mirror-mirror-83-blaiselarmee.jpg
-mirror-mirror-84-blaiselarmee.jpg
-mirror-mirror-85-blaiselarmee.jpg
-mirror-mirror-86-blaiselarmee.jpg
-mirror-mirror-87-blaiselarmee.jpg
-mirror-mirror-88-blaiselarmee.jpg
-mirror-mirror-89-blaiselarmee.jpg
-mirror-mirror-90-blaiselarmee.jpg
-mirror-mirror-91-blaiselarmee.jpg
-mirror-mirror-92-blaiselarmee.jpg
-mirror-mirror-93-blaiselarmee.jpg
-mirror-mirror-94-blaiselarmee.jpg
-mirror-mirror-95-blaiselarmee.jpg
-mirror-mirror-96-blaiselarmee.jpg
-mirror-mirror-97-blaiselarmee.jpg
+// mirror-mirror-02-blaiselarmee.jpg
+// mirror-mirror-03-blaiselarmee.jpg
+// mirror-mirror-04-blaiselarmee.jpg
+// mirror-mirror-05-blaiselarmee.jpg
+// mirror-mirror-06-blaiselarmee.jpg
+// mirror-mirror-07-blaiselarmee.jpg
+// mirror-mirror-08-blaiselarmee.jpg
+// mirror-mirror-09-blaiselarmee.jpg
+// mirror-mirror-10-blaiselarmee.jpg
+// mirror-mirror-11-blaiselarmee.jpg
+// mirror-mirror-12-blaiselarmee.jpg
+// mirror-mirror-13-blaiselarmee.jpg
+// mirror-mirror-14-blaiselarmee.jpg
+// mirror-mirror-15-blaiselarmee.jpg
+// mirror-mirror-16-blaiselarmee.jpg
+// mirror-mirror-17-blaiselarmee.jpg
+// mirror-mirror-18-blaiselarmee.jpg
+// mirror-mirror-19-blaiselarmee.jpg
+// mirror-mirror-20-blaiselarmee.jpg
+// mirror-mirror-21-blaiselarmee.jpg
+// mirror-mirror-22-blaiselarmee.jpg
+// mirror-mirror-23-blaiselarmee.jpg
+// mirror-mirror-24-blaiselarmee.jpg
+// mirror-mirror-25-blaiselarmee.jpg
+// mirror-mirror-26-blaiselarmee.jpg
+// mirror-mirror-27-blaiselarmee.jpg
+// mirror-mirror-28-blaiselarmee.jpg
+// mirror-mirror-29-blaiselarmee.jpg
+// mirror-mirror-30-blaiselarmee.jpg
+// mirror-mirror-31-blaiselarmee.jpg
+// mirror-mirror-32-blaiselarmee.jpg
+// mirror-mirror-33-blaiselarmee.jpg
+// mirror-mirror-34-blaiselarmee.jpg
+// mirror-mirror-35-blaiselarmee.jpg
+// mirror-mirror-36-blaiselarmee.jpg
+// mirror-mirror-37-blaiselarmee.jpg
+// mirror-mirror-38-blaiselarmee.jpg
+// mirror-mirror-39-blaiselarmee.jpg
+// mirror-mirror-40-blaiselarmee.jpg
+// mirror-mirror-41-blaiselarmee.jpg
+// mirror-mirror-42-blaiselarmee.jpg
+// mirror-mirror-43-blaiselarmee.jpg
+// mirror-mirror-44-blaiselarmee.jpg
+// mirror-mirror-45-blaiselarmee.jpg
+// mirror-mirror-46-blaiselarmee.jpg
+// mirror-mirror-47-blaiselarmee.jpg
+// mirror-mirror-48-blaiselarmee.jpg
+// mirror-mirror-49-blaiselarmee.jpg
+// mirror-mirror-50-blaiselarmee.jpg
+// mirror-mirror-51-blaiselarmee.jpg
+// mirror-mirror-52-blaiselarmee.jpg
+// mirror-mirror-53-blaiselarmee.jpg
+// mirror-mirror-54-blaiselarmee.jpg
+// mirror-mirror-55-blaiselarmee.jpg
+// mirror-mirror-56-blaiselarmee.jpg
+// mirror-mirror-57-blaiselarmee.jpg
+// mirror-mirror-58-blaiselarmee.jpg
+// mirror-mirror-59-blaiselarmee.jpg
+// mirror-mirror-60-blaiselarmee.jpg
+// mirror-mirror-61-blaiselarmee.jpg
+// mirror-mirror-62-blaiselarmee.jpg
+// mirror-mirror-63-blaiselarmee.jpg
+// mirror-mirror-64-blaiselarmee.jpg
+// mirror-mirror-65-blaiselarmee.jpg
+// mirror-mirror-66-blaiselarmee.jpg
+// mirror-mirror-67-blaiselarmee.jpg
+// mirror-mirror-68-blaiselarmee.jpg
+// mirror-mirror-69-blaiselarmee.jpg
+// mirror-mirror-70-blaiselarmee.jpg
+// mirror-mirror-71-blaiselarmee.jpg
+// mirror-mirror-72-blaiselarmee.jpg
+// mirror-mirror-73-blaiselarmee.jpg
+// mirror-mirror-74-blaiselarmee.jpg
+// mirror-mirror-75-blaiselarmee.jpg
+// mirror-mirror-76-blaiselarmee.jpg
+// mirror-mirror-77-blaiselarmee.jpg
+// mirror-mirror-78-blaiselarmee.jpg
+// mirror-mirror-79-blaiselarmee.jpg
+// mirror-mirror-80-blaiselarmee.jpg
+// mirror-mirror-81-blaiselarmee.jpg
+// mirror-mirror-82-blaiselarmee.jpg
+// mirror-mirror-83-blaiselarmee.jpg
+// mirror-mirror-84-blaiselarmee.jpg
+// mirror-mirror-85-blaiselarmee.jpg
+// mirror-mirror-86-blaiselarmee.jpg
+// mirror-mirror-87-blaiselarmee.jpg
+// mirror-mirror-88-blaiselarmee.jpg
+// mirror-mirror-89-blaiselarmee.jpg
+// mirror-mirror-90-blaiselarmee.jpg
+// mirror-mirror-91-blaiselarmee.jpg
+// mirror-mirror-92-blaiselarmee.jpg
+// mirror-mirror-93-blaiselarmee.jpg
+// mirror-mirror-94-blaiselarmee.jpg
+// mirror-mirror-95-blaiselarmee.jpg
+// mirror-mirror-96-blaiselarmee.jpg
+// mirror-mirror-97-blaiselarmee.jpg
 2017
 2001-01-blaiselarmee.jpg
 2001-02-blaiselarmee.jpg

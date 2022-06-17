@@ -1,4 +1,3 @@
-<!-- @media(hover:none){pre{overflow-y:scroll;scroll-snap-type:y mandatory;height:100vh;}img{top:1em;}.year{text-align:right;}a,span{position:sticky;top:0;background:white;scroll-snap-align:start;}} -->
 <!DOCTYPE html>
 <html>
 
@@ -17,14 +16,14 @@
         }
 
         pre, a {
-            background-color: white;
             white-space: pre;
             font-family: monospace;
+            visibility: hidden;
         }
 
         img {
             right: 0;
-            /* top: 0; */
+            top: 1em;
             pointer-events: none;
             position: fixed;
             z-index: 1;
@@ -33,8 +32,9 @@
             visibility: hidden;
         }
         
-        div>pre, div>a {
-            visibility: hidden;
+        div>a {
+            width: 100%;
+            background-color: white;
             top: 0;
             position: fixed;
         }
@@ -43,38 +43,15 @@
             visibility: visible;
         }
 
-        /* @media (hover:hover) {
-            body {
-                border: 10px solid white;
-            }
-        } */
-
-        /* @media (hover:none) { */
-
-            a {
-                /* pointer-events: none; */
-            }
-
-            img {
-                top: 1em
-            }
-        /* } */
-
 </style>
 </head>
 <body>
-    <pre>6/16/22</pre>
+<pre class="visible">6/16/22</pre>
 <script>
 let src1600 = 'https://blaiselarmee.mo.cloudinary.net/1600/'
-// let src1200 = 'https://blaiselarmee.mo.cloudinary.net/1200/'
 let src800 = 'https://blaiselarmee.mo.cloudinary.net/800/'
 let hrefBase = 'https://raw.githubusercontent.com/hallhassi/index/main/'
 const arrays = string().match(/\d{4}\n[\s\S]+?(?=^\d{4}$)/gm).map(a => a.match(/[^\n]+?(?=\n)/g));
-// function mobile(action) {
-    // if (window.matchMedia('(hover:none)').matches) {
-    //     action()
-    // }
-// }
 function turnoff() {
     let ons = document.getElementsByClassName('on');
     if (ons) {
@@ -84,104 +61,64 @@ function turnoff() {
     }
 }
 let count = 1;
+let d = document.createElement('div') 
+document.body.append(d)                     
 for (let array of arrays) {                             // for each year
     array.forEach((v, i, array) => {                    // for each line
         if (v.match(/../)[0] == ['//']) {
             console.log(`matched ${array}`)
         }
         else if (i !== 0) {
-            let a;
             let img;
             let dir = array[0];
-            let pre = document.createElement('pre');
-            let ext = v.slice(v.indexOf('.') + 1);
             let id = 'a' + count
-            pre.append(dir + '/', v);
-            pre.classList.add(id)                          // pre.id
-            // if (window.matchMedia('(hover:hover)').matches) {
-                // pre.addEventListener("mouseover", turnoff);
-            // }
-            // mobile(function () {
-                let d = document.querySelector('div') || document.createElement('div') 
-                document.body.append(d)                     // mobile : add pre clone to div
-            // })
-            pre.classList.add('a')                         // pre.a
-            document.body.append(pre);     // add pre to 
-            a = document.createElement('a');
-            a.append(v);
-            a.classList.add('a')                        // a.a
+            let pre = document.createElement('pre');
+            let a = document.createElement('a');
+            let ext = v.slice(v.indexOf('.') + 1);
+            pre.append(dir + '/' + v)
+            a.append(dir + '/' + v)
+            pre.classList.add(id)
+            a.classList.add(id)
             a.href = hrefBase + dir + '/' + v;
-            a.dataset.id = id;                          // a.data-id
+            d.append(a.cloneNode(true))
+            document.body.append(pre);     
             if (ext.match(/jpg|jpeg|gif|png/gi)) {
-                d.append(pre.cloneNode(true))
                 img = new Image();
                 img.id = id;
                 img.onload = function (e) {      
+                    a.classList.add('visible')
                     pre.classList.add('visible')
-                    pre.classList.add('visible')
-                    // img load                    
-                    // let pres = document.querySelectorAll('pre')
-                    // for (let pre of pres) {               // replaces pres.id with a.id
-                    //     if (pre.classList.contains(id)) pre.replaceWith(a.cloneNode(true));
-                    //     a.classList.add(id);                
-                    // }
                 }
                 let src = (s) => {return `${s}${dir}/${v}`}
                 img.src = src(src800);
                 img.srcset = src(src800) + ' 800w,' + src(src1600) + ' 1600w,' + hrefBase + dir + '/' + v;
                 img.sizes = '(min-width: 0px) 800px, (min-width: 800px) 1600px, (min-width: 3200px) 3200px';
                 document.body.append(img);                                      // add img
-                // if (window.matchMedia('(hover:hover)').matches) {
-                    // document.body.addEventListener("mouseover", function (e) {      // on hover
-                    //     if (e.target.tagName.toLowerCase() === 'a') {               
-                    //         turnoff();                          
-                    //         let el = document.getElementById(e.target.dataset.id);  // get img
-                    //         el.classList.add('on');                                 // turn on
-                    //     }
-                    // });
-                // }
             } else {
+                a.classList.add('visible')                       
                 pre.replaceWith(a.cloneNode(true))
-                d.append(a.cloneNode(true))
             }
             count += 1;
         }
     });
 }
-let exy
-let rec = function (e) {
-    let y = window.scrollY
-    console.log(y)
-}
-window.addEventListener('scroll', rec)
-const href = function(e) {
-    let h = document.querySelector(`a.a${e.currentTarget.y}`)
-    if (h) window.open(h, '_blank')
-}
 const scroll = function() {
+    let height = document.querySelectorAll('body>pre')[0].getBoundingClientRect().height
     let yi = window.scrollY / height
     let y = Math.floor(yi)
-    window.y = y
-    let da = document.querySelectorAll(`div>pre.a${y}, div>a.a${y}`)[0]
+    let signage = document.querySelectorAll(`div>a.a${y}`)[0]
     let img = document.querySelectorAll(`img#a${y}`)[0]
-    if (y !== exy) {
+    if (yi == 0) turnoff()
+    if (signage) {
         turnoff()
-        window.removeEventListener('click', href, false)
-        window.addEventListener('click', href, false)
-        exy = y
-    }
-    if (da) {
-        da.classList.add('on')
+        signage.classList.add('on')
         if (img) {
             img.classList.add('on')
         }
     }
 }
-let height = document.querySelectorAll('body>pre')[0].getBoundingClientRect().height
-// if (window.matchMedia('(hover:none)').matches) {
-    document.addEventListener('scroll', scroll)
-    document.body.style.marginBottom = window.innerHeight -1 + 'px'
-// }
+document.addEventListener('scroll', scroll)
+document.body.style.marginBottom = window.innerHeight -1 + 'px'
 function string() { return `
 2008
 untitled-10001.jpg
@@ -575,10 +512,6 @@ w-10-blaiselarmee.jpg
 671389626037092352_0-blaiselarmee.jpg
 672300201122430976_2-blaiselarmee.jpg`
 }
-const imgs = document.querySelectorAll('img')
-const d = document.documentElement;
-// pre.insertAdjacentHTML("beforeend", d.outerHTML.replace(/^(.*)\n/g, "&amp;").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"));
-    </script>
+</script>
 </body>
-
 </html>

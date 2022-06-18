@@ -22,10 +22,6 @@
             overflow: hidden;
         }
 
-        pre {
-            color: gray;
-        }
-
         canvas {
             position: fixed;
             right: 0;
@@ -47,23 +43,10 @@
             display: initial;
         }
 
-        .show {
-            color: black;
-        }
-
         .on {
             visibility: visible;
         }
 
-        @media (prefers-color-scheme: dark) {
-            .show {
-                color: white;
-            }
-
-            div>a {
-                background-color: black;
-            }
-        }
     </style>
 </head>
 
@@ -86,18 +69,18 @@
                     let ext = v.slice(v.indexOf('.') + 1);
                     pre.append(text)
                     document.body.append(pre);
-                    if (ext.match(/jpg|jpeg|gif|png/gi)) {
+                    if (ext.match(/jpg|jpeg|png/gi)) {
                         let img = new Image();
                         let src = (base) => { return `${base}${year}/${v}` }
-                        if (ext.match(/gif/gi)) img.src = src(hrefBase);
-                        else img.src = src(src800);
+                        img.src = src(src800);
+                        img.srcset = src(src800) + ' 800w,' + src(src1600) + ' 1600w,' + hrefBase + year + '/' + v;
+                        img.sizes = '(min-width: 0px) 800px, (min-width: 800px) 1600px, (min-width: 3200px) 3200px';
                         images.push([text, img])
                     } else {
                         images.push([text, null])
                         let a = document.createElement('a');
                         a.append(text)
                         a.href = hrefBase + text;
-                        a.classList.add('show')
                         pre.replaceWith(a.cloneNode(true))
                     }
                 }
@@ -107,22 +90,28 @@
         const canvas = document.querySelector('canvas');
         const context = canvas.getContext("2d");
         const height = document.querySelectorAll('body>pre')[0].getBoundingClientRect().height
-
+        const a = document.querySelector('div>a')
         document.body.style.marginBottom = window.innerHeight - 1 + 'px'
         context.clearRect(0, 0, canvas.width, canvas.height)
 
         const updateImage = y => {
-            if (images[y] == null || images[y][1] == null) {
-                context.clearRect(0, 0, canvas.width, canvas.height)
-                document.querySelector('div>a').innerHTML = '';
-                document.querySelector('div>a').href = '';
+            if (images[y]) {
+                if (images[y][0]) {
+                    a.innerHTML = images[y][0];
+                    a.href = hrefBase + images[y][0];
+                }
+                if (images[y][1]) {
+                    canvas.width = images[y][1].naturalWidth
+                    canvas.height = images[y][1].naturalHeight
+                    context.drawImage(images[y][1], 0, 0, images[y][1].naturalWidth, images[y][1].naturalHeight)
+                    a.innerHTML = images[y][0];
+                    a.href = hrefBase + images[y][0];
+                } else context.clearRect(0, 0, canvas.width, canvas.height)
             }
             else {
-                canvas.width = images[y][1].naturalWidth
-                canvas.height = images[y][1].naturalHeight
-                context.drawImage(images[y][1], 0, 0, images[y][1].naturalWidth, images[y][1].naturalHeight)
-                document.querySelector('div>a').innerHTML = images[y][0];
-                document.querySelector('div>a').href = hrefBase + images[y][0];
+                a.innerHTML = '';
+                a.href = '';
+                context.clearRect(0, 0, canvas.width, canvas.height)
             }
         }
 
@@ -421,15 +410,15 @@ mirror-mirror-01-blaiselarmee.jpg
 2001-90-blaiselarmee.jpg
 2001-91-blaiselarmee.jpg
 aleks-01-blaiselarmee.jpg
-aleks-02-blaiselarmee.jpg
-aleks-03-blaiselarmee.jpg
-aleks-04-blaiselarmee.jpg
-aleks-05-blaiselarmee.jpg
-aleks-06-blaiselarmee.jpg
-aleks-07-blaiselarmee.jpg
-aleks-08-blaiselarmee.jpg
-aleks-09-blaiselarmee.jpg
-aleks-10-blaiselarmee.jpg
+// aleks-02-blaiselarmee.jpg
+// aleks-03-blaiselarmee.jpg
+// aleks-04-blaiselarmee.jpg
+// aleks-05-blaiselarmee.jpg
+// aleks-06-blaiselarmee.jpg
+// aleks-07-blaiselarmee.jpg
+// aleks-08-blaiselarmee.jpg
+// aleks-09-blaiselarmee.jpg
+// aleks-10-blaiselarmee.jpg
 aleks-11-blaiselarmee.jpg
 margot-ferrick-leslie-weibeler-blaiselarmee.jpg
 my-parents-01-blaiselarmee.jpg

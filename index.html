@@ -73,8 +73,6 @@
                         let img = new Image();
                         let src = (base) => { return `${base}${year}/${v}` }
                         img.src = src(src800);
-                        img.srcset = src(src800) + ' 800w,' + src(src1600) + ' 1600w,' + hrefBase + year + '/' + v;
-                        img.sizes = '(min-width: 0px) 800px, (min-width: 800px) 1600px, (min-width: 3200px) 3200px';
                         images.push([text, img])
                     } else {
                         images.push([text, null])

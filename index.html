@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>blaiselarmee</title>
@@ -14,123 +15,125 @@
             display: grid;
         }
 
-        pre, a {
+        pre,
+        a {
             white-space: pre;
             font-family: monospace;
-            display: none;
             overflow: hidden;
         }
 
-        img {
+        pre {
+            color: gray;
+        }
+
+        canvas {
+            position: fixed;
             right: 0;
             top: 1em;
-            pointer-events: none;
-            position: fixed;
-            z-index: 1;
+            max-height: 100vh;
+            max-width: 100vw;
+        }
+
+        img {
             max-width: 100%;
             max-height: calc(100% - 1em);
-            visibility: hidden;
         }
-        
+
         div>a {
             width: 100%;
             background-color: white;
             top: 0;
             position: fixed;
-            visibility: hidden;
             display: initial;
         }
 
-        .initial {
-            display: initial;
+        .show {
+            color: black;
         }
 
         .on {
             visibility: visible;
         }
 
-</style>
-</head>
-<body>
-<pre class="initial">6/17/22</pre>
-<script>
-let src1600 = 'https://blaiselarmee.mo.cloudinary.net/1600/'
-let src800 = 'https://blaiselarmee.mo.cloudinary.net/800/'
-let hrefBase = 'https://raw.githubusercontent.com/hallhassi/index/main/'
-const arrays = string().match(/\d{4}\n[\s\S]+?(?=^\d{4}$)/gm).map(a => a.match(/[^\n]+?(?=\n)/g));
-function turnoff() {
-    let ons = document.getElementsByClassName('on');
-    if (ons) {
-        Array.from(ons).forEach(on => {
-            on.classList.remove('on');
-        })
-    }
-}
-let count = 1;
-let d = document.createElement('div') 
-document.body.append(d)                     
-for (let array of arrays) {                             // for each year
-    array.forEach((v, i, array) => {                    // for each line
-        if (v.match(/../)[0] == ['//']) {
-            console.log(`matched ${v}`)
-        }
-        else if (i !== 0) {
-            let dir = array[0];
-            let id = 'a' + count
-            let pre = document.createElement('pre');
-            let a = document.createElement('a');
-            let ext = v.slice(v.indexOf('.') + 1);
-            pre.append(dir + '/' + v)
-            a.append(dir + '/' + v)
-            pre.classList.add(id)
-            a.classList.add(id)
-            a.href = hrefBase + dir + '/' + v;
-            a.target = "_blank"
-            d.append(a.cloneNode(true))
-            document.body.append(pre);     
-            if (ext.match(/jpg|jpeg|gif|png/gi)) {
-                let img = new Image();
-                img.id = id;
-                img.onload = function (e) {      
-                    a.classList.add('initial')
-                    pre.classList.add('initial')
-                }
-                let src = (s) => {return `${s}${dir}/${v}`}
-                if (ext.match(/gif/gi)) {
-                    img.src = src(hrefBase);
-                }
-                else {
-                    img.src = src(src800);
-                    img.srcset = src(src800) + ' 800w,' + src(src1600) + ' 1600w,' + hrefBase + dir + '/' + v;
-                    img.sizes = '(min-width: 0px) 800px, (min-width: 800px) 1600px, (min-width: 3200px) 3200px';
-                }
-                document.body.append(img);
-            } else {
-                a.classList.add('initial')                       
-                pre.replaceWith(a.cloneNode(true))
+        @media (prefers-color-scheme: dark) {
+            .show {
+                color: white;
             }
-            count += 1;
+
+            div>a {
+                background-color: black;
+            }
         }
-    });
-}
-const scroll = function() {
-    let height = document.querySelectorAll('body>pre')[0].getBoundingClientRect().height
-    let yi = window.scrollY / height
-    let y = Math.floor(yi)
-    let signage = document.querySelectorAll(`div>a.a${y}`)[0]
-    let img = document.querySelectorAll(`img#a${y}`)[0]
-    if (yi == 0) turnoff()
-    if (signage) {
-        turnoff()
-        signage.classList.add('on')
-        if (img) {
-            img.classList.add('on')
+    </style>
+</head>
+
+<body>
+    <canvas></canvas>
+    <pre class="initial">6/18/22</pre>
+    <div><a target="_blank"></a></div>
+    <script>
+        let src800 = 'https://blaiselarmee.mo.cloudinary.net/800/'
+        let hrefBase = 'https://raw.githubusercontent.com/hallhassi/index/main/'
+        const arrays = string().match(/\d{4}\n[\s\S]+?(?=^\d{4}$)/gm).map(a => a.match(/[^\n]+?(?=\n)/g));
+        const images = [null]
+        for (let array of arrays) {                             // for each year
+            array.forEach((v, i, array) => {                    // for each line
+                if (v.match(/../)[0] == ['//']) { }
+                else if (i !== 0) {
+                    let year = array[0];
+                    let text = year + '/' + v
+                    let pre = document.createElement('pre');
+                    let ext = v.slice(v.indexOf('.') + 1);
+                    pre.append(text)
+                    document.body.append(pre);
+                    if (ext.match(/jpg|jpeg|gif|png/gi)) {
+                        let img = new Image();
+                        let src = (base) => { return `${base}${year}/${v}` }
+                        if (ext.match(/gif/gi)) img.src = src(hrefBase);
+                        else img.src = src(src800);
+                        images.push([text, img])
+                    } else {
+                        images.push([text, null])
+                        let a = document.createElement('a');
+                        a.append(text)
+                        a.href = hrefBase + text;
+                        a.classList.add('show')
+                        pre.replaceWith(a.cloneNode(true))
+                    }
+                }
+            });
         }
-    }
-}
-document.addEventListener('scroll', scroll)
-document.body.style.marginBottom = window.innerHeight -1 + 'px'
-function string() { return `
+        const html = document.documentElement;
+        const canvas = document.querySelector('canvas');
+        const context = canvas.getContext("2d");
+        const height = document.querySelectorAll('body>pre')[0].getBoundingClientRect().height
+
+        document.body.style.marginBottom = window.innerHeight - 1 + 'px'
+        context.clearRect(0, 0, canvas.width, canvas.height)
+
+        const updateImage = y => {
+            if (images[y] == null || images[y][1] == null) {
+                context.clearRect(0, 0, canvas.width, canvas.height)
+                document.querySelector('div>a').innerHTML = '';
+                document.querySelector('div>a').href = '';
+            }
+            else {
+                canvas.width = images[y][1].naturalWidth
+                canvas.height = images[y][1].naturalHeight
+                context.drawImage(images[y][1], 0, 0, images[y][1].naturalWidth, images[y][1].naturalHeight)
+                document.querySelector('div>a').innerHTML = images[y][0];
+                document.querySelector('div>a').href = hrefBase + images[y][0];
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            let yi = window.scrollY / height
+            let y = Math.floor(yi)
+            requestAnimationFrame(() => updateImage(y))
+        });
+
+        function string() {
+            return `
 2008
 untitled-10001.jpg
 untitled-10002.jpg
@@ -195,23 +198,23 @@ limner-2-01-blaiselarmee.jpg
 limner-2-02-blaiselarmee.jpg
 limner-2-03-blaiselarmee.jpg
 2014
-comets-comets-01-blaiselarmee.jpg
-comets-comets-02-blaiselarmee.jpg
-comets-comets-03-blaiselarmee.jpg
-comets-comets-04-blaiselarmee.jpg
-comets-comets-05-blaiselarmee.jpg
-comets-comets-06-blaiselarmee.jpg
-comets-comets-07-blaiselarmee.jpg
-comets-comets-08-blaiselarmee.jpg
-comets-comets-09-blaiselarmee.jpg
-comets-comets-10-blaiselarmee.jpg
-comets-comets-11-blaiselarmee.jpg
-comets-comets-12-blaiselarmee.jpg
-comets-comets-13-blaiselarmee.jpg
-comets-comets-14-blaiselarmee.jpg
-comets-comets-15-blaiselarmee.jpg
-comets-comets-16-blaiselarmee.jpg
-comets-comets-17-blaiselarmee.jpg
+// comets-comets-01-blaiselarmee.jpg
+// comets-comets-02-blaiselarmee.jpg
+// comets-comets-03-blaiselarmee.jpg
+// comets-comets-04-blaiselarmee.jpg
+// comets-comets-05-blaiselarmee.jpg
+// comets-comets-06-blaiselarmee.jpg
+// comets-comets-07-blaiselarmee.jpg
+// comets-comets-08-blaiselarmee.jpg
+// comets-comets-09-blaiselarmee.jpg
+// comets-comets-10-blaiselarmee.jpg
+// comets-comets-11-blaiselarmee.jpg
+// comets-comets-12-blaiselarmee.jpg
+// comets-comets-13-blaiselarmee.jpg
+// comets-comets-14-blaiselarmee.jpg
+// comets-comets-15-blaiselarmee.jpg
+// comets-comets-16-blaiselarmee.jpg
+// comets-comets-17-blaiselarmee.jpg
 mould-map-3-01-blaiselarmee.jpg
 mould-map-3-02-blaiselarmee.jpg
 nudes-01-blaiselarmee.jpg
@@ -439,44 +442,44 @@ my-parents-07-blaiselarmee.jpg
 paul-peng-01-blaiselarmee.jpg
 paul-peng-02-blaiselarmee.jpg
 paul-peng-sam-ombiri-blaiselarmee.jpg
-sketchbook-1-01-blaiselarmee.jpg
-sketchbook-1-02-blaiselarmee.jpg
-sketchbook-1-03-blaiselarmee.jpg
-sketchbook-1-04-blaiselarmee.jpg
-sketchbook-1-05-blaiselarmee.jpg
-sketchbook-1-06-blaiselarmee.jpg
-sketchbook-1-07-blaiselarmee.jpg
-sketchbook-1-08-blaiselarmee.jpg
-sketchbook-1-09-blaiselarmee.jpg
-sketchbook-1-10-blaiselarmee.jpg
-sketchbook-1-11-blaiselarmee.jpg
-sketchbook-1-12-blaiselarmee.jpg
-sketchbook-1-13-blaiselarmee.jpg
-sketchbook-1-14-blaiselarmee.jpg
-sketchbook-1-15-blaiselarmee.jpg
-sketchbook-1-16-blaiselarmee.jpg
-sketchbook-1-17-blaiselarmee.jpg
-sketchbook-1-18-blaiselarmee.jpg
-sketchbook-1-19-blaiselarmee.jpg
-sketchbook-1-20-blaiselarmee.jpg
-sketchbook-1-21-blaiselarmee.jpg
-sketchbook-1-22-blaiselarmee.jpg
-sketchbook-1-23-blaiselarmee.jpg
-sketchbook-1-24-blaiselarmee.jpg
-sketchbook-1-25-blaiselarmee.jpg
-sketchbook-1-26-blaiselarmee.jpg
-sketchbook-1-27-blaiselarmee.jpg
-sketchbook-1-28-blaiselarmee.jpg
-sketchbook-1-29-blaiselarmee.jpg
-sketchbook-1-30-blaiselarmee.jpg
-sketchbook-1-31-blaiselarmee.jpg
-sketchbook-1-32-blaiselarmee.jpg
-sketchbook-1-33-blaiselarmee.jpg
-sketchbook-1-34-blaiselarmee.jpg
-sketchbook-1-35-blaiselarmee.jpg
-sketchbook-1-36-blaiselarmee.jpg
-sketchbook-1-37-blaiselarmee.jpg
-sketchbook-1-38-blaiselarmee.jpg
+// sketchbook-1-01-blaiselarmee.jpg
+// sketchbook-1-02-blaiselarmee.jpg
+// sketchbook-1-03-blaiselarmee.jpg
+// sketchbook-1-04-blaiselarmee.jpg
+// sketchbook-1-05-blaiselarmee.jpg
+// sketchbook-1-06-blaiselarmee.jpg
+// sketchbook-1-07-blaiselarmee.jpg
+// sketchbook-1-08-blaiselarmee.jpg
+// sketchbook-1-09-blaiselarmee.jpg
+// sketchbook-1-10-blaiselarmee.jpg
+// sketchbook-1-11-blaiselarmee.jpg
+// sketchbook-1-12-blaiselarmee.jpg
+// sketchbook-1-13-blaiselarmee.jpg
+// sketchbook-1-14-blaiselarmee.jpg
+// sketchbook-1-15-blaiselarmee.jpg
+// sketchbook-1-16-blaiselarmee.jpg
+// sketchbook-1-17-blaiselarmee.jpg
+// sketchbook-1-18-blaiselarmee.jpg
+// sketchbook-1-19-blaiselarmee.jpg
+// sketchbook-1-20-blaiselarmee.jpg
+// sketchbook-1-21-blaiselarmee.jpg
+// sketchbook-1-22-blaiselarmee.jpg
+// sketchbook-1-23-blaiselarmee.jpg
+// sketchbook-1-24-blaiselarmee.jpg
+// sketchbook-1-25-blaiselarmee.jpg
+// sketchbook-1-26-blaiselarmee.jpg
+// sketchbook-1-27-blaiselarmee.jpg
+// sketchbook-1-28-blaiselarmee.jpg
+// sketchbook-1-29-blaiselarmee.jpg
+// sketchbook-1-30-blaiselarmee.jpg
+// sketchbook-1-31-blaiselarmee.jpg
+// sketchbook-1-32-blaiselarmee.jpg
+// sketchbook-1-33-blaiselarmee.jpg
+// sketchbook-1-34-blaiselarmee.jpg
+// sketchbook-1-35-blaiselarmee.jpg
+// sketchbook-1-36-blaiselarmee.jpg
+// sketchbook-1-37-blaiselarmee.jpg
+// sketchbook-1-38-blaiselarmee.jpg
 sketchbook-2-01-blaiselarmee.jpg
 sketchbook-2-03-blaiselarmee.jpg
 sketchbook-2-08-blaiselarmee.jpg
@@ -522,7 +525,8 @@ w-10-blaiselarmee.jpg
 660737502296031232_5-blaiselarmee.jpg
 671389626037092352_0-blaiselarmee.jpg
 672300201122430976_2-blaiselarmee.jpg`
-}
-</script>
+        }
+    </script>
 </body>
+
 </html>

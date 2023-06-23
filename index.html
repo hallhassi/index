@@ -1,529 +1,532 @@
-<html><head>  
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>blaiselarmee</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-            }
-    
-            body {
-                line-height: 1em;
-                display: grid;
-            }
-    
-            pre,
-            a {
-                white-space: pre;
-                font-family: monospace;
-                overflow: hidden;
-            }
-    
-            canvas {
-                position: fixed;
-                right: 0;
-                top: 1em;
-                max-height: 100vh;
-                max-width: 100vw;
-            }
-    
-            img {
-                max-width: 100%;
-                max-height: calc(100% - 1em);
-            }
-    
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>blaiselarmee</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            line-height: 1em;
+            display: grid;
+        }
+
+        pre,
+        a {
+            white-space: pre;
+            font-family: monospace;
+            overflow: hidden;
+        }
+
+        canvas {
+            position: fixed;
+            right: 0;
+            top: 1em;
+            max-height: 100vh;
+            max-width: 100vw;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: calc(100% - 1em);
+        }
+
+        div>a {
+            width: 100%;
+            background-color: white;
+            top: 0;
+            position: fixed;
+            display: initial;
+        }
+
+        .on {
+            visibility: visible;
+        }
+
             div>a {
-                width: 100%;
-                background-color: white;
-                top: 0;
-                position: fixed;
-                display: initial;
+                background-color: red;
             }
-    
-            .on {
-                visibility: visible;
+            
+            body {
+                background-color: red;
+                color: white;
             }
-    
-                div>a {
-                    background-color: red;
-                }
-                
-                body {
-                    background-color: red;
-                    color: white;
-                }
-                a {
-                    color: blue;
-                }
-    
-        </style>
-    </head>
-    
-        <canvas></canvas>
-        <pre class="initial">6/18/22</pre>
-        <div><a target="_blank"></a></div>
-        <script>
-            let src800 = 'https://web.archive.org/web/20220705152953/https://blaiselarmee.mo.cloudinary.net/800/'
-            let hrefBase = 'https://web.archive.org/web/20220705152953/https://raw.githubusercontent.com/hallhassi/index/main/'
-            const arrays = string().match(/\d{4}\n[\s\S]+?(?=^\d{4}$)/gm).map(a => a.match(/[^\n]+?(?=\n)/g));
-            const images = [null]
-            for (let array of arrays) {                             // for each year
-                array.forEach((v, i, array) => {                    // for each line
-                    if (v.match(/../)[0] == ['//']) { }
-                    else if (i !== 0) {
-                        let year = array[0];
-                        let text = year + '/' + v
-                        let pre = document.createElement('pre');
-                        let ext = v.slice(v.indexOf('.') + 1);
-                        pre.append(text)
-                        document.body.append(pre);
-                        if (ext.match(/jpg|jpeg|png/gi)) {
-                            let img = new Image();
-                            let src = (base) => { return `${base}${year}/${v}` }
-                            img.src = src(src800);
-                            images.push([text, img])
-                        } else {
-                            images.push([text, null])
-                            let a = document.createElement('a');
-                            a.append(text)
-                            a.href = hrefBase + text;
-                            pre.replaceWith(a.cloneNode(true))
-                        }
+            a {
+                color: blue;
+            }
+
+    </style>
+</head>
+
+<body>
+    <canvas></canvas>
+    <pre class="initial">6/18/22</pre>
+    <div><a target="_blank"></a></div>
+    <script>
+        let src800 = 'https://blaiselarmee.mo.cloudinary.net/800/'
+        let hrefBase = 'https://raw.githubusercontent.com/hallhassi/index/main/'
+        const arrays = string().match(/\d{4}\n[\s\S]+?(?=^\d{4}$)/gm).map(a => a.match(/[^\n]+?(?=\n)/g));
+        const images = [null]
+        for (let array of arrays) {                             // for each year
+            array.forEach((v, i, array) => {                    // for each line
+                if (v.match(/../)[0] == ['//']) { }
+                else if (i !== 0) {
+                    let year = array[0];
+                    let text = year + '/' + v
+                    let pre = document.createElement('pre');
+                    let ext = v.slice(v.indexOf('.') + 1);
+                    pre.append(text)
+                    document.body.append(pre);
+                    if (ext.match(/jpg|jpeg|png/gi)) {
+                        let img = new Image();
+                        let src = (base) => { return `${base}${year}/${v}` }
+                        img.src = src(src800);
+                        images.push([text, img])
+                    } else {
+                        images.push([text, null])
+                        let a = document.createElement('a');
+                        a.append(text)
+                        a.href = hrefBase + text;
+                        pre.replaceWith(a.cloneNode(true))
                     }
-                });
-            }
-            const html = document.documentElement;
-            const canvas = document.querySelector('canvas');
-            const context = canvas.getContext("2d");
-            const height = document.querySelectorAll('body>pre')[0].getBoundingClientRect().height
-            const a = document.querySelector('div>a')
-            document.body.style.marginBottom = window.innerHeight - 1 + 'px'
-            context.clearRect(0, 0, canvas.width, canvas.height)
-    
-            const updateImage = y => {
-                if (images[y]) {
-                    if (images[y][0]) {
-                        a.innerHTML = images[y][0];
-                        a.href = hrefBase + images[y][0];
-                    }
-                    if (images[y][1]) {
-                        canvas.width = images[y][1].naturalWidth
-                        canvas.height = images[y][1].naturalHeight
-                        context.drawImage(images[y][1], 0, 0, images[y][1].naturalWidth, images[y][1].naturalHeight)
-                        a.innerHTML = images[y][0];
-                        a.href = hrefBase + images[y][0];
-                    } else context.clearRect(0, 0, canvas.width, canvas.height)
                 }
-                else {
-                    a.innerHTML = '';
-                    a.href = '';
-                    context.clearRect(0, 0, canvas.width, canvas.height)
-                }
-            }
-    
-            window.addEventListener('scroll', () => {
-                let yi = window.scrollY / height
-                let y = Math.floor(yi)
-                requestAnimationFrame(() => updateImage(y))
             });
-    
-            function string() {
-                return `
-    2008
-    untitled-10001.jpg
-    untitled-10002.jpg
-    untitled-2-10001.jpg
-    untitled-2-10002.jpg
-    untitled-2-10003.jpg
-    untitled-2-10004.jpg
-    untitled-2-10005.jpg
-    2009
-    01-blaiselarmee.jpg
-    abstract-comics-01-blaiselarmee.jpg
-    abstract-comics-02-blaiselarmee.jpg
-    2010
-    01-blaiselarmee.jpg
-    aidan-koch-the-whale-01.jpg
-    aidan-koch-the-whale-02.jpg
-    studygroup12-4-01-blaiselarmee.jpg
-    studygroup12-4-02-blaiselarmee.jpg
-    studygroup12-4-03-blaiselarmee.jpg
-    taffy-hips-8-01-blaiselarmee.jpg
-    taffy-hips-8-02-blaiselarmee.jpg
-    yoko-ono-01-blaiselarmee.jpg
-    yoko-ono-02-blaiselarmee.jpg
-    yoko-ono-03-blaiselarmee.jpg
-    yoko-ono-04-blaiselarmee.jpg
-    yoko-ono-05-blaiselarmee.jpg
-    young-lions-01-blaiselarmee.jpg
-    young-lions-02-blaiselarmee.jpg
-    2011
-    Movie on 2011-09-29 at 14.29.mov
-    astral-talk-01-blaiselarmee.jpg
-    astral-talk-02-blaiselarmee.jpg
-    astral-talk-03-blaiselarmee.jpg
-    cruise-2-blaiselarmee.jpg
-    cruise-3-blaiselarmee.jpg
-    cruise-4-blaiselarmee.jpg
-    cruise-5-blaiselarmee.jpg
-    cruise-6-blaiselarmee.jpg
-    cruise-7-blaiselarmee.jpg
-    cruise-8-blaiselarmee.jpg
-    dan-quayl-01-blaiselarmee.jpg
-    dan-quayl-02-blaiselarmee.jpg
-    dan-quayl-03-blaiselarmee.jpg
-    mould-map-2-01-blaiselarmee.jpg
-    na680-01-blaiselarmee.jpg
-    na680-02-blaiselarmee.jpg
-    na680-03-blaiselarmee.jpg
-    na680-04-blaiselarmee.jpg
-    na680-05-blaiselarmee.jpg
-    na680-06-blaiselarmee.jpg
-    sonatina-1-01-blaiselarmee.jpg
-    sonatina-1-02-blaiselarmee.jpg
-    sonatina-1-03-blaiselarmee.jpg
-    2012
-    01-blaiselarmee.jpg
-    02-blaiselarmee.jpg
-    03-blaiselarmee.png
-    sonatina-2-01-blaiselarmee.jpg
-    sonatina-2-02-blaiselarmee.jpg
-    2013
-    limner-2-01-blaiselarmee.jpg
-    limner-2-02-blaiselarmee.jpg
-    limner-2-03-blaiselarmee.jpg
-    2014
-    comets-comets-01-blaiselarmee.jpg
-    comets-comets-02-blaiselarmee.jpg
-    comets-comets-03-blaiselarmee.jpg
-    comets-comets-04-blaiselarmee.jpg
-    comets-comets-05-blaiselarmee.jpg
-    comets-comets-06-blaiselarmee.jpg
-    comets-comets-07-blaiselarmee.jpg
-    comets-comets-08-blaiselarmee.jpg
-    comets-comets-09-blaiselarmee.jpg
-    comets-comets-10-blaiselarmee.jpg
-    comets-comets-11-blaiselarmee.jpg
-    comets-comets-12-blaiselarmee.jpg
-    comets-comets-13-blaiselarmee.jpg
-    comets-comets-14-blaiselarmee.jpg
-    comets-comets-15-blaiselarmee.jpg
-    comets-comets-16-blaiselarmee.jpg
-    comets-comets-17-blaiselarmee.jpg
-    mould-map-3-01-blaiselarmee.jpg
-    mould-map-3-02-blaiselarmee.jpg
-    nudes-01-blaiselarmee.jpg
-    nudes-02-blaiselarmee.jpg
-    packet-blaiselarmee.pdf
-    2015
-    3-books-01-blaiselarmee.jpg
-    3-books-02-blaiselarmee.jpg
-    altcomics-magazine-1-01-blaiselarmee.jpg
-    2016
-    altcomics-magazine-2-10002.jpg
-    altcomics-magazine-4-10001.jpg
-    altcomics-magazine-4-10002.jpg
-    bernie-02-blaiselarmee.jpg
-    bernie-03-blaiselarmee.jpg
-    inkstuds-blaiselarmee.m4a
-    mirror-mirror-01-blaiselarmee.jpg
-    mirror-mirror-02-blaiselarmee.jpg
-    mirror-mirror-03-blaiselarmee.jpg
-    mirror-mirror-04-blaiselarmee.jpg
-    mirror-mirror-05-blaiselarmee.jpg
-    mirror-mirror-06-blaiselarmee.jpg
-    mirror-mirror-07-blaiselarmee.jpg
-    mirror-mirror-08-blaiselarmee.jpg
-    mirror-mirror-09-blaiselarmee.jpg
-    mirror-mirror-10-blaiselarmee.jpg
-    mirror-mirror-11-blaiselarmee.jpg
-    mirror-mirror-12-blaiselarmee.jpg
-    mirror-mirror-13-blaiselarmee.jpg
-    mirror-mirror-14-blaiselarmee.jpg
-    mirror-mirror-15-blaiselarmee.jpg
-    mirror-mirror-16-blaiselarmee.jpg
-    mirror-mirror-17-blaiselarmee.jpg
-    mirror-mirror-18-blaiselarmee.jpg
-    mirror-mirror-19-blaiselarmee.jpg
-    mirror-mirror-20-blaiselarmee.jpg
-    mirror-mirror-21-blaiselarmee.jpg
-    mirror-mirror-22-blaiselarmee.jpg
-    mirror-mirror-23-blaiselarmee.jpg
-    mirror-mirror-24-blaiselarmee.jpg
-    mirror-mirror-25-blaiselarmee.jpg
-    mirror-mirror-26-blaiselarmee.jpg
-    mirror-mirror-27-blaiselarmee.jpg
-    mirror-mirror-28-blaiselarmee.jpg
-    mirror-mirror-29-blaiselarmee.jpg
-    mirror-mirror-30-blaiselarmee.jpg
-    mirror-mirror-31-blaiselarmee.jpg
-    mirror-mirror-32-blaiselarmee.jpg
-    mirror-mirror-33-blaiselarmee.jpg
-    mirror-mirror-34-blaiselarmee.jpg
-    mirror-mirror-35-blaiselarmee.jpg
-    mirror-mirror-36-blaiselarmee.jpg
-    mirror-mirror-37-blaiselarmee.jpg
-    mirror-mirror-38-blaiselarmee.jpg
-    mirror-mirror-39-blaiselarmee.jpg
-    mirror-mirror-40-blaiselarmee.jpg
-    mirror-mirror-41-blaiselarmee.jpg
-    mirror-mirror-42-blaiselarmee.jpg
-    mirror-mirror-43-blaiselarmee.jpg
-    mirror-mirror-44-blaiselarmee.jpg
-    mirror-mirror-45-blaiselarmee.jpg
-    mirror-mirror-46-blaiselarmee.jpg
-    mirror-mirror-47-blaiselarmee.jpg
-    mirror-mirror-48-blaiselarmee.jpg
-    mirror-mirror-49-blaiselarmee.jpg
-    mirror-mirror-50-blaiselarmee.jpg
-    mirror-mirror-51-blaiselarmee.jpg
-    mirror-mirror-52-blaiselarmee.jpg
-    mirror-mirror-53-blaiselarmee.jpg
-    mirror-mirror-54-blaiselarmee.jpg
-    mirror-mirror-55-blaiselarmee.jpg
-    mirror-mirror-56-blaiselarmee.jpg
-    mirror-mirror-57-blaiselarmee.jpg
-    mirror-mirror-58-blaiselarmee.jpg
-    mirror-mirror-59-blaiselarmee.jpg
-    mirror-mirror-60-blaiselarmee.jpg
-    mirror-mirror-61-blaiselarmee.jpg
-    mirror-mirror-62-blaiselarmee.jpg
-    mirror-mirror-63-blaiselarmee.jpg
-    mirror-mirror-64-blaiselarmee.jpg
-    mirror-mirror-65-blaiselarmee.jpg
-    mirror-mirror-66-blaiselarmee.jpg
-    mirror-mirror-67-blaiselarmee.jpg
-    mirror-mirror-68-blaiselarmee.jpg
-    mirror-mirror-69-blaiselarmee.jpg
-    mirror-mirror-70-blaiselarmee.jpg
-    mirror-mirror-71-blaiselarmee.jpg
-    mirror-mirror-72-blaiselarmee.jpg
-    mirror-mirror-73-blaiselarmee.jpg
-    mirror-mirror-74-blaiselarmee.jpg
-    mirror-mirror-75-blaiselarmee.jpg
-    mirror-mirror-76-blaiselarmee.jpg
-    mirror-mirror-77-blaiselarmee.jpg
-    mirror-mirror-78-blaiselarmee.jpg
-    mirror-mirror-79-blaiselarmee.jpg
-    mirror-mirror-80-blaiselarmee.jpg
-    mirror-mirror-81-blaiselarmee.jpg
-    mirror-mirror-82-blaiselarmee.jpg
-    mirror-mirror-83-blaiselarmee.jpg
-    mirror-mirror-84-blaiselarmee.jpg
-    mirror-mirror-85-blaiselarmee.jpg
-    mirror-mirror-86-blaiselarmee.jpg
-    mirror-mirror-87-blaiselarmee.jpg
-    mirror-mirror-88-blaiselarmee.jpg
-    mirror-mirror-89-blaiselarmee.jpg
-    mirror-mirror-90-blaiselarmee.jpg
-    mirror-mirror-91-blaiselarmee.jpg
-    mirror-mirror-92-blaiselarmee.jpg
-    mirror-mirror-93-blaiselarmee.jpg
-    mirror-mirror-94-blaiselarmee.jpg
-    mirror-mirror-95-blaiselarmee.jpg
-    mirror-mirror-96-blaiselarmee.jpg
-    mirror-mirror-97-blaiselarmee.jpg
-    2017
-    2001-01-blaiselarmee.jpg
-    2001-02-blaiselarmee.jpg
-    2001-03-blaiselarmee.jpg
-    2001-04-blaiselarmee.jpg
-    2001-05-blaiselarmee.jpg
-    2001-06-blaiselarmee.jpg
-    2001-07-blaiselarmee.jpg
-    2001-08-blaiselarmee.jpg
-    2001-09-blaiselarmee.jpg
-    2001-10-blaiselarmee.jpg
-    2001-11-blaiselarmee.jpg
-    2001-12-blaiselarmee.jpg
-    2001-13-blaiselarmee.jpg
-    2001-14-blaiselarmee.jpg
-    2001-15-blaiselarmee.jpg
-    2001-16-blaiselarmee.jpg
-    2001-17-blaiselarmee.jpg
-    2001-18-blaiselarmee.jpg
-    2001-19-blaiselarmee.jpg
-    2001-20-blaiselarmee.jpg
-    2001-21-blaiselarmee.jpg
-    2001-22-blaiselarmee.jpg
-    2001-23-blaiselarmee.jpg
-    2001-24-blaiselarmee.jpg
-    2001-25-blaiselarmee.jpg
-    2001-26-blaiselarmee.jpg
-    2001-27-blaiselarmee.jpg
-    2001-28-blaiselarmee.jpg
-    2001-29-blaiselarmee.jpg
-    2001-30-blaiselarmee.jpg
-    2001-31-blaiselarmee.jpg
-    2001-32-blaiselarmee.jpg
-    2001-33-blaiselarmee.jpg
-    2001-34-blaiselarmee.jpg
-    2001-35-blaiselarmee.jpg
-    2001-36-blaiselarmee.jpg
-    2001-37-blaiselarmee.jpg
-    2001-38-blaiselarmee.jpg
-    2001-39-blaiselarmee.jpg
-    2001-40-blaiselarmee.jpg
-    2001-41-blaiselarmee.jpg
-    2001-42-blaiselarmee.jpg
-    2001-43-blaiselarmee.jpg
-    2001-44-blaiselarmee.jpg
-    2001-45-blaiselarmee.jpg
-    2001-46-blaiselarmee.jpg
-    2001-47-blaiselarmee.jpg
-    2001-48-blaiselarmee.jpg
-    2001-49-blaiselarmee.jpg
-    2001-50-blaiselarmee.jpg
-    2001-51-blaiselarmee.jpg
-    2001-52-blaiselarmee.jpg
-    2001-53-blaiselarmee.jpg
-    2001-54-blaiselarmee.jpg
-    2001-55-blaiselarmee.jpg
-    2001-56-blaiselarmee.jpg
-    2001-57-blaiselarmee.jpg
-    2001-58-blaiselarmee.jpg
-    2001-59-blaiselarmee.jpg
-    2001-60-blaiselarmee.jpg
-    2001-61-blaiselarmee.jpg
-    2001-62-blaiselarmee.jpg
-    2001-63-blaiselarmee.jpg
-    2001-64-blaiselarmee.jpg
-    2001-65-blaiselarmee.jpg
-    2001-66-blaiselarmee.jpg
-    2001-67-blaiselarmee.jpg
-    2001-68-blaiselarmee.jpg
-    2001-69-blaiselarmee.jpg
-    2001-70-blaiselarmee.jpg
-    2001-71-blaiselarmee.jpg
-    2001-72-blaiselarmee.jpg
-    2001-73-blaiselarmee.jpg
-    2001-74-blaiselarmee.jpg
-    2001-75-blaiselarmee.jpg
-    2001-76-blaiselarmee.jpg
-    2001-77-blaiselarmee.jpg
-    2001-78-blaiselarmee.jpg
-    2001-79-blaiselarmee.jpg
-    2001-80-blaiselarmee.jpg
-    2001-81-blaiselarmee.jpg
-    2001-82-blaiselarmee.jpg
-    2001-83-blaiselarmee.jpg
-    2001-84-blaiselarmee.jpg
-    2001-85-blaiselarmee.jpg
-    2001-86-blaiselarmee.jpg
-    2001-87-blaiselarmee.jpg
-    2001-88-blaiselarmee.jpg
-    2001-89-blaiselarmee.jpg
-    2001-90-blaiselarmee.jpg
-    2001-91-blaiselarmee.jpg
-    // aleks-01-blaiselarmee.jpg
-    // aleks-02-blaiselarmee.jpg
-    // aleks-03-blaiselarmee.jpg
-    // aleks-04-blaiselarmee.jpg
-    // aleks-05-blaiselarmee.jpg
-    // aleks-06-blaiselarmee.jpg
-    // aleks-07-blaiselarmee.jpg
-    // aleks-08-blaiselarmee.jpg
-    // aleks-09-blaiselarmee.jpg
-    // aleks-10-blaiselarmee.jpg
-    // aleks-11-blaiselarmee.jpg
-    margot-ferrick-leslie-weibeler-blaiselarmee.jpg
-    my-parents-01-blaiselarmee.jpg
-    my-parents-02-blaiselarmee.jpg
-    my-parents-03-blaiselarmee.jpg
-    my-parents-04-blaiselarmee.jpg
-    my-parents-05-blaiselarmee.jpg
-    my-parents-06-blaiselarmee.jpg
-    my-parents-07-blaiselarmee.jpg
-    paul-peng-01-blaiselarmee.jpg
-    paul-peng-02-blaiselarmee.jpg
-    paul-peng-sam-ombiri-blaiselarmee.jpg
-    // sketchbook-1-01-blaiselarmee.jpg
-    // sketchbook-1-02-blaiselarmee.jpg
-    // sketchbook-1-03-blaiselarmee.jpg
-    // sketchbook-1-04-blaiselarmee.jpg
-    // sketchbook-1-05-blaiselarmee.jpg
-    // sketchbook-1-06-blaiselarmee.jpg
-    // sketchbook-1-07-blaiselarmee.jpg
-    // sketchbook-1-08-blaiselarmee.jpg
-    // sketchbook-1-09-blaiselarmee.jpg
-    // sketchbook-1-10-blaiselarmee.jpg
-    // sketchbook-1-11-blaiselarmee.jpg
-    // sketchbook-1-12-blaiselarmee.jpg
-    // sketchbook-1-13-blaiselarmee.jpg
-    // sketchbook-1-14-blaiselarmee.jpg
-    // sketchbook-1-15-blaiselarmee.jpg
-    // sketchbook-1-16-blaiselarmee.jpg
-    // sketchbook-1-17-blaiselarmee.jpg
-    // sketchbook-1-18-blaiselarmee.jpg
-    // sketchbook-1-19-blaiselarmee.jpg
-    // sketchbook-1-20-blaiselarmee.jpg
-    // sketchbook-1-21-blaiselarmee.jpg
-    // sketchbook-1-22-blaiselarmee.jpg
-    // sketchbook-1-23-blaiselarmee.jpg
-    // sketchbook-1-24-blaiselarmee.jpg
-    // sketchbook-1-25-blaiselarmee.jpg
-    // sketchbook-1-26-blaiselarmee.jpg
-    // sketchbook-1-27-blaiselarmee.jpg
-    // sketchbook-1-28-blaiselarmee.jpg
-    // sketchbook-1-29-blaiselarmee.jpg
-    // sketchbook-1-30-blaiselarmee.jpg
-    // sketchbook-1-31-blaiselarmee.jpg
-    // sketchbook-1-32-blaiselarmee.jpg
-    // sketchbook-1-33-blaiselarmee.jpg
-    // sketchbook-1-34-blaiselarmee.jpg
-    // sketchbook-1-35-blaiselarmee.jpg
-    // sketchbook-1-36-blaiselarmee.jpg
-    // sketchbook-1-37-blaiselarmee.jpg
-    // sketchbook-1-38-blaiselarmee.jpg
-    // sketchbook-2-01-blaiselarmee.jpg
-    // sketchbook-2-03-blaiselarmee.jpg
-    // sketchbook-2-08-blaiselarmee.jpg
-    // sketchbook-2-09-blaiselarmee.jpg
-    // sketchbook-2-10-blaiselarmee.jpg
-    x-01-blaiselarmee.jpg
-    2018
-    w-01-blaiselarmee.jpg
-    w-02-blaiselarmee.jpg
-    w-03-blaiselarmee.jpg
-    w-04-blaiselarmee.jpg
-    w-05-blaiselarmee.jpg
-    w-06-blaiselarmee.jpg
-    w-07-blaiselarmee.jpg
-    w-08-blaiselarmee.jpg
-    w-09-blaiselarmee.jpg
-    w-10-blaiselarmee.jpg
-    2019
-    01-blaiselarmee.jpg
-    02-blaiselarmee.jpg
-    03-blaiselarmee.jpg
-    04-blaiselarmee.jpg
-    05-blaiselarmee.jpg
-    06-blaiselarmee.jpg
-    07-blaiselarmee.jpg
-    08-blaiselarmee.jpg
-    09-blaiselarmee.jpg
-    1-blaiselarmee.jpg
-    10-blaiselarmee.jpg
-    11-blaiselarmee.jpg
-    12-blaiselarmee.jpg
-    13-blaiselarmee.jpg
-    14-blaiselarmee.jpg
-    15-blaiselarmee.jpg
-    2020
-    01-blaiselarmee.gif
-    02-blaiselarmee.jpg
-    2-blaiselarmee.png
-    5-blaiselarmee.png
-    6-blaiselarmee.png
-    2021
-    2B8C6B1A-44F9-4BFD-AAB6-1B635F43550F-blaiselarmee.jpeg
-    // 660737502296031232_5-blaiselarmee.jpg
-    // 671389626037092352_0-blaiselarmee.jpg
-    672300201122430976_2-blaiselarmee.jpg
-    2022`
+        }
+        const html = document.documentElement;
+        const canvas = document.querySelector('canvas');
+        const context = canvas.getContext("2d");
+        const height = document.querySelectorAll('body>pre')[0].getBoundingClientRect().height
+        const a = document.querySelector('div>a')
+        document.body.style.marginBottom = window.innerHeight - 1 + 'px'
+        context.clearRect(0, 0, canvas.width, canvas.height)
+
+        const updateImage = y => {
+            if (images[y]) {
+                if (images[y][0]) {
+                    a.innerHTML = images[y][0];
+                    a.href = hrefBase + images[y][0];
+                }
+                if (images[y][1]) {
+                    canvas.width = images[y][1].naturalWidth
+                    canvas.height = images[y][1].naturalHeight
+                    context.drawImage(images[y][1], 0, 0, images[y][1].naturalWidth, images[y][1].naturalHeight)
+                    a.innerHTML = images[y][0];
+                    a.href = hrefBase + images[y][0];
+                } else context.clearRect(0, 0, canvas.width, canvas.height)
             }
-        </script><pre>2008/untitled-10001.jpg</pre><pre>2008/untitled-10002.jpg</pre><pre>2008/untitled-2-10001.jpg</pre><pre>2008/untitled-2-10002.jpg</pre><pre>2008/untitled-2-10003.jpg</pre><pre>2008/untitled-2-10004.jpg</pre><pre>2008/untitled-2-10005.jpg</pre><pre>2009/01-blaiselarmee.jpg</pre><pre>2009/abstract-comics-01-blaiselarmee.jpg</pre><pre>2009/abstract-comics-02-blaiselarmee.jpg</pre><pre>2010/01-blaiselarmee.jpg</pre><pre>2010/aidan-koch-the-whale-01.jpg</pre><pre>2010/aidan-koch-the-whale-02.jpg</pre><pre>2010/studygroup12-4-01-blaiselarmee.jpg</pre><pre>2010/studygroup12-4-02-blaiselarmee.jpg</pre><pre>2010/studygroup12-4-03-blaiselarmee.jpg</pre><pre>2010/taffy-hips-8-01-blaiselarmee.jpg</pre><pre>2010/taffy-hips-8-02-blaiselarmee.jpg</pre><pre>2010/yoko-ono-01-blaiselarmee.jpg</pre><pre>2010/yoko-ono-02-blaiselarmee.jpg</pre><pre>2010/yoko-ono-03-blaiselarmee.jpg</pre><pre>2010/yoko-ono-04-blaiselarmee.jpg</pre><pre>2010/yoko-ono-05-blaiselarmee.jpg</pre><pre>2010/young-lions-01-blaiselarmee.jpg</pre><pre>2010/young-lions-02-blaiselarmee.jpg</pre><a href="https://web.archive.org/web/20220705152953/https://raw.githubusercontent.com/hallhassi/index/main/2011/Movie%20on%202011-09-29%20at%2014.29.mov">2011/Movie on 2011-09-29 at 14.29.mov</a><pre>2011/astral-talk-01-blaiselarmee.jpg</pre><pre>2011/astral-talk-02-blaiselarmee.jpg</pre><pre>2011/astral-talk-03-blaiselarmee.jpg</pre><pre>2011/cruise-2-blaiselarmee.jpg</pre><pre>2011/cruise-3-blaiselarmee.jpg</pre><pre>2011/cruise-4-blaiselarmee.jpg</pre><pre>2011/cruise-5-blaiselarmee.jpg</pre><pre>2011/cruise-6-blaiselarmee.jpg</pre><pre>2011/cruise-7-blaiselarmee.jpg</pre><pre>2011/cruise-8-blaiselarmee.jpg</pre><pre>2011/dan-quayl-01-blaiselarmee.jpg</pre><pre>2011/dan-quayl-02-blaiselarmee.jpg</pre><pre>2011/dan-quayl-03-blaiselarmee.jpg</pre><pre>2011/mould-map-2-01-blaiselarmee.jpg</pre><pre>2011/na680-01-blaiselarmee.jpg</pre><pre>2011/na680-02-blaiselarmee.jpg</pre><pre>2011/na680-03-blaiselarmee.jpg</pre><pre>2011/na680-04-blaiselarmee.jpg</pre><pre>2011/na680-05-blaiselarmee.jpg</pre><pre>2011/na680-06-blaiselarmee.jpg</pre><pre>2011/sonatina-1-01-blaiselarmee.jpg</pre><pre>2011/sonatina-1-02-blaiselarmee.jpg</pre><pre>2011/sonatina-1-03-blaiselarmee.jpg</pre><pre>2012/01-blaiselarmee.jpg</pre><pre>2012/02-blaiselarmee.jpg</pre><pre>2012/03-blaiselarmee.png</pre><pre>2012/sonatina-2-01-blaiselarmee.jpg</pre><pre>2012/sonatina-2-02-blaiselarmee.jpg</pre><pre>2013/limner-2-01-blaiselarmee.jpg</pre><pre>2013/limner-2-02-blaiselarmee.jpg</pre><pre>2013/limner-2-03-blaiselarmee.jpg</pre><pre>2014/comets-comets-01-blaiselarmee.jpg</pre><pre>2014/comets-comets-02-blaiselarmee.jpg</pre><pre>2014/comets-comets-03-blaiselarmee.jpg</pre><pre>2014/comets-comets-04-blaiselarmee.jpg</pre><pre>2014/comets-comets-05-blaiselarmee.jpg</pre><pre>2014/comets-comets-06-blaiselarmee.jpg</pre><pre>2014/comets-comets-07-blaiselarmee.jpg</pre><pre>2014/comets-comets-08-blaiselarmee.jpg</pre><pre>2014/comets-comets-09-blaiselarmee.jpg</pre><pre>2014/comets-comets-10-blaiselarmee.jpg</pre><pre>2014/comets-comets-11-blaiselarmee.jpg</pre><pre>2014/comets-comets-12-blaiselarmee.jpg</pre><pre>2014/comets-comets-13-blaiselarmee.jpg</pre><pre>2014/comets-comets-14-blaiselarmee.jpg</pre><pre>2014/comets-comets-15-blaiselarmee.jpg</pre><pre>2014/comets-comets-16-blaiselarmee.jpg</pre><pre>2014/comets-comets-17-blaiselarmee.jpg</pre><pre>2014/mould-map-3-01-blaiselarmee.jpg</pre><pre>2014/mould-map-3-02-blaiselarmee.jpg</pre><pre>2014/nudes-01-blaiselarmee.jpg</pre><pre>2014/nudes-02-blaiselarmee.jpg</pre><a href="https://web.archive.org/web/20220705152953/https://raw.githubusercontent.com/hallhassi/index/main/2014/packet-blaiselarmee.pdf">2014/packet-blaiselarmee.pdf</a><pre>2015/3-books-01-blaiselarmee.jpg</pre><pre>2015/3-books-02-blaiselarmee.jpg</pre><pre>2015/altcomics-magazine-1-01-blaiselarmee.jpg</pre><pre>2016/altcomics-magazine-2-10002.jpg</pre><pre>2016/altcomics-magazine-4-10001.jpg</pre><pre>2016/altcomics-magazine-4-10002.jpg</pre><pre>2016/bernie-02-blaiselarmee.jpg</pre><pre>2016/bernie-03-blaiselarmee.jpg</pre><a href="https://web.archive.org/web/20220705152953/https://raw.githubusercontent.com/hallhassi/index/main/2016/inkstuds-blaiselarmee.m4a">2016/inkstuds-blaiselarmee.m4a</a><pre>2016/mirror-mirror-01-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-02-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-03-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-04-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-05-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-06-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-07-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-08-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-09-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-10-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-11-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-12-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-13-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-14-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-15-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-16-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-17-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-18-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-19-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-20-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-21-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-22-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-23-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-24-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-25-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-26-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-27-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-28-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-29-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-30-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-31-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-32-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-33-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-34-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-35-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-36-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-37-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-38-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-39-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-40-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-41-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-42-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-43-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-44-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-45-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-46-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-47-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-48-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-49-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-50-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-51-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-52-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-53-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-54-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-55-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-56-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-57-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-58-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-59-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-60-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-61-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-62-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-63-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-64-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-65-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-66-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-67-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-68-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-69-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-70-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-71-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-72-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-73-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-74-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-75-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-76-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-77-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-78-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-79-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-80-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-81-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-82-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-83-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-84-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-85-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-86-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-87-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-88-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-89-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-90-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-91-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-92-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-93-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-94-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-95-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-96-blaiselarmee.jpg</pre><pre>2016/mirror-mirror-97-blaiselarmee.jpg</pre><pre>2017/2001-01-blaiselarmee.jpg</pre><pre>2017/2001-02-blaiselarmee.jpg</pre><pre>2017/2001-03-blaiselarmee.jpg</pre><pre>2017/2001-04-blaiselarmee.jpg</pre><pre>2017/2001-05-blaiselarmee.jpg</pre><pre>2017/2001-06-blaiselarmee.jpg</pre><pre>2017/2001-07-blaiselarmee.jpg</pre><pre>2017/2001-08-blaiselarmee.jpg</pre><pre>2017/2001-09-blaiselarmee.jpg</pre><pre>2017/2001-10-blaiselarmee.jpg</pre><pre>2017/2001-11-blaiselarmee.jpg</pre><pre>2017/2001-12-blaiselarmee.jpg</pre><pre>2017/2001-13-blaiselarmee.jpg</pre><pre>2017/2001-14-blaiselarmee.jpg</pre><pre>2017/2001-15-blaiselarmee.jpg</pre><pre>2017/2001-16-blaiselarmee.jpg</pre><pre>2017/2001-17-blaiselarmee.jpg</pre><pre>2017/2001-18-blaiselarmee.jpg</pre><pre>2017/2001-19-blaiselarmee.jpg</pre><pre>2017/2001-20-blaiselarmee.jpg</pre><pre>2017/2001-21-blaiselarmee.jpg</pre><pre>2017/2001-22-blaiselarmee.jpg</pre><pre>2017/2001-23-blaiselarmee.jpg</pre><pre>2017/2001-24-blaiselarmee.jpg</pre><pre>2017/2001-25-blaiselarmee.jpg</pre><pre>2017/2001-26-blaiselarmee.jpg</pre><pre>2017/2001-27-blaiselarmee.jpg</pre><pre>2017/2001-28-blaiselarmee.jpg</pre><pre>2017/2001-29-blaiselarmee.jpg</pre><pre>2017/2001-30-blaiselarmee.jpg</pre><pre>2017/2001-31-blaiselarmee.jpg</pre><pre>2017/2001-32-blaiselarmee.jpg</pre><pre>2017/2001-33-blaiselarmee.jpg</pre><pre>2017/2001-34-blaiselarmee.jpg</pre><pre>2017/2001-35-blaiselarmee.jpg</pre><pre>2017/2001-36-blaiselarmee.jpg</pre><pre>2017/2001-37-blaiselarmee.jpg</pre><pre>2017/2001-38-blaiselarmee.jpg</pre><pre>2017/2001-39-blaiselarmee.jpg</pre><pre>2017/2001-40-blaiselarmee.jpg</pre><pre>2017/2001-41-blaiselarmee.jpg</pre><pre>2017/2001-42-blaiselarmee.jpg</pre><pre>2017/2001-43-blaiselarmee.jpg</pre><pre>2017/2001-44-blaiselarmee.jpg</pre><pre>2017/2001-45-blaiselarmee.jpg</pre><pre>2017/2001-46-blaiselarmee.jpg</pre><pre>2017/2001-47-blaiselarmee.jpg</pre><pre>2017/2001-48-blaiselarmee.jpg</pre><pre>2017/2001-49-blaiselarmee.jpg</pre><pre>2017/2001-50-blaiselarmee.jpg</pre><pre>2017/2001-51-blaiselarmee.jpg</pre><pre>2017/2001-52-blaiselarmee.jpg</pre><pre>2017/2001-53-blaiselarmee.jpg</pre><pre>2017/2001-54-blaiselarmee.jpg</pre><pre>2017/2001-55-blaiselarmee.jpg</pre><pre>2017/2001-56-blaiselarmee.jpg</pre><pre>2017/2001-57-blaiselarmee.jpg</pre><pre>2017/2001-58-blaiselarmee.jpg</pre><pre>2017/2001-59-blaiselarmee.jpg</pre><pre>2017/2001-60-blaiselarmee.jpg</pre><pre>2017/2001-61-blaiselarmee.jpg</pre><pre>2017/2001-62-blaiselarmee.jpg</pre><pre>2017/2001-63-blaiselarmee.jpg</pre><pre>2017/2001-64-blaiselarmee.jpg</pre><pre>2017/2001-65-blaiselarmee.jpg</pre><pre>2017/2001-66-blaiselarmee.jpg</pre><pre>2017/2001-67-blaiselarmee.jpg</pre><pre>2017/2001-68-blaiselarmee.jpg</pre><pre>2017/2001-69-blaiselarmee.jpg</pre><pre>2017/2001-70-blaiselarmee.jpg</pre><pre>2017/2001-71-blaiselarmee.jpg</pre><pre>2017/2001-72-blaiselarmee.jpg</pre><pre>2017/2001-73-blaiselarmee.jpg</pre><pre>2017/2001-74-blaiselarmee.jpg</pre><pre>2017/2001-75-blaiselarmee.jpg</pre><pre>2017/2001-76-blaiselarmee.jpg</pre><pre>2017/2001-77-blaiselarmee.jpg</pre><pre>2017/2001-78-blaiselarmee.jpg</pre><pre>2017/2001-79-blaiselarmee.jpg</pre><pre>2017/2001-80-blaiselarmee.jpg</pre><pre>2017/2001-81-blaiselarmee.jpg</pre><pre>2017/2001-82-blaiselarmee.jpg</pre><pre>2017/2001-83-blaiselarmee.jpg</pre><pre>2017/2001-84-blaiselarmee.jpg</pre><pre>2017/2001-85-blaiselarmee.jpg</pre><pre>2017/2001-86-blaiselarmee.jpg</pre><pre>2017/2001-87-blaiselarmee.jpg</pre><pre>2017/2001-88-blaiselarmee.jpg</pre><pre>2017/2001-89-blaiselarmee.jpg</pre><pre>2017/2001-90-blaiselarmee.jpg</pre><pre>2017/2001-91-blaiselarmee.jpg</pre><pre>2017/margot-ferrick-leslie-weibeler-blaiselarmee.jpg</pre><pre>2017/my-parents-01-blaiselarmee.jpg</pre><pre>2017/my-parents-02-blaiselarmee.jpg</pre><pre>2017/my-parents-03-blaiselarmee.jpg</pre><pre>2017/my-parents-04-blaiselarmee.jpg</pre><pre>2017/my-parents-05-blaiselarmee.jpg</pre><pre>2017/my-parents-06-blaiselarmee.jpg</pre><pre>2017/my-parents-07-blaiselarmee.jpg</pre><pre>2017/paul-peng-01-blaiselarmee.jpg</pre><pre>2017/paul-peng-02-blaiselarmee.jpg</pre><pre>2017/paul-peng-sam-ombiri-blaiselarmee.jpg</pre><pre>2017/x-01-blaiselarmee.jpg</pre><pre>2018/w-01-blaiselarmee.jpg</pre><pre>2018/w-02-blaiselarmee.jpg</pre><pre>2018/w-03-blaiselarmee.jpg</pre><pre>2018/w-04-blaiselarmee.jpg</pre><pre>2018/w-05-blaiselarmee.jpg</pre><pre>2018/w-06-blaiselarmee.jpg</pre><pre>2018/w-07-blaiselarmee.jpg</pre><pre>2018/w-08-blaiselarmee.jpg</pre><pre>2018/w-09-blaiselarmee.jpg</pre><pre>2018/w-10-blaiselarmee.jpg</pre><pre>2019/01-blaiselarmee.jpg</pre><pre>2019/02-blaiselarmee.jpg</pre><pre>2019/03-blaiselarmee.jpg</pre><pre>2019/04-blaiselarmee.jpg</pre><pre>2019/05-blaiselarmee.jpg</pre><pre>2019/06-blaiselarmee.jpg</pre><pre>2019/07-blaiselarmee.jpg</pre><pre>2019/08-blaiselarmee.jpg</pre><pre>2019/09-blaiselarmee.jpg</pre><pre>2019/1-blaiselarmee.jpg</pre><pre>2019/10-blaiselarmee.jpg</pre><pre>2019/11-blaiselarmee.jpg</pre><pre>2019/12-blaiselarmee.jpg</pre><pre>2019/13-blaiselarmee.jpg</pre><pre>2019/14-blaiselarmee.jpg</pre><pre>2019/15-blaiselarmee.jpg</pre><a href="https://web.archive.org/web/20220705152953/https://raw.githubusercontent.com/hallhassi/index/main/2020/01-blaiselarmee.gif">2020/01-blaiselarmee.gif</a><pre>2020/02-blaiselarmee.jpg</pre><pre>2020/2-blaiselarmee.png</pre><pre>2020/5-blaiselarmee.png</pre><pre>2020/6-blaiselarmee.png</pre><pre>2021/2B8C6B1A-44F9-4BFD-AAB6-1B635F43550F-blaiselarmee.jpeg</pre><pre>2021/672300201122430976_2-blaiselarmee.jpg</pre>
-    
-    
-    
-</body></html>
+            else {
+                a.innerHTML = '';
+                a.href = '';
+                context.clearRect(0, 0, canvas.width, canvas.height)
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            let yi = window.scrollY / height
+            let y = Math.floor(yi)
+            requestAnimationFrame(() => updateImage(y))
+        });
+
+        function string() {
+            return `
+2008
+untitled-10001.jpg
+untitled-10002.jpg
+untitled-2-10001.jpg
+untitled-2-10002.jpg
+untitled-2-10003.jpg
+untitled-2-10004.jpg
+untitled-2-10005.jpg
+2009
+01-blaiselarmee.jpg
+abstract-comics-01-blaiselarmee.jpg
+abstract-comics-02-blaiselarmee.jpg
+2010
+01-blaiselarmee.jpg
+aidan-koch-the-whale-01.jpg
+aidan-koch-the-whale-02.jpg
+studygroup12-4-01-blaiselarmee.jpg
+studygroup12-4-02-blaiselarmee.jpg
+studygroup12-4-03-blaiselarmee.jpg
+taffy-hips-8-01-blaiselarmee.jpg
+taffy-hips-8-02-blaiselarmee.jpg
+yoko-ono-01-blaiselarmee.jpg
+yoko-ono-02-blaiselarmee.jpg
+yoko-ono-03-blaiselarmee.jpg
+yoko-ono-04-blaiselarmee.jpg
+yoko-ono-05-blaiselarmee.jpg
+young-lions-01-blaiselarmee.jpg
+young-lions-02-blaiselarmee.jpg
+2011
+Movie on 2011-09-29 at 14.29.mov
+astral-talk-01-blaiselarmee.jpg
+astral-talk-02-blaiselarmee.jpg
+astral-talk-03-blaiselarmee.jpg
+cruise-2-blaiselarmee.jpg
+cruise-3-blaiselarmee.jpg
+cruise-4-blaiselarmee.jpg
+cruise-5-blaiselarmee.jpg
+cruise-6-blaiselarmee.jpg
+cruise-7-blaiselarmee.jpg
+cruise-8-blaiselarmee.jpg
+dan-quayl-01-blaiselarmee.jpg
+dan-quayl-02-blaiselarmee.jpg
+dan-quayl-03-blaiselarmee.jpg
+mould-map-2-01-blaiselarmee.jpg
+na680-01-blaiselarmee.jpg
+na680-02-blaiselarmee.jpg
+na680-03-blaiselarmee.jpg
+na680-04-blaiselarmee.jpg
+na680-05-blaiselarmee.jpg
+na680-06-blaiselarmee.jpg
+sonatina-1-01-blaiselarmee.jpg
+sonatina-1-02-blaiselarmee.jpg
+sonatina-1-03-blaiselarmee.jpg
+2012
+01-blaiselarmee.jpg
+02-blaiselarmee.jpg
+03-blaiselarmee.png
+sonatina-2-01-blaiselarmee.jpg
+sonatina-2-02-blaiselarmee.jpg
+2013
+limner-2-01-blaiselarmee.jpg
+limner-2-02-blaiselarmee.jpg
+limner-2-03-blaiselarmee.jpg
+2014
+comets-comets-01-blaiselarmee.jpg
+comets-comets-02-blaiselarmee.jpg
+comets-comets-03-blaiselarmee.jpg
+comets-comets-04-blaiselarmee.jpg
+comets-comets-05-blaiselarmee.jpg
+comets-comets-06-blaiselarmee.jpg
+comets-comets-07-blaiselarmee.jpg
+comets-comets-08-blaiselarmee.jpg
+comets-comets-09-blaiselarmee.jpg
+comets-comets-10-blaiselarmee.jpg
+comets-comets-11-blaiselarmee.jpg
+comets-comets-12-blaiselarmee.jpg
+comets-comets-13-blaiselarmee.jpg
+comets-comets-14-blaiselarmee.jpg
+comets-comets-15-blaiselarmee.jpg
+comets-comets-16-blaiselarmee.jpg
+comets-comets-17-blaiselarmee.jpg
+mould-map-3-01-blaiselarmee.jpg
+mould-map-3-02-blaiselarmee.jpg
+nudes-01-blaiselarmee.jpg
+nudes-02-blaiselarmee.jpg
+packet-blaiselarmee.pdf
+2015
+3-books-01-blaiselarmee.jpg
+3-books-02-blaiselarmee.jpg
+altcomics-magazine-1-01-blaiselarmee.jpg
+2016
+altcomics-magazine-2-10002.jpg
+altcomics-magazine-4-10001.jpg
+altcomics-magazine-4-10002.jpg
+bernie-02-blaiselarmee.jpg
+bernie-03-blaiselarmee.jpg
+inkstuds-blaiselarmee.m4a
+mirror-mirror-01-blaiselarmee.jpg
+mirror-mirror-02-blaiselarmee.jpg
+mirror-mirror-03-blaiselarmee.jpg
+mirror-mirror-04-blaiselarmee.jpg
+mirror-mirror-05-blaiselarmee.jpg
+mirror-mirror-06-blaiselarmee.jpg
+mirror-mirror-07-blaiselarmee.jpg
+mirror-mirror-08-blaiselarmee.jpg
+mirror-mirror-09-blaiselarmee.jpg
+mirror-mirror-10-blaiselarmee.jpg
+mirror-mirror-11-blaiselarmee.jpg
+mirror-mirror-12-blaiselarmee.jpg
+mirror-mirror-13-blaiselarmee.jpg
+mirror-mirror-14-blaiselarmee.jpg
+mirror-mirror-15-blaiselarmee.jpg
+mirror-mirror-16-blaiselarmee.jpg
+mirror-mirror-17-blaiselarmee.jpg
+mirror-mirror-18-blaiselarmee.jpg
+mirror-mirror-19-blaiselarmee.jpg
+mirror-mirror-20-blaiselarmee.jpg
+mirror-mirror-21-blaiselarmee.jpg
+mirror-mirror-22-blaiselarmee.jpg
+mirror-mirror-23-blaiselarmee.jpg
+mirror-mirror-24-blaiselarmee.jpg
+mirror-mirror-25-blaiselarmee.jpg
+mirror-mirror-26-blaiselarmee.jpg
+mirror-mirror-27-blaiselarmee.jpg
+mirror-mirror-28-blaiselarmee.jpg
+mirror-mirror-29-blaiselarmee.jpg
+mirror-mirror-30-blaiselarmee.jpg
+mirror-mirror-31-blaiselarmee.jpg
+mirror-mirror-32-blaiselarmee.jpg
+mirror-mirror-33-blaiselarmee.jpg
+mirror-mirror-34-blaiselarmee.jpg
+mirror-mirror-35-blaiselarmee.jpg
+mirror-mirror-36-blaiselarmee.jpg
+mirror-mirror-37-blaiselarmee.jpg
+mirror-mirror-38-blaiselarmee.jpg
+mirror-mirror-39-blaiselarmee.jpg
+mirror-mirror-40-blaiselarmee.jpg
+mirror-mirror-41-blaiselarmee.jpg
+mirror-mirror-42-blaiselarmee.jpg
+mirror-mirror-43-blaiselarmee.jpg
+mirror-mirror-44-blaiselarmee.jpg
+mirror-mirror-45-blaiselarmee.jpg
+mirror-mirror-46-blaiselarmee.jpg
+mirror-mirror-47-blaiselarmee.jpg
+mirror-mirror-48-blaiselarmee.jpg
+mirror-mirror-49-blaiselarmee.jpg
+mirror-mirror-50-blaiselarmee.jpg
+mirror-mirror-51-blaiselarmee.jpg
+mirror-mirror-52-blaiselarmee.jpg
+mirror-mirror-53-blaiselarmee.jpg
+mirror-mirror-54-blaiselarmee.jpg
+mirror-mirror-55-blaiselarmee.jpg
+mirror-mirror-56-blaiselarmee.jpg
+mirror-mirror-57-blaiselarmee.jpg
+mirror-mirror-58-blaiselarmee.jpg
+mirror-mirror-59-blaiselarmee.jpg
+mirror-mirror-60-blaiselarmee.jpg
+mirror-mirror-61-blaiselarmee.jpg
+mirror-mirror-62-blaiselarmee.jpg
+mirror-mirror-63-blaiselarmee.jpg
+mirror-mirror-64-blaiselarmee.jpg
+mirror-mirror-65-blaiselarmee.jpg
+mirror-mirror-66-blaiselarmee.jpg
+mirror-mirror-67-blaiselarmee.jpg
+mirror-mirror-68-blaiselarmee.jpg
+mirror-mirror-69-blaiselarmee.jpg
+mirror-mirror-70-blaiselarmee.jpg
+mirror-mirror-71-blaiselarmee.jpg
+mirror-mirror-72-blaiselarmee.jpg
+mirror-mirror-73-blaiselarmee.jpg
+mirror-mirror-74-blaiselarmee.jpg
+mirror-mirror-75-blaiselarmee.jpg
+mirror-mirror-76-blaiselarmee.jpg
+mirror-mirror-77-blaiselarmee.jpg
+mirror-mirror-78-blaiselarmee.jpg
+mirror-mirror-79-blaiselarmee.jpg
+mirror-mirror-80-blaiselarmee.jpg
+mirror-mirror-81-blaiselarmee.jpg
+mirror-mirror-82-blaiselarmee.jpg
+mirror-mirror-83-blaiselarmee.jpg
+mirror-mirror-84-blaiselarmee.jpg
+mirror-mirror-85-blaiselarmee.jpg
+mirror-mirror-86-blaiselarmee.jpg
+mirror-mirror-87-blaiselarmee.jpg
+mirror-mirror-88-blaiselarmee.jpg
+mirror-mirror-89-blaiselarmee.jpg
+mirror-mirror-90-blaiselarmee.jpg
+mirror-mirror-91-blaiselarmee.jpg
+mirror-mirror-92-blaiselarmee.jpg
+mirror-mirror-93-blaiselarmee.jpg
+mirror-mirror-94-blaiselarmee.jpg
+mirror-mirror-95-blaiselarmee.jpg
+mirror-mirror-96-blaiselarmee.jpg
+mirror-mirror-97-blaiselarmee.jpg
+2017
+2001-01-blaiselarmee.jpg
+2001-02-blaiselarmee.jpg
+2001-03-blaiselarmee.jpg
+2001-04-blaiselarmee.jpg
+2001-05-blaiselarmee.jpg
+2001-06-blaiselarmee.jpg
+2001-07-blaiselarmee.jpg
+2001-08-blaiselarmee.jpg
+2001-09-blaiselarmee.jpg
+2001-10-blaiselarmee.jpg
+2001-11-blaiselarmee.jpg
+2001-12-blaiselarmee.jpg
+2001-13-blaiselarmee.jpg
+2001-14-blaiselarmee.jpg
+2001-15-blaiselarmee.jpg
+2001-16-blaiselarmee.jpg
+2001-17-blaiselarmee.jpg
+2001-18-blaiselarmee.jpg
+2001-19-blaiselarmee.jpg
+2001-20-blaiselarmee.jpg
+2001-21-blaiselarmee.jpg
+2001-22-blaiselarmee.jpg
+2001-23-blaiselarmee.jpg
+2001-24-blaiselarmee.jpg
+2001-25-blaiselarmee.jpg
+2001-26-blaiselarmee.jpg
+2001-27-blaiselarmee.jpg
+2001-28-blaiselarmee.jpg
+2001-29-blaiselarmee.jpg
+2001-30-blaiselarmee.jpg
+2001-31-blaiselarmee.jpg
+2001-32-blaiselarmee.jpg
+2001-33-blaiselarmee.jpg
+2001-34-blaiselarmee.jpg
+2001-35-blaiselarmee.jpg
+2001-36-blaiselarmee.jpg
+2001-37-blaiselarmee.jpg
+2001-38-blaiselarmee.jpg
+2001-39-blaiselarmee.jpg
+2001-40-blaiselarmee.jpg
+2001-41-blaiselarmee.jpg
+2001-42-blaiselarmee.jpg
+2001-43-blaiselarmee.jpg
+2001-44-blaiselarmee.jpg
+2001-45-blaiselarmee.jpg
+2001-46-blaiselarmee.jpg
+2001-47-blaiselarmee.jpg
+2001-48-blaiselarmee.jpg
+2001-49-blaiselarmee.jpg
+2001-50-blaiselarmee.jpg
+2001-51-blaiselarmee.jpg
+2001-52-blaiselarmee.jpg
+2001-53-blaiselarmee.jpg
+2001-54-blaiselarmee.jpg
+2001-55-blaiselarmee.jpg
+2001-56-blaiselarmee.jpg
+2001-57-blaiselarmee.jpg
+2001-58-blaiselarmee.jpg
+2001-59-blaiselarmee.jpg
+2001-60-blaiselarmee.jpg
+2001-61-blaiselarmee.jpg
+2001-62-blaiselarmee.jpg
+2001-63-blaiselarmee.jpg
+2001-64-blaiselarmee.jpg
+2001-65-blaiselarmee.jpg
+2001-66-blaiselarmee.jpg
+2001-67-blaiselarmee.jpg
+2001-68-blaiselarmee.jpg
+2001-69-blaiselarmee.jpg
+2001-70-blaiselarmee.jpg
+2001-71-blaiselarmee.jpg
+2001-72-blaiselarmee.jpg
+2001-73-blaiselarmee.jpg
+2001-74-blaiselarmee.jpg
+2001-75-blaiselarmee.jpg
+2001-76-blaiselarmee.jpg
+2001-77-blaiselarmee.jpg
+2001-78-blaiselarmee.jpg
+2001-79-blaiselarmee.jpg
+2001-80-blaiselarmee.jpg
+2001-81-blaiselarmee.jpg
+2001-82-blaiselarmee.jpg
+2001-83-blaiselarmee.jpg
+2001-84-blaiselarmee.jpg
+2001-85-blaiselarmee.jpg
+2001-86-blaiselarmee.jpg
+2001-87-blaiselarmee.jpg
+2001-88-blaiselarmee.jpg
+2001-89-blaiselarmee.jpg
+2001-90-blaiselarmee.jpg
+2001-91-blaiselarmee.jpg
+// aleks-01-blaiselarmee.jpg
+// aleks-02-blaiselarmee.jpg
+// aleks-03-blaiselarmee.jpg
+// aleks-04-blaiselarmee.jpg
+// aleks-05-blaiselarmee.jpg
+// aleks-06-blaiselarmee.jpg
+// aleks-07-blaiselarmee.jpg
+// aleks-08-blaiselarmee.jpg
+// aleks-09-blaiselarmee.jpg
+// aleks-10-blaiselarmee.jpg
+// aleks-11-blaiselarmee.jpg
+margot-ferrick-leslie-weibeler-blaiselarmee.jpg
+my-parents-01-blaiselarmee.jpg
+my-parents-02-blaiselarmee.jpg
+my-parents-03-blaiselarmee.jpg
+my-parents-04-blaiselarmee.jpg
+my-parents-05-blaiselarmee.jpg
+my-parents-06-blaiselarmee.jpg
+my-parents-07-blaiselarmee.jpg
+paul-peng-01-blaiselarmee.jpg
+paul-peng-02-blaiselarmee.jpg
+paul-peng-sam-ombiri-blaiselarmee.jpg
+// sketchbook-1-01-blaiselarmee.jpg
+// sketchbook-1-02-blaiselarmee.jpg
+// sketchbook-1-03-blaiselarmee.jpg
+// sketchbook-1-04-blaiselarmee.jpg
+// sketchbook-1-05-blaiselarmee.jpg
+// sketchbook-1-06-blaiselarmee.jpg
+// sketchbook-1-07-blaiselarmee.jpg
+// sketchbook-1-08-blaiselarmee.jpg
+// sketchbook-1-09-blaiselarmee.jpg
+// sketchbook-1-10-blaiselarmee.jpg
+// sketchbook-1-11-blaiselarmee.jpg
+// sketchbook-1-12-blaiselarmee.jpg
+// sketchbook-1-13-blaiselarmee.jpg
+// sketchbook-1-14-blaiselarmee.jpg
+// sketchbook-1-15-blaiselarmee.jpg
+// sketchbook-1-16-blaiselarmee.jpg
+// sketchbook-1-17-blaiselarmee.jpg
+// sketchbook-1-18-blaiselarmee.jpg
+// sketchbook-1-19-blaiselarmee.jpg
+// sketchbook-1-20-blaiselarmee.jpg
+// sketchbook-1-21-blaiselarmee.jpg
+// sketchbook-1-22-blaiselarmee.jpg
+// sketchbook-1-23-blaiselarmee.jpg
+// sketchbook-1-24-blaiselarmee.jpg
+// sketchbook-1-25-blaiselarmee.jpg
+// sketchbook-1-26-blaiselarmee.jpg
+// sketchbook-1-27-blaiselarmee.jpg
+// sketchbook-1-28-blaiselarmee.jpg
+// sketchbook-1-29-blaiselarmee.jpg
+// sketchbook-1-30-blaiselarmee.jpg
+// sketchbook-1-31-blaiselarmee.jpg
+// sketchbook-1-32-blaiselarmee.jpg
+// sketchbook-1-33-blaiselarmee.jpg
+// sketchbook-1-34-blaiselarmee.jpg
+// sketchbook-1-35-blaiselarmee.jpg
+// sketchbook-1-36-blaiselarmee.jpg
+// sketchbook-1-37-blaiselarmee.jpg
+// sketchbook-1-38-blaiselarmee.jpg
+// sketchbook-2-01-blaiselarmee.jpg
+// sketchbook-2-03-blaiselarmee.jpg
+// sketchbook-2-08-blaiselarmee.jpg
+// sketchbook-2-09-blaiselarmee.jpg
+// sketchbook-2-10-blaiselarmee.jpg
+x-01-blaiselarmee.jpg
+2018
+w-01-blaiselarmee.jpg
+w-02-blaiselarmee.jpg
+w-03-blaiselarmee.jpg
+w-04-blaiselarmee.jpg
+w-05-blaiselarmee.jpg
+w-06-blaiselarmee.jpg
+w-07-blaiselarmee.jpg
+w-08-blaiselarmee.jpg
+w-09-blaiselarmee.jpg
+w-10-blaiselarmee.jpg
+2019
+01-blaiselarmee.jpg
+02-blaiselarmee.jpg
+03-blaiselarmee.jpg
+04-blaiselarmee.jpg
+05-blaiselarmee.jpg
+06-blaiselarmee.jpg
+07-blaiselarmee.jpg
+08-blaiselarmee.jpg
+09-blaiselarmee.jpg
+1-blaiselarmee.jpg
+10-blaiselarmee.jpg
+11-blaiselarmee.jpg
+12-blaiselarmee.jpg
+13-blaiselarmee.jpg
+14-blaiselarmee.jpg
+15-blaiselarmee.jpg
+2020
+01-blaiselarmee.gif
+02-blaiselarmee.jpg
+2-blaiselarmee.png
+5-blaiselarmee.png
+6-blaiselarmee.png
+2021
+2B8C6B1A-44F9-4BFD-AAB6-1B635F43550F-blaiselarmee.jpeg
+// 660737502296031232_5-blaiselarmee.jpg
+// 671389626037092352_0-blaiselarmee.jpg
+672300201122430976_2-blaiselarmee.jpg
+2022`
+        }
+    </script>
+</body>
+
+</html>

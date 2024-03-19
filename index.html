@@ -55,8 +55,6 @@ window.addEventListener('scroll', () => {
 });
 
 window.addEventListener('click', (e) => {
-    console.log(`${e.target == canvas} ${e.target.tagName} ${img[i].parentElement.href}`)
-    log.innerText = `${e.target == canvas} ${e.target.tagName} ${img[i].parentElement.href}`
     if (canvas.hidden && img.includes(e.target)) {
         canvas.hidden = false
         scrollTo(0, y * img.indexOf(e.target) / img.length)

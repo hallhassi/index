@@ -57,23 +57,23 @@ opacity: .5;
 </div>
 <script>
 
-let i = -1
+let i = 0
 const a = Array.from(document.querySelectorAll('main a'));
 const img = Array.from(document.querySelectorAll('img'));
+const y = document.body.getBoundingClientRect().height
 
 window.addEventListener('scroll', () => {
-    if (canvas.hidden !== true) {
-        requestAnimationFrame(() => {
-            i = Math.floor(img.length * window.scrollY / document.body.getBoundingClientRect().height);
-            render()
-        })
-    }
+    render()
+});
+
+window.addEventListener('load', () => {
+    render()
 });
 
 a.forEach((el, index, array) => {
     el.addEventListener('click', (e) => {
         e.preventDefault() 
-        i = index
+        scrollTo(0, y * index / img.length)
         render()
     })
 })
@@ -84,17 +84,23 @@ window.addEventListener('click', (e) => {
 })
 
 window.addEventListener('keydown', (e) => {
-    if (e.key == 'ArrowRight') scrollBy(0, document.body.getBoundingClientRect().height/img.length)
-    else if  (e.key == 'ArrowLeft') scrollBy(0, -document.body.getBoundingClientRect().height/img.length)
+    if (e.key == 'ArrowRight') scrollBy(0, y/img.length)
+    else if  (e.key == 'ArrowLeft') scrollBy(0, -y/img.length)
 })
 
 function render() {
-    canvas.width = img[i].naturalWidth;
-    canvas.height = img[i].naturalHeight;
-    canvas.getContext("2d").drawImage(img[i], 0, 0, img[i].naturalWidth, img[i].naturalHeight);
-    img.forEach(el => el.classList.remove('on'))
-    img[i].classList.add('on')
-    wrap.href = img[i].parentElement.href
+    if (canvas.hidden !== true) {
+        i = Math.round(window.scrollY * img.length / y);
+        console.log(`${i} = ${window.scrollY} * ${img.length / y}`)
+            requestAnimationFrame(() => {
+            canvas.width = img[i].naturalWidth;
+            canvas.height = img[i].naturalHeight;
+            canvas.getContext("2d").drawImage(img[i], 0, 0, img[i].naturalWidth, img[i].naturalHeight);
+            img.forEach(el => el.classList.remove('on'))
+            img[i].classList.add('on')
+            wrap.href = img[i].parentElement.href
+        })
+    }
 }
 
 </script>

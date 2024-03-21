@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renoir Paintings from MET API</title>
+</head>
+<body>
+    <h1>Paintings from MET API</h1>
+
+    <div>
+        <label for="searchTerm">Search Term:</label>
+        <div contenteditable="true" id="searchTerm" onkeydown="handleKeyDown(event)">renoir</div>
+        <button onclick="search()">Search</button>
+    </div>
+    <div id="results"></div>
+
+    <script>
+        async function search() {
+            const searchTerm = document.getElementById('searchTerm').innerText.trim();
+            const apiUrl = `https://collectionapi.metmuseum.org/public/collection/v1/search?q=${encodeURIComponent(searchTerm)}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                displayResults(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function displayResults(data) {
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = '';
+
+            if (data && data.objectIDs && data.objectIDs.length > 0) {
+                const objectIDs = data.objectIDs.slice(0, 10); // Display only the first 10 results for demonstration
+
+                objectIDs.forEach(async id => {
+                    const paintingData = await fetchPaintingData(id);
+                    if (paintingData && paintingData.isPublicDomain && paintingData.primaryImageSmall) {
+                        const paintingElement = document.createElement('div');
+                        paintingElement.innerHTML = `
+                            <h2>${paintingData.title}</h2>
+                            <img src="${paintingData.primaryImageSmall}" alt="${paintingData.title}" style="max-width: 400px;">
+                            <p>Artist: ${paintingData.artistDisplayName}</p>
+                            <p>Date: ${paintingData.objectDate}</p>
+                            <p>Medium: ${paintingData.medium}</p>
+                            <hr>
+                        `;
+                        resultsContainer.appendChild(paintingElement);
+                    }
+                });
+            } else {
+                resultsContainer.textContent = 'No results found.';
+            }
+        }
+
+        async function fetchPaintingData(id) {
+            const apiUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching painting data:', error);
+                return null;
+            }
+        }
+
+        function handleKeyDown(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent line break
+                search();
+            }
+        }
+
+        // Initial search on page load
+        search();
+    </script>
+</body>
+</html>

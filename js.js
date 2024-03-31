@@ -1,7 +1,8 @@
-const img = Array.from(document.querySelectorAll('img'));
+let img = Array.from(document.querySelectorAll('img'));
 let i, y
 
 window.addEventListener('scroll', () => {
+    img = Array.from(document.querySelectorAll('img'));
     img.forEach(el => el.classList.remove('on'))
     if (canvas.hidden !== true) {
         i = Math.round(window.scrollY * img.length / y);
@@ -16,7 +17,10 @@ window.addEventListener('scroll', () => {
     }
 });
 
-window.addEventListener('click', (e) => {
+window.addEventListener('click', handleClickOrTouch);
+window.addEventListener('touchstart', handleClickOrTouch);
+
+function handleClickOrTouch(e){
     // click outside canvas to hide it
     if (canvas.hidden !== true && e.target !== canvas) canvas.hidden = true
     // click image to show canvas
@@ -24,7 +28,7 @@ window.addEventListener('click', (e) => {
         canvas.hidden = false
         scrollTo(0, y * img.indexOf(e.target) / img.length)
     }
-})
+}
 
 window.addEventListener('keydown', (e) => {
     if (e.key == 'ArrowRight') scrollBy(0, y/img.length)

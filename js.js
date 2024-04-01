@@ -1,6 +1,7 @@
 let img = Array.from(document.querySelectorAll('img'));
 let i, y
 
+// click outside canvas to hide it
 canvaswrapper.addEventListener('click', hide)
 function hide(e) {
     console.log(e.target);
@@ -9,6 +10,7 @@ function hide(e) {
     }
 }
 
+// click image
 img.forEach((el, index) => {
     el.addEventListener('click', (e) => {
         console.log(e.target);
@@ -68,44 +70,3 @@ window.addEventListener('keydown', (e) => {
     else if (e.key == 'ArrowLeft') scrollBy(0, -y / img.length)
     else if (e.key == 'Escape') canvaswrapper.hidden = canvaswrapper.hidden == true ? false : true
 })
-
-
-// click or touch
-// function addClickOrTouch() {
-//     window.addEventListener('click', handleClickOrTouch);
-//     window.addEventListener('touchend', handleClickOrTouch);
-// }
-// function removeClickOrTouch() {
-//     window.removeEventListener('click', handleClickOrTouch);
-//     window.removeEventListener('touchend', handleClickOrTouch);
-// }
-
-// function handleClickOrTouch(e) {
-//     console.log(e);
-//     console.log(eventHandled);
-//     if (!eventHandled) {
-//         // hide canvas
-//         if (!canvas.hidden && e.target !== canvas) canvas.hidden = true
-//         // show canvas
-//         else if (canvas.hidden && img.includes(e.target)) {
-//             canvas.hidden = false
-//             scrollTo(0, y * img.indexOf(e.target) / img.length)
-//         }
-
-//         eventHandled = true;
-
-//         setTimeout(function() {
-//           eventHandled = false;
-//         }, 500); // Adjust the delay as needed
-//       }
-// }
-
-// function hide() {
-//     // hide canvas
-//     if (!canvas.hidden && e.target !== canvas) canvas.hidden = true
-//     // show canvas
-//     else if (canvas.hidden && img.includes(e.target)) {
-//         canvas.hidden = false
-//         scrollTo(0, y * img.indexOf(e.target) / img.length)
-//     }
-// }

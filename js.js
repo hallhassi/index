@@ -1,24 +1,19 @@
 let img = Array.from(document.querySelectorAll('img'));
-let i, y
-
-// click outside canvas to hide it
-canvaswrapper.addEventListener('click', hide)
-function hide(e) {
-    console.log(e.target);
-    if (e.target !== canvas) {
-        canvaswrapper.hidden = true
-    }
-}
+let i, y // current index of images, height of document body
 
 // click image
 img.forEach((el, index) => {
     el.addEventListener('click', (e) => {
-        console.log(e.target);
-        if (e.target !== canvaswrapper) {
-            canvaswrapper.hidden = false
-            scrollTo(0, y * index / img.length)
-        }
+        canvaswrapper.hidden = false
+        scrollTo(0, y * index / img.length)
     })
+})
+
+// hide canvas
+canvaswrapper.addEventListener('click', (e) => {
+    if (e.target !== canvas) {
+        canvaswrapper.hidden = true
+    }
 })
 
 // scroll
@@ -26,8 +21,9 @@ window.addEventListener('scroll', handleScroll, { passive: true });
 function handleScroll() {
     img = Array.from(document.querySelectorAll('img'));
     img.forEach(el => el.classList.remove('on'))
-    if (!canvaswrapper.hidden) {
-        window.addEventListener('touchmove', onZoom)
+    if (!canvaswrapper.hidden) { // if canvas is visible
+        window.addEventListener('touchmove', zoomIn)
+        window.addEventListener('wheel', zoomIn)
         i = Math.min(Math.round(window.scrollY * img.length / y), img.length - 1);
         y = document.body.getBoundingClientRect().height
         requestAnimationFrame(() => {
@@ -41,25 +37,27 @@ function handleScroll() {
 }
 
 // zoom in
-function onZoom() {
+function zoomIn() {
     if (window.visualViewport.scale > 1) {
-        removeClickOrTouch()
         window.removeEventListener('scroll', handleScroll)
-        window.removeEventListener('touchmove', onZoom)
-        window.addEventListener('touchmove', onReset)
-        let img = new Image()
-        img.src = images[i].src.replace(/\/200\//, '/800/')
-        img.onload = function () {
-            context.drawimage(img, 0, 0, img.naturalWidth, img.naturalHeight)
+        window.removeEventListener('touchmove', zoomIn)
+        window.removeEventListener('wheel', zoomIn);
+        window.addEventListener('touchmove', zoomOut)
+        window.addEventListener('wheel', zoomOut)
+        let hiRes = new Image()
+        hiRes.src = img[i].src.replace('blaiselarmee.mo.cloudinary.net/800', 'raw.githubusercontent.com/hallhassi/index/main')
+        hiRes.onload = function() {
+            canvas.width = hiRes.naturalWidth
+            canvas.height = hiRes.naturalHeight
+            canvas.getContext("2d").drawImage(hiRes, 0, 0, hiRes.naturalWidth, hiRes.naturalHeight)
         }
     }
 }
 
 // zoom out (reset)
-function onReset() {
+function zoomOut() {
     if (window.visualViewport.scale === 1) {
-        addClickOrTouch()
-        window.removeEventListener('touchmove', onReset)
+        window.removeEventListener('touchmove', zoomOut)
         window.addEventListener('scroll', handleScroll, { passive: true });
     }
 }

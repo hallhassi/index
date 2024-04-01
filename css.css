@@ -28,11 +28,6 @@ canvas {
     box-shadow: 0 0 0 1px red;
 }
 
-#esc {
-    width: 100%;
-    height: 100%;
-}
-
 img {
     max-height: 12vw;
 }

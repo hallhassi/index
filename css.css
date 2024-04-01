@@ -11,16 +11,26 @@ main {
     top: 0;
     left: 0;
     right: 0;
+    bottom: 0;
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: center;
     cursor: pointer;
+}
+
+#canvaswrapper[hidden] {
+    display: none;
 }
 
 canvas {
     max-height: 100vh;
     max-width: 100vw;
     box-shadow: 0 0 0 1px red;
+}
+
+#esc {
+    width: 100%;
+    height: 100%;
 }
 
 img {

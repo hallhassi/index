@@ -31,7 +31,7 @@ function handleScroll() {
             canvas.height = img[i].naturalHeight;
             canvas.getContext("2d").drawImage(img[i], 0, 0, img[i].naturalWidth, img[i].naturalHeight);
             img[i].classList.add('on')
-            canvas.parentElement.href = img[i].parentElement.href
+            // canvas.parentElement.href = img[i].parentElement.href
         })
     }
 }
@@ -39,26 +39,38 @@ function handleScroll() {
 // zoom in
 function zoomIn() {
     if (window.visualViewport.scale > 1) {
+        let hiRes = new Image()
+        hiRes.src = img[i].src.replace('blaiselarmee.mo.cloudinary.net/800', 'raw.githubusercontent.com/hallhassi/index/main')
+        hiRes.onload = function () {
+            const h = canvas.height
+            const w = canvas.width
+            if (w < document.body.getBoundingClientRect().width) canvas.style.height = h
+            if (h < document.body.getBoundingClientRect().height) canvas.style.width = w
+            canvas.width = hiRes.naturalWidth
+            canvas.height = hiRes.naturalHeight
+            canvas.getContext("2d").drawImage(hiRes, 0, 0, hiRes.naturalWidth, hiRes.naturalHeight)
+        }
         window.removeEventListener('scroll', handleScroll)
         window.removeEventListener('touchmove', zoomIn)
         window.removeEventListener('wheel', zoomIn);
         window.addEventListener('touchmove', zoomOut)
         window.addEventListener('wheel', zoomOut)
-        let hiRes = new Image()
-        hiRes.src = img[i].src.replace('blaiselarmee.mo.cloudinary.net/800', 'raw.githubusercontent.com/hallhassi/index/main')
-        hiRes.onload = function() {
-            canvas.width = hiRes.naturalWidth
-            canvas.height = hiRes.naturalHeight
-            canvas.getContext("2d").drawImage(hiRes, 0, 0, hiRes.naturalWidth, hiRes.naturalHeight)
-        }
     }
 }
 
 // zoom out (reset)
 function zoomOut() {
     if (window.visualViewport.scale === 1) {
+        canvas.width = img[i].naturalWidth;
+        canvas.height = img[i].naturalHeight;
+        canvas.style.height = ''
+        canvas.style.width = ''
+        canvas.getContext("2d").clearRect(img[i], 0, 0, img[i].naturalWidth, img[i].naturalHeight);
+        canvas.getContext("2d").drawImage(img[i], 0, 0, img[i].naturalWidth, img[i].naturalHeight);
         window.removeEventListener('touchmove', zoomOut)
         window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('touchmove', zoomOut)
+        window.addEventListener('wheel', zoomOut)
     }
 }
 

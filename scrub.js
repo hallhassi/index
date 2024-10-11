@@ -27,7 +27,7 @@ fetch('layout.json')
     console.error('There was a problem with the fetch operation:', error);
   });
 
-const panelSize = 600
+const panelSize = 400
 
 tv.width = panelSize
 tv.height = panelSize

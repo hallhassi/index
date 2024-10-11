@@ -6,7 +6,7 @@ const path = require('path');
 const inputDir = './thumbnails'; // Directory containing input images
 const outputImage = 'composite.jpg'; // Output image file
 const outputJson = 'layout.json'; // Output JSON file
-const panelSize = 600; // Size of each panel
+const panelSize = 400; // Size of each panel
 
 async function createComposite() {
     const files = fs.readdirSync(inputDir).filter(file => {

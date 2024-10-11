@@ -4,7 +4,7 @@ const path = require('path');
 
 // Configuration
 const inputDir = './thumbnails'; // Directory containing input images
-const outputImage = 'composite.webp'; // Output image file
+const outputImage = 'composite.jpg'; // Output image file
 const outputJson = 'layout.json'; // Output JSON file
 const panelSize = 600; // Size of each panel
 
@@ -22,18 +22,23 @@ async function createComposite() {
         create: {
             width: numColumns * panelSize,
             height: numRows * panelSize,
-            channels: 4,
-            background: { r: 0, g: 0, b: 0, alpha: 0 }
+            channels: 3,
+            background: { r: 255, g: 0, b: 0 }
         }
     });
 
     const overlays = [];
+    const ratios = []; // Array to hold aspect ratios
 
     for (let i = 0; i < numImages; i++) {
         const imagePath = path.join(inputDir, files[i]);
         const image = sharp(imagePath);
         
         const { width, height } = await image.metadata();
+
+        // Calculate the aspect ratio and store it
+        const ratio = `${width}/${height}`;
+        ratios.push(ratio);
 
         // Calculate the new size to fit into the panel
         let newWidth = width;
@@ -52,18 +57,19 @@ async function createComposite() {
 
         overlays.push({
             input: await image.resize(newWidth, newHeight).toBuffer(),
-            left: x + (panelSize - newWidth), // Position to the right
+            left: x ,
             top: y // Align to the top
         });
     }
 
-    await compositeImage.composite(overlays).webp({ quality: 80 }).toFile(outputImage);
+    await compositeImage.composite(overlays).jpeg({ quality: 80 }).toFile(outputImage);
     
     // Create layout JSON
     const layout = {
         rows: numRows,
         columns: numColumns,
-        totalImages: numImages
+        totalImages: numImages,
+        aspectRatios: ratios // Include the ratios array
     };
     
     fs.writeFileSync(outputJson, JSON.stringify(layout, null, 2));

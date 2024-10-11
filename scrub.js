@@ -2,11 +2,12 @@ const gap = document.getElementById('images').getBoundingClientRect().top + wind
 const anchors = Array.from(document.querySelectorAll('#images a'))
 const imgsrcs = Array.from(anchors).map(anchor => anchor.href)
 const img = new(Image)
-img.src = 'composite.webp'
+img.src = 'composite.jpg'
 
 let rows = 0
 let cols = 0
 let imageLength = 0
+let ratios = []
 
 // script.js
 fetch('layout.json')
@@ -20,6 +21,7 @@ fetch('layout.json')
     rows = data.rows
     cols = data.columns
     imageLength = data.totalImages
+    ratios = data.aspectRatios
   })
   .catch(error => {
     console.error('There was a problem with the fetch operation:', error);
@@ -29,6 +31,33 @@ const panelSize = 600
 
 tv.width = panelSize
 tv.height = panelSize
+
+
+function getImageDimensions(aspectRatio) {
+    const maxSize = panelSize;
+    const [widthRatio, heightRatio] = aspectRatio.split('/').map(Number);
+    
+    // Calculate the width and height based on the aspect ratio
+    const ratio = widthRatio / heightRatio;
+    
+    let width, height;
+
+    if (ratio > 1) {
+        // Wider than tall
+        width = maxSize;
+        height = maxSize / ratio;
+    } else {
+        // Taller than wide or square
+        height = maxSize;
+        width = maxSize * ratio;
+    }
+
+    return {
+        width: Math.round(width),
+        height: Math.round(height)
+    };
+}
+
 
 
 function getMatrixPosition(value, totalCells, maxRows, maxColumns) {
@@ -54,8 +83,8 @@ function getMatrixPosition(value, totalCells, maxRows, maxColumns) {
 
 
 
-function x() { return -getMatrixPosition(i(), imageLength, rows, cols)[0] * panelSize}
-function y() { return -getMatrixPosition(i(), imageLength, rows, cols)[1] * panelSize}
+function y() { return -getMatrixPosition(i(), imageLength, rows, cols)[0] * panelSize}
+function x() { return -getMatrixPosition(i(), imageLength, rows, cols)[1] * panelSize}
 function i() { return Math.round((imageLength * mapValue(window.scrollY)) - .25) }
 function docHeight() { return document.body.offsetHeight }
 
@@ -80,12 +109,14 @@ function drawframe() {
             tv.getContext("2d").clearRect(0, 0, panelSize, panelSize)
             sticky.innerHTML = ''
             if (i() >= 0) {
+                const width = getImageDimensions(ratios[i()]).width
+                const height = getImageDimensions(ratios[i()]).height
                 sticky.innerHTML = anchors[i()].innerHTML
-                tv.width = panelSize
-                tv.height = panelSize
-                tv.getContext("2d").drawImage(img, y(), x())
+                tv.width = width
+                tv.height = height
+                tv.getContext("2d").drawImage(img, x(), y())
                 window.ontouchmove = window.onwheel = onzoom
-                console.log(-x(),-y(),getMatrixPosition(i(), imageLength, rows, cols))                
+                console.log(-y(),-x(),getMatrixPosition(i(), imageLength, rows, cols))                
             }        })
     }
 }
@@ -113,7 +144,7 @@ function onzoomreset() {
         tv.height = panelSize
         tv.style.height = ''
         tv.style.width = ''
-        tv.getContext("2d").drawImage(img, y(), x())
+        tv.getContext("2d").drawImage(img, x(), y())
         window.ontouchend = null
         window.onscroll = drawframe
         window.ontouchmove = window.onwheel = onzoom

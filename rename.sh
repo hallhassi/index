@@ -38,19 +38,23 @@
 
 
 # Loop through all files in the current directory
-for file in *sketchbook-1*; do
+for file in *; do
     # Check if it is a regular file
     if [[ -f "$file" ]]; then
+        base_name=$(basename "$file")
         # Create the new filename by removing 'foo'
-        new_file="${file/sketchbook-1/sketchbook1}"
+        new_file="blaiselarmee-$base_name"
+        # new_file="${file//-blaiselarmee/}"
         # new_file=$(echo "$file" | sed 's/\([a-z]\)-\([a-z]\)/\1\2/g')
         # Rename the file
-        echo "$new_file"
         git mv "$file" "$new_file"
+        echo "Renamed: $file to $new_file"
+        # echo "$new_file"
+        # git mv "$file" "$new_file"
     fi
 done
 
-
+ 
 
 # # Initialize counter
 # counter=1

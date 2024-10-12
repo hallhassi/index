@@ -55,7 +55,7 @@ images=()
       filename=$(basename "$file")
       # Check if the file is an image based on its extension
       case "$file" in
-        *.pdf|*.mov|*.m4a)
+        *.pdf|*.mov|*.m4a|*.mp4)
           # size=$(stat -c%s "$file")
           echo "<a href=\"public/$filename\">$filename</a>"
           ;;

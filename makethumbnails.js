@@ -13,21 +13,20 @@ async function resizeImages() {
         await fs.ensureDir(outputDir); // Ensure the output directory exists
 
         const files = await fs.readdir(inputDir);
-        let processingStarted = false;
 
         for (const file of files) {
             const ext = path.extname(file).toLowerCase();
 
-            // Check if 'foo.bar' has been reached
-            if (file === 'blaiselarmee-2014-packet.pdf') {
-                processingStarted = true;
-                continue; // Skip 'foo.bar' itself
-            }
-
-            // Start processing images only after 'foo.bar' and if the extension is supported
-            if (processingStarted && supportedExtensions.has(ext)) {
+            // Start processing images if the extension is supported
+            if (supportedExtensions.has(ext)) {
                 const filePath = path.join(inputDir, file);
                 const outputPath = path.join(outputDir, file);
+
+                // Check if the output file already exists
+                if (await fs.pathExists(outputPath)) {
+                    console.log(`File already exists, skipping: ${outputPath}`);
+                    continue; // Skip resizing if the output file exists
+                }
 
                 await sharp(filePath, { limitInputPixels: false })
                     .resize({

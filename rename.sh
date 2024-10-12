@@ -37,20 +37,24 @@
 
 
 
+# Counter for new filenames
+counter=1
+
 # Loop through all files in the current directory
-for file in *; do
+for file in IMG_2017*; do
     # Check if it is a regular file
     if [[ -f "$file" ]]; then
-        base_name=$(basename "$file")
-        # Create the new filename by removing 'foo'
-        new_file="blaiselarmee-$base_name"
-        # new_file="${file//-blaiselarmee/}"
-        # new_file=$(echo "$file" | sed 's/\([a-z]\)-\([a-z]\)/\1\2/g')
+        # Get the file extension
+        extension="${file##*.}"
+        # Format the new filename with leading zeros
+        new_file="$(printf "%spublic/blaiselarmee-2016-drawinghomework-%02d.%s" "$directory" "$counter" "$extension")"
+        
         # Rename the file
         git mv "$file" "$new_file"
         echo "Renamed: $file to $new_file"
-        # echo "$new_file"
-        # git mv "$file" "$new_file"
+
+        # Increment the counter
+        ((counter++))
     fi
 done
 

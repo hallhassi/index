@@ -3,7 +3,7 @@
 {
 
 cat <<EOF
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="scrub.css"><style>body{white-space:pre;background:red;margin:1em 0 calc(100vh - 2em) 1em}a{all:unset;}</style></head><body>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="scrub.css"><style>body{white-space:pre;background:red;margin:1em 0 calc(100vh - 2em) 1em}a{all:unset;cursor:pointer;}</style></head><body>
 <div>
 <a href="https://mp4.bar ">https://mp4.bar </a>
 <a href="https://larmee.org ">https://larmee.org </a>
@@ -12,7 +12,7 @@ cat <<EOF
 <a href="https://davidhockney.tumblr.com">https://davidhockney.tumblr.com</a>
 <a href="https://instagram.com/hitosteyerl">https://instagram.com/hitosteyerl</a>
 </div>
-<div>
+<div><!-- 
 <s>blaiselarmee-2008-architecture</s>
 <s>blaiselarmee-2008-poolboys</s>
 <a href="blaiselarmee-2010-aidankoch.html">blaiselarmee-2010-aidankoch \$20</a>
@@ -41,7 +41,7 @@ cat <<EOF
 <a href="blaiselarmee-2017-2001.html">blaiselarmee-2017-2001 \$27</a>
 <s>blaiselarmee-2024-iud</s>
 <a href="blaiselarmee-2024-classclass.html">blaiselarmee-2024-classclass \$10</a>
-</div>
+</div>-->
 <div>
 EOF
 

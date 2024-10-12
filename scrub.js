@@ -151,17 +151,17 @@ function onzoomreset() {
     }
 }
 
-        // Function to disable all links
-        function disableAllLinks() {
-            const links = document.querySelectorAll('a'); // Select all anchor elements
+        // // Function to disable all links
+        // function disableAllLinks() {
+        //     const links = document.querySelectorAll('a'); // Select all anchor elements
 
-            links.forEach(link => {
-                link.addEventListener('click', (event) => {
-                    event.preventDefault(); // Prevent default link behavior
-                });
-                link.style.pointerEvents = 'none'; // Optionally disable pointer events for visual indication
-            });
-        }
+        //     links.forEach(link => {
+        //         link.addEventListener('click', (event) => {
+        //             event.preventDefault(); // Prevent default link behavior
+        //         });
+        //         link.style.pointerEvents = 'none'; // Optionally disable pointer events for visual indication
+        //     });
+        // }
 
-        // Call the function to disable links
-        disableAllLinks();
+        // // Call the function to disable links
+        // disableAllLinks();

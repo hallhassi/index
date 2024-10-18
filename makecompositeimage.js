@@ -1,211 +1,92 @@
 const sharp = require('sharp');
-const fs = require('fs');
-const fspromises = require('fs').promises;
-const fsextra = require('fs-extra');
+const fs = require('fs-extra');
 const path = require('path');
-const publicDir = './public';
+
+const inputDir = './public';
 const loResDir = './thumbnails';
 const previewDir = './bigthumbs';
+const outputJson = 'layout.json';
+const panelSize = 400;
 
 // Supported image types
 const supportedExtensions = new Set(['.jpg', '.jpeg', '.png', '.gif', '.tiff', '.webp']);
 
-// -------- delete leftover files in thumbnails that were removed from public--------
+// Helper function to delete leftover files not present in the public directory
+async function deleteExtraFiles(dir, publicFileSet) {
+    const files = await fs.readdir(dir);
+    const deletePromises = files.map(async (file) => {
+        if (!publicFileSet.has(file)) {
+            const filePath = path.join(dir, file);
+            await fs.unlink(filePath);
+            console.log(`Deleted: ${filePath}`);
+        }
+    });
+    return Promise.all(deletePromises);
+}
 
 async function deleteExtraThumbnails() {
     try {
-        // Read files in both directories
         const [publicFiles, thumbnailFiles, previewFiles] = await Promise.all([
-            fspromises.readdir(publicDir),
-            fspromises.readdir(loResDir),
-            fspromises.readdir(previewDir),
+            fs.readdir(inputDir),
+            fs.readdir(loResDir),
+            fs.readdir(previewDir),
         ]);
 
-        // Create a Set of public files for quick lookup
         const publicFileSet = new Set(publicFiles);
 
-        // Loop through the thumbnail files
-        for (const file of thumbnailFiles) {
-            // Check if the file is not in the public directory
-            if (!publicFileSet.has(file)) {
-                const filePath = path.join(loResDir, file);
-                // Delete the file
-                await fspromises.unlink(filePath);
-                console.log(`Deleted: ${filePath}`);
-            }
-        }
-
-        // Loop through the preview files
-        for (const file of previewFiles) {
-            // Check if the file is not in the public directory
-            if (!publicFileSet.has(file)) {
-                const filePath = path.join(loResDir, file);
-                // Delete the file
-                await fspromises.unlink(filePath);
-                console.log(`Deleted: ${filePath}`);
-            }
-        }
-
+        // Delete extra files in both thumbnail and preview directories
+        await Promise.all([
+            deleteExtraFiles(loResDir, publicFileSet),
+            deleteExtraFiles(previewDir, publicFileSet),
+        ]);
     } catch (error) {
-        console.error('Error during cleanup:', error);
+        console.error('Error during thumbnail cleanup:', error);
     }
 }
 
-// -----------Make thumbnails----------------
-
-
-async function resizeImages() {
-    let changes = [];
+// Resize images and create composite in one pass
+async function createComposite() {
+    let hasChanges = false;
 
     try {
         await deleteExtraThumbnails();
+        await fs.ensureDir(loResDir);
+        await fs.ensureDir(previewDir);
 
-        await fsextra.ensureDir(loResDir); // Ensure the output directory exists
-        await fsextra.ensureDir(previewDir); // Ensure the hiRes output directory exists
+        const files = (await fs.readdir(inputDir)).filter(file => supportedExtensions.has(path.extname(file).toLowerCase()));
 
-        const files = await fsextra.readdir(publicDir);
-
-        for (const file of files) {
-
-            const ext = path.extname(file).toLowerCase();
-
-            // Start processing images if the extension is supported
-            if (supportedExtensions.has(ext)) {
-                const filePath = path.join(publicDir, file);
-                const loResOutputPath = path.join(loResDir, file);
-                const hiResOutputPath = path.join(previewDir, file);
-
-                // Check if the output file already exists
-                if (await fsextra.pathExists(loResOutputPath) && await fsextra.pathExists(hiResOutputPath)) {
-                    continue; // Skip resizing if output files exist
-                }
-
-                await sharp(filePath, { limitInputPixels: false })
-                    .resize({
-                        width: 400,
-                        height: 400,
-                        fit: sharp.fit.inside,
-                        withoutEnlargement: true,
-                    })
-                    .toFile(loResOutputPath);
-
-                await sharp(filePath, { limitInputPixels: false })
-                    .resize({
-                        width: 3200,
-                        height: 3200,
-                        fit: sharp.fit.inside,
-                        withoutEnlargement: true,
-                    })
-                .jpeg({
-                  quality: 80,
-                })
-                .toFile(hiResOutputPath);
-              
-                changes.push('success');
-
-                console.log(`Resized: ${file} to ${loResOutputPath} and ${hiResOutputPath}`);
-            }
-        }
-
-        return changes.length > 0 ? 1 : null;
-
-    } catch (error) {
-        console.error('Error processing images:', error);
-    }
-}
-
-
-// ------------------compress images above 1500kb----------------
-
-const maxSize = 1536000; // 1500 KB
-
-async function compressLargeFiles() {
-  try {
-    const files = await fspromises.readdir(previewDir);
-
-    for (const file of files) {
-      const filePath = path.join(previewDir, file);
-      const stats = await fspromises.stat(filePath);
-
-      if (stats.size > maxSize) {
-        console.log(`File ${file} exceeds 1500 KB. Original size: ${stats.size / 1024} KB`);
-
-        // Create a temporary file path
-        const tmpFilePath = `${filePath}.tmp`;
-
-        // Perform action on large file (e.g., compress)
-        await sharp(filePath)
-          .jpeg({
-            quality: 60,
-            mozjpeg: true,
-            progressive: true,
-          })
-          .toFile(tmpFilePath);
-
-        // Replace the original file with the compressed temporary file
-        await fspromises.rename(tmpFilePath, filePath);
-
-        const newStats = await fspromises.stat(filePath);
-        console.log(`Compressed ${file}. New size: ${newStats.size / 1024} KB`);
-      }
-    }
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-
-// ------------------Make composite-------------------
-
-const outputImage = 'composite.jpg'; // Output image file
-const outputJson = 'layout.json'; // Output JSON file
-const panelSize = 400; // Size of each panel
-
-async function createComposite() {
-
-    await compressLargeFiles();
-
-    const changes = await resizeImages();
-
-    if (changes === null) {
-        // Your additional logic goes here
-    } else {
-
-        const files = fs.readdirSync(loResDir).filter(file => {
-            return /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(file);
-        });
 
         const numImages = files.length;
         const numColumns = Math.ceil(Math.sqrt(numImages));
         const numRows = Math.ceil(numImages / numColumns);
 
-        // Create a new blank image with transparent background
+        // Create a blank image for the composite
         const compositeImage = sharp({
             create: {
                 width: numColumns * panelSize,
                 height: numRows * panelSize,
                 channels: 3,
-                background: { r: 255, g: 0, b: 0 }
-            }
+                background: { r: 255, g: 0, b: 0 }, // Red background for debugging
+            },
         });
 
         const overlays = [];
-        const ratios = []; // Array to hold aspect ratios
+        const aspectRatios = [];
 
         for (let i = 0; i < numImages; i++) {
-            const imagePath = path.join(loResDir, files[i]);
-            const image = sharp(imagePath);
+            const file = files[i];
+            const filePath = path.join(inputDir, file);
+            const loResOutputPath = path.join(loResDir, file);
+            const hiResOutputPath = path.join(previewDir, file);
 
-            const { width, height } = await image.metadata();
-
-            // Calculate the aspect ratio and store it
-            const ratio = `${width}/${height}`;
-            ratios.push(ratio);
-
-            // Calculate the new size to fit into the panel
-            let newWidth = width;
-            let newHeight = height;
-
+            // Read and resize image
+            const image = sharp(filePath);
+            const metadata = await image.metadata();
+            const { width, height } = metadata;
+            const aspectRatio = `${width}/${height}`;
+            aspectRatios.push(aspectRatio);
+            
+            let newWidth, newHeight;
             if (width > height) {
                 newWidth = panelSize;
                 newHeight = Math.round((height / width) * panelSize);
@@ -214,30 +95,78 @@ async function createComposite() {
                 newWidth = Math.round((width / height) * panelSize);
             }
 
-            const x = (i % numColumns) * panelSize;
-            const y = Math.floor(i / numColumns) * panelSize;
-
+            // Add to composite overlays
             overlays.push({
                 input: await image.resize(newWidth, newHeight).toBuffer(),
-                left: x,
-                top: y // Align to the top
+                left: (i % numColumns) * panelSize,
+                top: Math.floor(i / numColumns) * panelSize,
             });
+
+            hasChanges = true;
+            console.log(`Processed: ${file}`);
+
+            // Skip processing if resized images already exist
+            if (await fs.pathExists(loResOutputPath) && await fs.pathExists(hiResOutputPath)) {
+                continue;
+            }
+            
+            // Create low-resolution thumbnail
+            await image.resize(400, 400, { fit: sharp.fit.inside, withoutEnlargement: true }).toFile(loResOutputPath);
+            // Create high-resolution preview
+            await image.resize(3200, 3200, { fit: sharp.fit.inside, withoutEnlargement: true }).jpeg({ quality: 80 }).toFile(hiResOutputPath);
         }
 
-        await compositeImage.composite(overlays).jpeg({ quality: 80 }).toFile(outputImage);
+        const layout = { rows: numRows, columns: numColumns, totalImages: numImages, aspectRatios };
+        await fs.writeJson(outputJson, layout, { spaces: 2 });
 
-        // Create layout JSON
-        const layout = {
-            rows: numRows,
-            columns: numColumns,
-            totalImages: numImages,
-            aspectRatios: ratios // Include the ratios array
-        };
+        if (hasChanges) {
+            await compositeImage.composite(overlays).jpeg({ quality: 80 }).toFile('composite.jpg');
+            await compositeImage.composite(overlays).webp({ quality: 80 }).toFile('composite.webp');
 
-        fs.writeFileSync(outputJson, JSON.stringify(layout, null, 2));
-        console.log('Composite image created and layout saved.');
+            console.log('Composite image and layout created.');
+        } else {
+            console.log('No new images to process.');
+        }
+
+    } catch (error) {
+        console.error('Error creating composite:', error);
     }
-
 }
 
 createComposite().catch(err => console.error(err));
+
+
+// Compress large files above 1500 KB in the preview directory
+const maxSize = 1536000; // 1500 KB
+
+async function compressLargeFiles() {
+    try {
+        const files = await fs.readdir(previewDir);
+
+        const compressPromises = files.map(async (file) => {
+            const filePath = path.join(previewDir, file);
+            const stats = await fs.stat(filePath);
+
+            if (stats.size > maxSize) {
+                console.log(`Compressing ${file} (Original size: ${stats.size / 1024} KB)`);
+
+                const tmpFilePath = `${filePath}.tmp`;
+
+                await sharp(filePath)
+                    .jpeg({ quality: 60, mozjpeg: true, progressive: true })
+                    .toFile(tmpFilePath);
+
+                await fs.rename(tmpFilePath, filePath);
+
+                const newStats = await fs.stat(filePath);
+                console.log(`Compressed ${file} (New size: ${newStats.size / 1024} KB)`);
+            }
+        });
+
+        await Promise.all(compressPromises);
+    } catch (error) {
+        console.error('Error compressing large files:', error);
+    }
+}
+
+compressLargeFiles().catch(err => console.error(err));

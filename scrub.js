@@ -6,7 +6,12 @@ const gap = document.getElementById('images').getBoundingClientRect().top + wind
 const anchors = Array.from(document.querySelectorAll('#images a'))
 const imgsrcs = Array.from(anchors).map(anchor => anchor.href)
 const composite = new (Image)
-composite.src = 'composite.jpg'
+composite.src = 'composite.webp'
+// Set the onerror function to load the JPG image if the WebP fails
+composite.onerror = function() {
+    img.src = 'composite.jpg'; // Fallback to the JPG source
+};
+
 const panelSize = 400
 tv.width = panelSize
 tv.height = panelSize
@@ -37,6 +42,8 @@ function openLink() {
 
 composite.onload = drawframe
 window.onscroll = drawframe
+
+
 
 function drawframe() {
     requestAnimationFrame(() => {

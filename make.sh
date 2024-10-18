@@ -3,11 +3,12 @@
 {
 
 cat <<EOF
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="scrub.css"><style>body{white-space:pre;background:red;margin:1em 0 calc(100vh - 2em) 0;line-height:1em;}a{all:unset;}</style></head><body>
-<div>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="scrub.css"><style>body{white-space:pre;background:red;margin:1em 0 calc(100vh - 2em) 0;line-height:1em;}a{all:unset;cursor:pointer;}</style></head><body>
+<div id="wrapper"><canvas id="tv" width="0" height="0"></canvas><div id="sticky"></div></div>
 <a href="https://mp4.bar ">https://mp4.bar </a>
 <a href="https://larmee.org ">https://larmee.org </a>
 <a href="https://2dcloud.com ">https://2dcloud.com </a>
+<a href="https://apartment.gallery ">https://apartment.gallery </a>
 <a href="https://altcomics.tumblr.com">https://altcomics.tumblr.com</a>
 <a href="https://davidhockney.tumblr.com">https://davidhockney.tumblr.com</a>
 <a href="https://instagram.com/hitosteyerl">https://instagram.com/hitosteyerl</a>
@@ -72,7 +73,7 @@ images=()
   echo '<div id="images">'
   printf '%s\n' "${images[@]}"
 
-echo '</div><div id="wrapper"><canvas id="tv" width="0" height="0"></canvas></div><div id="sticky"></div><script src="scrub.js"></script></body></html>'
+echo '</div><script src="scrub.js"></script></body></html>'
 
 
 } > index.html

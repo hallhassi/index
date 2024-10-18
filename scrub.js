@@ -5,7 +5,7 @@ let ratios = []
 const gap = document.getElementById('images').getBoundingClientRect().top + window.scrollY
 const anchors = Array.from(document.querySelectorAll('#images a'))
 const imgsrcs = Array.from(anchors).map(anchor => anchor.href)
-const composite = new(Image)
+const composite = new (Image)
 composite.src = 'composite.jpg'
 const panelSize = 400
 tv.width = panelSize
@@ -13,25 +13,25 @@ tv.height = panelSize
 
 
 fetch('layout.json')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    rows = data.rows
-    cols = data.columns
-    imageLength = data.totalImages
-    ratios = data.aspectRatios
-  })
-  .catch(error => {
-    console.error('There was a problem with the fetch operation:', error);
-  });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        rows = data.rows
+        cols = data.columns
+        imageLength = data.totalImages
+        ratios = data.aspectRatios
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
 
 
 function openLink() {
-    window.open(`public/${anchors[i()].innerHTML}`) 
+    window.open(`public/${anchors[i()].innerHTML}`)
 }
 
 
@@ -39,12 +39,14 @@ composite.onload = drawframe
 window.onscroll = drawframe
 
 function drawframe() {
-    if (composite.complete) {
-        requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+        tv.style.display = 'none'
+        if (composite.complete) {
             tv.removeEventListener('click', openLink)
             tv.getContext("2d").clearRect(0, 0, panelSize, panelSize)
             sticky.innerHTML = ''
             if (i() >= 0) {
+                tv.style.display = ''
                 const width = getImageDimensions(ratios[i()]).width
                 const height = getImageDimensions(ratios[i()]).height
                 tv.addEventListener('click', openLink);
@@ -54,8 +56,8 @@ function drawframe() {
                 tv.getContext("2d").drawImage(composite, x(), y())
                 window.ontouchmove = window.onwheel = onzoom
             }
-        })
-    }
+        }
+    })
 }
 
 function onzoom(e) {
@@ -95,10 +97,10 @@ function onzoomreset() {
 function getImageDimensions(aspectRatio) {
     const maxSize = panelSize;
     const [widthRatio, heightRatio] = aspectRatio.split('/').map(Number);
-    
+
     // Calculate the width and height based on the aspect ratio
     const ratio = widthRatio / heightRatio;
-    
+
     let width, height;
 
     if (ratio > 1) {
@@ -127,7 +129,7 @@ function getMatrixPosition(value, totalCells, maxRows, maxColumns) {
 
     // Calculate effective number of columns in the matrix
     const effectiveColumns = Math.min(maxColumns, Math.ceil(totalCells / maxRows));
-    
+
     // Calculate the row and column
     const rowIndex = Math.floor(value / effectiveColumns);
     const columnIndex = value % effectiveColumns;
@@ -142,14 +144,14 @@ function getMatrixPosition(value, totalCells, maxRows, maxColumns) {
 
 
 
-function y() { return -getMatrixPosition(i(), imageLength, rows, cols)[0] * panelSize}
-function x() { return -getMatrixPosition(i(), imageLength, rows, cols)[1] * panelSize}
+function y() { return -getMatrixPosition(i(), imageLength, rows, cols)[0] * panelSize }
+function x() { return -getMatrixPosition(i(), imageLength, rows, cols)[1] * panelSize }
 function i() { return Math.round((imageLength * mapValue(window.scrollY)) - .25) }
 function docHeight() { return document.body.offsetHeight }
 
 
 function mapValue(input) {
-        // Ensure input is within the expected range
+    // Ensure input is within the expected range
     if (input < gap) return -1;
     if (input > docHeight()) return 100;
 
@@ -157,4 +159,4 @@ function mapValue(input) {
     return ((input - gap) / (docHeight() - gap));
 }
 
-    
+

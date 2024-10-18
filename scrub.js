@@ -1,15 +1,17 @@
-const gap = document.getElementById('images').getBoundingClientRect().top + window.scrollY
-const anchors = Array.from(document.querySelectorAll('#images a'))
-const imgsrcs = Array.from(anchors).map(anchor => anchor.href)
-const img = new(Image)
-img.src = 'composite.jpg'
-
 let rows = 0
 let cols = 0
 let imageLength = 0
 let ratios = []
+const gap = document.getElementById('images').getBoundingClientRect().top + window.scrollY
+const anchors = Array.from(document.querySelectorAll('#images a'))
+const imgsrcs = Array.from(anchors).map(anchor => anchor.href)
+const composite = new(Image)
+composite.src = 'composite.jpg'
+const panelSize = 400
+tv.width = panelSize
+tv.height = panelSize
 
-// script.js
+
 fetch('layout.json')
   .then(response => {
     if (!response.ok) {
@@ -27,10 +29,63 @@ fetch('layout.json')
     console.error('There was a problem with the fetch operation:', error);
   });
 
-const panelSize = 400
 
-tv.width = panelSize
-tv.height = panelSize
+
+composite.onload = drawframe
+window.onscroll = drawframe
+
+function drawframe() {
+    if (composite.complete) {
+        requestAnimationFrame(() => {
+            tv.getContext("2d").clearRect(0, 0, panelSize, panelSize)
+            sticky.innerHTML = sticky.href = ''
+            if (i() >= 0) {
+                const width = getImageDimensions(ratios[i()]).width
+                const height = getImageDimensions(ratios[i()]).height
+                sticky.innerHTML = anchors[i()].innerHTML
+                sticky.href = 'public/' + anchors[i()].innerHTML
+                tv.onclick = window.open(anchors[i()].innerHTML)
+                tv.width = width
+                tv.height = height
+                tv.getContext("2d").drawImage(composite, x(), y())
+                window.ontouchmove = window.onwheel = onzoom
+            }
+        })
+    }
+}
+
+function onzoom(e) {
+    if (window.visualViewport.scale > 1 | (e.touches !== undefined && e.touches.length > 1)) {
+        let hiRes
+        hiRes = new Image()
+        hiRes.src = imgsrcs[i()]
+        hiRes.onload = function () {
+            if (tv.width < document.body.clientWidth) tv.style.height = tv.height
+            if (tv.height < document.body.clientHeight) tv.style.width = tv.width
+            tv.width = hiRes.naturalWidth
+            tv.height = hiRes.naturalHeight
+            tv.getContext("2d").drawImage(hiRes, 0, 0, hiRes.naturalWidth, hiRes.naturalHeight)
+        }
+        window.onscroll = window.ontouchmove = null
+        window.ontouchend = window.onwheel = onzoomreset
+    }
+}
+
+function onzoomreset() {
+    if (window.visualViewport.scale === 1) {
+        const width = getImageDimensions(ratios[i()]).width
+        const height = getImageDimensions(ratios[i()]).height
+        tv.width = width
+        tv.height = height
+        tv.style.height = ''
+        tv.style.width = ''
+        tv.getContext("2d").drawImage(composite, x(), y())
+        window.ontouchend = null
+        window.onscroll = drawframe
+        window.ontouchmove = window.onwheel = onzoom
+    }
+}
+
 
 
 function getImageDimensions(aspectRatio) {
@@ -99,69 +154,3 @@ function mapValue(input) {
 }
 
     
-
-img.onload = drawframe
-window.onscroll = drawframe
-
-function drawframe() {
-    if (img.complete) {
-        requestAnimationFrame(() => {
-            tv.getContext("2d").clearRect(0, 0, panelSize, panelSize)
-            sticky.innerHTML = ''
-            if (i() >= 0) {
-                const width = getImageDimensions(ratios[i()]).width
-                const height = getImageDimensions(ratios[i()]).height
-                sticky.innerHTML = anchors[i()].innerHTML
-                tv.width = width
-                tv.height = height
-                tv.getContext("2d").drawImage(img, x(), y())
-                window.ontouchmove = window.onwheel = onzoom
-                console.log(-y(),-x(),getMatrixPosition(i(), imageLength, rows, cols))                
-            }        })
-    }
-}
-
-function onzoom(e) {
-    if (window.visualViewport.scale > 1 | (e.touches !== undefined && e.touches.length > 1)) {
-        let hiRes
-        hiRes = new Image()
-        hiRes.src = imgsrcs[i()]
-        hiRes.onload = function () {
-            if (tv.width < document.body.clientWidth) tv.style.height = tv.height
-            if (tv.height < document.body.clientHeight) tv.style.width = tv.width
-            tv.width = hiRes.naturalWidth
-            tv.height = hiRes.naturalHeight
-            tv.getContext("2d").drawImage(hiRes, 0, 0, hiRes.naturalWidth, hiRes.naturalHeight)
-        }
-        window.onscroll = window.ontouchmove = null
-        window.ontouchend = window.onwheel = onzoomreset
-    }
-}
-
-function onzoomreset() {
-    if (window.visualViewport.scale === 1) {
-        tv.width = panelSize
-        tv.height = panelSize
-        tv.style.height = ''
-        tv.style.width = ''
-        tv.getContext("2d").drawImage(img, x(), y())
-        window.ontouchend = null
-        window.onscroll = drawframe
-        window.ontouchmove = window.onwheel = onzoom
-    }
-}
-
-        // // Function to disable all links
-        // function disableAllLinks() {
-        //     const links = document.querySelectorAll('a'); // Select all anchor elements
-
-        //     links.forEach(link => {
-        //         link.addEventListener('click', (event) => {
-        //             event.preventDefault(); // Prevent default link behavior
-        //         });
-        //         link.style.pointerEvents = 'none'; // Optionally disable pointer events for visual indication
-        //     });
-        // }
-
-        // // Call the function to disable links
-        // disableAllLinks();

@@ -12,18 +12,30 @@
 
 #tv {
   position: fixed;
-  top: 1.2em;
+  top: 1em;
   right: 0;
   object-fit: contain;
   max-height: 100vh;
   max-width: 100vw;
 }
 
-#stickywrapper {
+#sticky {
   position: fixed;
   top: 0;
   background: red;
-  height: 1.2em;
+  height: 1em;
   width: 100%;
   text-align:right;
+}
+
+
+#debug {
+  white-space: pre-wrap;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  text-align: right;
 }

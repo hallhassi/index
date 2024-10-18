@@ -3,7 +3,7 @@
 {
 
 cat <<EOF
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="scrub.css"><style>body{white-space:pre;background:red;margin:1em 0 calc(100vh - 2em) 0;line-height:1em;}a{all:unset;cursor:pointer;}</style></head><body>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="scrub.css"><style>body{white-space:pre;background:red;margin:1em 0 calc(100vh - 2em) 0;line-height:1em;}a{all:unset;}</style></head><body>
 <div>
 <a href="https://mp4.bar ">https://mp4.bar </a>
 <a href="https://larmee.org ">https://larmee.org </a>
@@ -60,7 +60,7 @@ images=()
           echo "<a href=\"public/$filename\">$filename</a>"
           ;;
         *)
-          images+=("<a href=\"public/$filename\">$filename</a>") # Add to the array if not an image
+          images+=("<a href=\"bigthumbs/$filename\">$filename</a>") # Add to the array if not an image
           ;;
       esac
     fi
@@ -72,27 +72,9 @@ images=()
   echo '<div id="images">'
   printf '%s\n' "${images[@]}"
 
-echo '</div><div id="debug" style="z-index:2;top:0;right:0;position:fixed;"></div><div id="wrapper"><canvas id="tv" width="0" height="0"></canvas></div><div id="sticky"></div><script src="scrub.js"></script></body></html>'
+echo '</div><div id="wrapper"><canvas id="tv" width="0" height="0"></canvas></div><div id="sticky"></div><script src="scrub.js"></script></body></html>'
 
 
 } > index.html
 
 node makecompositeimage.js
-
-
-# #!/bin/bash
-
-# {
-
-# echo '<table><thead><th>name</th><th>size</th><tbody>'
-
-#   # Loop through all files in the specified directory
-#   for file in ./public/*; do
-#     if [ -f "$file" ]; then
-#       filename=$(basename "$file")
-#       size=$(stat -c%s "$file" | awk '{ printf "%.2f\n", $1/1024/1024 }')
-#       echo "<tr><td><a href=\"public/$filename\">$filename</a></td><td>$size</td></tr>"
-#     fi
-#   done
-
-# } > index.html

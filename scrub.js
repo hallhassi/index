@@ -30,6 +30,10 @@ fetch('layout.json')
   });
 
 
+function openLink() {
+    window.open(`public/${anchors[i()].innerHTML}`) 
+}
+
 
 composite.onload = drawframe
 window.onscroll = drawframe
@@ -37,12 +41,14 @@ window.onscroll = drawframe
 function drawframe() {
     if (composite.complete) {
         requestAnimationFrame(() => {
+            tv.removeEventListener('click', openLink)
             tv.getContext("2d").clearRect(0, 0, panelSize, panelSize)
             sticky.innerHTML = ''
             if (i() >= 0) {
                 const width = getImageDimensions(ratios[i()]).width
                 const height = getImageDimensions(ratios[i()]).height
-                sticky.innerHTML = anchors[i()].innerHTML
+                tv.addEventListener('click', openLink);
+                sticky.innerHTML = `<a href="public/${anchors[i()].innerHTML}">${anchors[i()].innerHTML}</a>`
                 tv.width = width
                 tv.height = height
                 tv.getContext("2d").drawImage(composite, x(), y())
@@ -56,14 +62,13 @@ function onzoom(e) {
     if (window.visualViewport.scale > 1 | (e.touches !== undefined && e.touches.length > 1)) {
         let hiRes
         hiRes = new Image()
-        hiRes.src = imgsrcs[i()]
+        hiRes.src = imgsrcs[i()].replace('public', 'bigthumbs')
         hiRes.onload = function () {
             if (tv.width < document.body.clientWidth) tv.style.height = tv.height
             if (tv.height < document.body.clientHeight) tv.style.width = tv.width
             tv.width = hiRes.naturalWidth
             tv.height = hiRes.naturalHeight
             tv.getContext("2d").drawImage(hiRes, 0, 0, hiRes.naturalWidth, hiRes.naturalHeight)
-            debug.innerHTML = `<br>${tv.width}<br>${tv.height}<br>${tv.style.width}<br>${tv.style.height}<br>${tv.getBoundingClientRect().top}<br>${tv.getBoundingClientRect().width}<br>${tv.getBoundingClientRect().height}<br>${hiRes.src}`
         }
         window.onscroll = window.ontouchmove = null
         window.ontouchend = window.onwheel = onzoomreset

@@ -47,10 +47,10 @@ window.onscroll = drawframe
 
 function drawframe() {
     requestAnimationFrame(() => {
-        tv.style.display = 'none'
         if (composite.complete) {
             tv.removeEventListener('click', openLink)
             tv.getContext("2d").clearRect(0, 0, panelSize, panelSize)
+            tv.style.display = ''
             sticky.innerHTML = ''
             if (i() >= 0) {
                 tv.style.display = ''
@@ -62,7 +62,7 @@ function drawframe() {
                 tv.height = height
                 tv.getContext("2d").drawImage(composite, x(), y())
                 window.ontouchmove = window.onwheel = onzoom
-            }
+            } else advertise()
         }
     })
 }
@@ -167,3 +167,28 @@ function mapValue(input) {
 }
 
 
+
+// function advertise() {
+//     advertisement.width = panelSize
+//     advertisement.height = panelSize
+//     const ctx = advertisement.getContext('2d');
+
+//     // Text and padding setup
+//     const text = "ADVERTISEMENT";
+//     const padding = 20;
+
+//     // Set font to small caps and configure the style
+//     ctx.font = 'small-caps 24px Arial';  // Use small caps
+//     ctx.textAlign = 'center';            // Center the text horizontally
+//     ctx.textBaseline = 'middle';         // Center the text vertically
+
+//     // Calculate the x and y position for centering
+//     const xx = advertisement.width / 2;
+//     const yy = advertisement.height / 2;
+
+//     // Optional: Clear the advertisement (in case there was something drawn before)
+//     ctx.clearRect(0, 0, advertisement.width, advertisement.height);
+
+//     // Draw the text on the advertisement
+//     ctx.fillText(text, xx, yy);
+// }

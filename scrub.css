@@ -10,7 +10,7 @@
   pointer-events: none;
 }
 
-#tv {
+#tv, #advertisement {
   position: fixed;
   top: 1em;
   right: 0;

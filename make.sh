@@ -11,9 +11,7 @@ cat <<EOF
 <a href="https://apartment.gallery ">https://apartment.gallery </a>
 <a href="https://altcomics.tumblr.com">https://altcomics.tumblr.com</a>
 <a href="https://davidhockney.tumblr.com">https://davidhockney.tumblr.com</a>
-<a href="https://instagram.com/hitosteyerl">https://instagram.com/hitosteyerl</a>
-</div>
-<div><!-- 
+<a href="https://instagram.com/hitosteyerl">https://instagram.com/hitosteyerl</a></div><!-- 
 <s>blaiselarmee-2008-architecture</s>
 <s>blaiselarmee-2008-poolboys</s>
 <a href="blaiselarmee-2010-aidankoch.html">blaiselarmee-2010-aidankoch \$20</a>
@@ -41,9 +39,7 @@ cat <<EOF
 <a href="blaiselarmee-2016-mirrormirror.html">blaiselarmee-2016-mirrormirror \$30</a>
 <a href="blaiselarmee-2017-2001.html">blaiselarmee-2017-2001 \$27</a>
 <s>blaiselarmee-2024-iud</s>
-<a href="blaiselarmee-2024-classclass.html">blaiselarmee-2024-classclass \$10</a>
-</div>-->
-<div>
+<a href="blaiselarmee-2024-classclass.html">blaiselarmee-2024-classclass \$10</a></div> -->
 EOF
 
 images=()
@@ -58,7 +54,7 @@ images=()
       case "$file" in
         *.pdf|*.mov|*.m4a|*.mp4)
           # size=$(stat -c%s "$file")
-          echo "<a href=\"public/$filename\">$filename</a>"
+          # echo "<a href=\"public/$filename\">$filename</a>"
           ;;
         *)
           images+=("<a href=\"bigthumbs/$filename\">$filename</a>") # Add to the array if not an image
@@ -69,7 +65,6 @@ images=()
   done
 
 # Echo the array of non-image files after the loop
-  echo '</div>'
   echo '<div id="images">'
   printf '%s\n' "${images[@]}"
 

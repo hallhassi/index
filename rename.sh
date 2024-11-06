@@ -41,7 +41,7 @@
 counter=1
 
 # Loop through all files in the current directory
-for file in IMG_2017*; do
+for file in o/*; do
     # Check if it is a regular file
     if [[ -f "$file" ]]; then
         # Get the file extension

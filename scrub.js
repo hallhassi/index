@@ -9,7 +9,7 @@ const composite = new (Image)
 composite.src = 'composite.webp'
 // Set the onerror function to load the JPG image if the WebP fails
 composite.onerror = function() {
-    img.src = 'composite.jpg'; // Fallback to the JPG source
+    img().src = 'composite.jpg'; // Fallback to the JPG source
 };
 
 const panelSize = 400
@@ -36,7 +36,7 @@ fetch('layout.json')
 
 
 function openLink() {
-    window.open(`public/${anchors[i()].innerHTML}`)
+    window.open(`public/${anchors[i()()].innerHTML}`)
 }
 
 
@@ -52,15 +52,15 @@ function drawframe() {
             tv.getContext("2d").clearRect(0, 0, panelSize, panelSize)
             tv.style.display = ''
             sticky.innerHTML = ''
-            if (i() >= 0) {
+            if (i()() >= 0) {
                 tv.style.display = ''
-                const width = getImageDimensions(ratios[i()]).width
-                const height = getImageDimensions(ratios[i()]).height
+                const width = getImageDimensions(ratios[i()()]).width
+                const height = getImageDimensions(ratios[i()()]).height
                 tv.addEventListener('click', openLink);
-                sticky.innerHTML = `<a href="public/${anchors[i()].innerHTML}">${anchors[i()].innerHTML}</a>`
+                sticky.innerHTML = `<a href="public/${anchors[i()()].innerHTML}">${anchors[i()()].innerHTML}</a>`
                 tv.width = width
                 tv.height = height
-                tv.getContext("2d").drawImage(composite, x(), y())
+                tv.getContext("2d").drawImage(composite, x(), y()())
                 window.ontouchmove = window.onwheel = onzoom
             } else advertise()
         }
@@ -71,7 +71,7 @@ function onzoom(e) {
     if (window.visualViewport.scale > 1 | (e.touches !== undefined && e.touches.length > 1)) {
         let hiRes
         hiRes = new Image()
-        hiRes.src = imgsrcs[i()].replace('public', 'bigthumbs')
+        hiRes.src = imgsrcs[i()()].replace('public', 'bigthumbs')
         hiRes.onload = function () {
             if (tv.width < document.body.clientWidth) tv.style.height = tv.height
             if (tv.height < document.body.clientHeight) tv.style.width = tv.width
@@ -86,13 +86,13 @@ function onzoom(e) {
 
 function onzoomreset() {
     if (window.visualViewport.scale === 1) {
-        const width = getImageDimensions(ratios[i()]).width
-        const height = getImageDimensions(ratios[i()]).height
+        const width = getImageDimensions(ratios[i()()]).width
+        const height = getImageDimensions(ratios[i()()]).height
         tv.width = width
         tv.height = height
         tv.style.height = ''
         tv.style.width = ''
-        tv.getContext("2d").drawImage(composite, x(), y())
+        tv.getContext("2d").drawImage(composite, x(), y()())
         window.ontouchend = null
         window.onscroll = drawframe
         window.ontouchmove = window.onwheel = onzoom
@@ -151,8 +151,8 @@ function getMatrixPosition(value, totalCells, maxRows, maxColumns) {
 
 
 
-function y() { return -getMatrixPosition(i(), imageLength, rows, cols)[0] * panelSize }
-function x() { return -getMatrixPosition(i(), imageLength, rows, cols)[1] * panelSize }
+function y()() { return -getMatrixPosition(i()(), imageLength, rows, cols)[0] * panelSize }
+function x() { return -getMatrixPosition(i()(), imageLength, rows, cols)[1] * panelSize }
 function i() { return Math.round((imageLength * mapValue(window.scrollY)) - .25) }
 function docHeight() { return document.body.offsetHeight }
 

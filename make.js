@@ -17,7 +17,7 @@ fs.readdir(dir, (err, files) => {
     if (stat.isFile()) {
       const extension = path.extname(file).toLowerCase();
       if (['.jpg', '.gif', '.png', 'webp'].includes(extension)) {
-        images.push(`<a href="https://blaiselarmee.com/o/${file}" style="display:none;"><img src="https://blaiselarmee.com/300/${file}" style="display:none;">${file}</a>`);
+        images.push(`<a href="https://blaiselarmee.com/o/${file}" style="display:none;"><img src="https://blaiselarmee.com/lo/${file}" style="display:none;">${file}</a>`);
       }
     }
   });

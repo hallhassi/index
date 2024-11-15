@@ -1,7 +1,5 @@
 const sharp = require('sharp');const fs = require('fs-extra');
 const path = require('path');
-const { spawn } = require('child_process');
-
 const inputDir = './o';
 const loResDir = './lo';
 const hiResDir = './hi';
@@ -43,7 +41,7 @@ async function makeImages() {
 
     try {
         await deleteExtraImages();
-        await fs.ensureDir(loResDir);
+        // await fs.ensureDir(loResDir);
         await fs.ensureDir(hiResDir);
 
         const files = (await fs.readdir(inputDir)).filter(file => supportedExtensions.has(path.extname(file).toLowerCase()));
@@ -55,7 +53,7 @@ async function makeImages() {
             const hiResOutputPath = path.join(hiResDir, file);
 
             // Skip processing if resized images already exist
-            if (await fs.pathExists(loResOutputPath) && await fs.pathExists(hiResOutputPath)) {
+            if (await fs.pathExists(hiResOutputPath) && await fs.pathExists(loResOutputPath)) {
                 continue;
             }
             
@@ -63,7 +61,8 @@ async function makeImages() {
             await image.resize(3200, 3200, { fit: sharp.fit.inside, withoutEnlargement: true }).jpeg({ quality: 80 }).toFile(hiResOutputPath);
             
             // Create low-resolution image from high-resolution image
-            await sharp(hiResOutputPath).resize(400, 400, { fit: sharp.fit.inside, withoutEnlargement: true }).toFile(loResOutputPath);        }
+            await sharp(hiResOutputPath).resize(400, 400, { fit: sharp.fit.inside, withoutEnlargement: true }).toFile(loResOutputPath);        
+        }
 
     } catch (error) {
         console.error('Error creating images:', error);

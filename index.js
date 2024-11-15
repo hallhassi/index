@@ -48,7 +48,7 @@ function handleScroll() {
 function zoomIn() {
     if (window.visualViewport.scale > 1 && !canvaswrapper.hidden) {
         let hiRes = new Image()
-        hiRes.src = img()[i()].src.replace('/300/', '/auto/')
+        hiRes.src = img()[i()].src.replace('/300/', '/hi/')
         hiRes.onload = function () {
             const h = canvas.height
             const w = canvas.width

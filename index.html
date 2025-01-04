@@ -1,4 +1,4 @@
-<html lang="en"><head><title>Blaise Larmee artist</title></head><body>
+<html lang="en"><head><title>Blaise Larmee</title></head><body>
     <img src="https://blaiselarmee.com/lo/blaiselarmee-1989-02.jpg">
     <img src="https://blaiselarmee.com/lo/blaiselarmee-1989-03.jpg">
     <img src="https://blaiselarmee.com/lo/blaiselarmee-1989-book-01.jpg">
@@ -138,13 +138,13 @@
     <img src="lo/2012-blaise-larmee_capital02.jpg">
     <img src="lo/2012-blaise-larmee_construction02.jpg">
     <img src="lo/2012-blaise-larmee_drawings02.jpg">
-    <img src="lo/2012-blaise-larmee_mold02.jpg"><img src="https://blaiselarmee.com/lo/blaiselarmee-2013-comic-01.jpg" draggable="true" style="cursor: move; opacity: 1;"><img src="lo/2013-blaise-larmee_nudes-007.jpg" draggable="true" style="cursor: move; opacity: 1;">
+    <img src="lo/2012-blaise-larmee_mold02.jpg"><img src="https://blaiselarmee.com/lo/blaiselarmee-2013-comic-01.jpg"><img src="lo/2013-blaise-larmee_nudes-007.jpg">
     
     
-    <img src="lo/2013-blaise-larmee_nudes-002.jpg" draggable="true" style="cursor: move; opacity: 1;">
+    <img src="lo/2013-blaise-larmee_nudes-002.jpg">
     
     
-    <img src="lo/2013-blaise-larmee_nudes-013.jpg" draggable="true" style="cursor: move; opacity: 1;">
+    <img src="lo/2013-blaise-larmee_nudes-013.jpg">
     
     
     
@@ -564,77 +564,4 @@
     <img src="https://blaiselarmee.com/lo/blaiselarmee-2024-sarah-12.jpg">
     <img src="https://blaiselarmee.com/lo/blaiselarmee-2024-sarah-13.jpg">
     <img src="https://blaiselarmee.com/lo/blaiselarmee-2024-sarah-08.jpg">
-    <script>(function() {
-  // Check if the user is on a mobile device using screen width or user-agent
-  const isMobile = window.innerWidth <= 1024 || /Mobi|Android|iPhone|iPad|iPod|webOS|BlackBerry|Windows Phone/i.test(navigator.userAgent);
-
-  if (isMobile) {
-    console.log("Mobile device detected. Running the script...");
-
-    // Get all <img> elements on the page
-    const images = document.querySelectorAll('img');
-    console.log(`Found ${images.length} images on the page.`);
-
-    // Initialize an array to store grouped series of images
-    let currentSeries = [];
-    let seriesGroup = [];
-
-    // Loop through all images and group them by their series
-    images.forEach(img => {
-      const src = img.getAttribute('src');
-      const seriesName = src.split('/').pop().split('-')[1];  // Extract series name from URL
-
-      // Check if the current image belongs to the same series as the previous one
-      if (currentSeries.length === 0 || currentSeries[0].getAttribute('src').split('/').pop().split('-')[1] === seriesName) {
-        currentSeries.push(img);
-      } else {
-        // Add the current series group to seriesGroup and start a new series
-        seriesGroup.push(currentSeries);
-        currentSeries = [img];
-      }
-    });
-
-    // Don't forget to add the last group of images
-    if (currentSeries.length > 0) {
-      seriesGroup.push(currentSeries);
-    }
-
-    console.log(`Total series found: ${seriesGroup.length}`);
-
-    // Loop through each series to apply the <details> element if needed
-    seriesGroup.forEach(series => {
-      // If the series has 3 or more images, wrap them in a <details> element
-      if (series.length >= 3) {
-        console.log(`Processing a series with ${series.length} images. Wrapping in <details>...`);
-
-        // Create a <details> element and add the first image as the summary
-        const details = document.createElement('details');
-        const summary = document.createElement('summary');
-        summary.appendChild(series[0].cloneNode(true));  // Use the first image as the summary
-        details.appendChild(summary);
-
-        // Append the rest of the images inside the <details> element
-        series.slice(1).forEach(img => {
-          details.appendChild(img);
-        });
-
-        // Replace the first image with the <details> element
-        series[0].parentNode.replaceChild(details, series[0]);
-      } else {
-        // If the series has fewer than 3 images, leave them as regular <img> elements
-        console.log(`Series with ${series.length} images left unchanged.`);
-        series.forEach(img => {
-          img.parentNode.appendChild(img);
-        });
-      }
-    });
-
-    console.log("Script completed: Images grouped and <details> elements added where applicable.");
-  } else {
-    // If the user is not on a mobile device, skip the script
-    console.log("Not a mobile device. Skipping script execution.");
-  }
-})();
-
-    </script>
     </body></html>

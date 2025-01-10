@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+        }
+
+        body {
+            height: 99vh;
+            padding-top: 1vh;
+            font-family: monospace;
+            display: flex;
+        }
+
+        #fileList {
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .fileItem {
+            display: block;
+        }
+
+        .selected {
+            background-color: white;
+            color: black;
+        }
+
+        #editor {
+            width: 100%;
+            font-size: 1.5em;
+            resize: none;
+            border: none;
+            outline: none;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            cursor: text;
+        }
+
+
+        
+    </style>
+</head>
+
+<body>
+
+    <div id="fileList"></div>
+    <div id="editor" contenteditable="true" spellcheck="false"></div>
+
+    <script src="editor.js">
+    </script>
+
+</body>
+
+</html>

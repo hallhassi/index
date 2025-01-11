@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Div Navigation</title>
+  <style>
+    .active {
+      border: 2px solid red;
+      outline: none;
+    }
+
+    .node {
+      background-color: #f0f0f0;
+    }
+
+    div {
+      background: white;
+      margin: 5px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      /* Make the input span the full width of its parent */
+      padding: 5px;
+      font-size: 1em;
+    }
+  </style>
+</head>
+
+<body>
+  <script>let activeDiv;
+    // Function to save the state of divs, including the active div's index
+    function saveState() {
+      const divs = saveDivsState(document.body);  // Save all divs in the body, including nested ones
+
+      const state = {
+        divs                // Save all divs' content (including input values and child divs)
+      };
+
+      localStorage.setItem('savedState', JSON.stringify(state));
+    }
+
+    // Function to recursively save divs state
+    function saveDivsState(parentDiv) {
+      const divs = Array.from(parentDiv.children)
+        .filter(child => child.tagName === 'DIV')
+        .map(child => {
+          const inputValue = child.querySelector('input') ? child.querySelector('input').value : '';
+          const children = saveDivsState(child);  // Recursively save child divs
+
+          return {
+            inputValue,  // Save input value
+            children,    // Recursively saved child divs
+            classList: Array.from(child.classList)  // Save classList
+          };
+        });
+
+      return divs;  // Return array of divs with nested children
+    }
+
+    // Function to load the saved state of divs and restore the active div
+    function loadState() {
+      const savedState = localStorage.getItem('savedState');
+      if (savedState) {
+        const state = JSON.parse(savedState);
+
+        clearBodyContent();  // Clear any existing divs
+        restoreDivs(state.divs, document.body);  // Restore divs from the saved state
+
+        activeDiv = document.getElementsByClassName('active')[0];  // Find the div at the saved index
+        if (activeDiv) {
+          activeDiv.classList.add('active');  // Add the active class to the div
+          const input = activeDiv.querySelector('input');
+          if (input) {
+            input.focus();  // Focus on the input inside the active div
+          }
+        }
+      }
+    }
+
+    // Find the div based on the saved level and index
+    function findActiveDivByIndex({ level, index }, parent) {
+      let currentDiv = parent;
+
+      for (let i = 0; i < level; i++) {
+        currentDiv = Array.from(currentDiv.children).find(child => child.tagName === 'DIV');
+      }
+
+      const sibling = currentDiv.children[index];
+      return sibling ? sibling : null;  // Return the div at the saved index at that level
+    }
+
+    // Function to clear all divs from the body
+    function clearBodyContent() {
+      const divs = Array.from(document.body.children);
+      divs.forEach(child => {
+        if (child.tagName === 'DIV') {
+          document.body.removeChild(child);
+        }
+      });
+    }
+
+    function restoreDivs(divs, parent = document.body) {
+      divs.forEach(({ inputValue, children = [], classList = [] }) => {  // Default to empty array if undefined
+
+        const div = document.createElement('div');
+
+        // Ensure classList is an array and not empty
+        if (Array.isArray(classList)) {
+          div.classList.add(...classList);  // Add saved class list
+        }
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = inputValue;  // Set the input value
+        div.appendChild(input);    // Append the input inside the div
+
+        // Ensure children is always an array
+        if (children.length > 0) {
+          restoreDivs(children, div);  // Recursively restore child divs if any
+        }
+
+        parent.appendChild(div);  // Append the div to the parent
+      });
+    }
+
+    // Function to handle Ctrl+Down key press
+    const createOrFocusNextSibling = (event) => {
+      if (event.ctrlKey && event.key === 'ArrowDown') {
+        event.preventDefault();
+        let nextDiv = activeDiv.nextElementSibling;
+
+        // Find the next div containing an input
+        while (nextDiv && nextDiv.tagName !== 'DIV') {
+          nextDiv = nextDiv.nextElementSibling;
+        }
+
+        if (!nextDiv) {
+          // Create a new div with a text input as its first child
+          nextDiv = document.createElement('div');
+          const input = document.createElement('input');
+          input.type = 'text'; // Create an input element
+          nextDiv.appendChild(input); // Add the input as the first child
+          activeDiv.parentNode.appendChild(nextDiv);
+        }
+
+        // Remove active class from current div, add to the next
+        activeDiv.classList.remove('active');
+        nextDiv.classList.add('active');
+
+        // Focus on the input inside the next div
+        const input = nextDiv.querySelector('input');
+        if (input) {
+          input.focus();
+        }
+
+        // Update active div reference
+        activeDiv = nextDiv;
+      }
+    };
+
+    // Function to handle Ctrl+Up key press
+    const createOrFocusPrevSibling = (event) => {
+      if (event.ctrlKey && event.key === 'ArrowUp') {
+        event.preventDefault();
+        let prevDiv = activeDiv.previousElementSibling;
+
+        // Find the previous div containing an input
+        while (prevDiv && prevDiv.tagName !== 'DIV') {
+          prevDiv = prevDiv.previousElementSibling;
+        }
+
+        if (!prevDiv) {
+          // Create a new div with a text input as its first child
+          prevDiv = document.createElement('div');
+          const input = document.createElement('input');
+          input.type = 'text'; // Create an input element
+          prevDiv.appendChild(input); // Add the input as the first child
+          activeDiv.parentNode.insertBefore(prevDiv, activeDiv);
+        }
+
+        // Remove active class from current div, add to the previous
+        activeDiv.classList.remove('active');
+        prevDiv.classList.add('active');
+
+        // Focus on the input inside the previous div
+        const input = prevDiv.querySelector('input');
+        if (input) {
+          input.focus();
+        }
+
+        // Update active div reference
+        activeDiv = prevDiv;
+      }
+    };
+
+    // Function to handle Ctrl+Backspace key press
+    const deleteActiveDiv = (event) => {
+      // Check if Ctrl key is pressed and the key is Backspace
+      if (event.ctrlKey && event.key === 'Backspace') {
+        event.preventDefault(); // Prevent the default browser action
+
+        const parent = activeDiv.parentNode;
+        const divChildren = Array.from(parent.children).filter(child => child.tagName === 'DIV');
+
+        // Case 1: If there are multiple divs, navigate to a sibling div or create a new one if no sibling exists
+        if (divChildren.length > 1) {
+          let nextDiv = activeDiv.nextElementSibling || activeDiv.previousElementSibling;
+
+          // If a sibling div exists, make it the active div
+          if (nextDiv && nextDiv.tagName === 'DIV') {
+            parent.removeChild(activeDiv);
+            nextDiv.classList.add('active');
+
+            const input = nextDiv.querySelector('input');
+            if (input) input.focus();
+
+            activeDiv = nextDiv;
+          } else {
+            // If no sibling div exists, create a new div
+            const newDiv = document.createElement('div');
+            const input = document.createElement('input');
+
+            parent.removeChild(activeDiv);
+            input.type = 'text';
+            newDiv.appendChild(input);
+            parent.appendChild(newDiv);
+            newDiv.classList.add('active');
+
+            input.focus();
+            activeDiv = newDiv;
+          }
+        } else {
+          // Case 2: If there are no sibling divs, check if the parent is BODY
+          if (parent.tagName !== 'BODY') {
+            // If the parent is not BODY, activate the parent div
+            parent.removeChild(activeDiv);
+            parent.classList.add('active');
+
+            const input = parent.querySelector('input');
+            if (input) input.focus();
+
+            activeDiv = parent;
+          } else {
+            // If the parent is BODY, create a new div as a child of BODY
+            const newDiv = document.createElement('div');
+            const input = document.createElement('input');
+
+            input.type = 'text';
+            newDiv.appendChild(input);
+            parent.appendChild(newDiv);
+            parent.removeChild(activeDiv);
+            newDiv.classList.add('active');
+
+            input.focus();
+            activeDiv = newDiv;
+          }
+        }
+      }
+    };
+
+    // Function to handle Ctrl+Left key press (navigate to or create a parent div)
+    const createOrFocusParent = (event) => {
+      if (event.ctrlKey && event.key === 'ArrowLeft') {
+        event.preventDefault();
+        // Find the parent div of the current active div
+        const parentDiv = activeDiv.parentElement.closest('div');
+
+        if (parentDiv) {
+          // Move focus to the parent div's input and make it active
+          activeDiv.classList.add('node');
+          activeDiv.classList.remove('active');
+          parentDiv.classList.add('active');
+
+          const input = parentDiv.querySelector('input');
+          if (input) {
+            input.focus();
+          }
+
+          // Update the activeDiv reference
+          activeDiv = parentDiv;
+        } else {
+          // Create a new parent div with an input as its first child
+          const newParentDiv = document.createElement('div');
+          const input = document.createElement('input');
+          input.type = 'text';
+          newParentDiv.appendChild(input); // Input is the first child of newParentDiv
+
+          // Insert a new empty text node as the first child
+          const newFirstChildText = document.createTextNode('');
+          newParentDiv.insertBefore(newFirstChildText, newParentDiv.firstChild);
+
+          // Move all children of the current parent (if any) to the new parent div
+          const parentOfActiveDiv = activeDiv.parentNode;
+          let child = parentOfActiveDiv.firstElementChild;
+          while (child) {
+            const nextChild = child.nextElementSibling;
+            if (child.tagName === 'DIV') {
+              newParentDiv.appendChild(child); // Append only div children
+            }
+            child = nextChild;
+          }
+
+          // Append the newly created parent div
+          parentOfActiveDiv.appendChild(newParentDiv);
+
+          // Set the new parent div as active and focus on the input inside it
+          activeDiv.classList.add('node');
+          activeDiv.classList.remove('active');
+          newParentDiv.classList.add('active');
+
+          const inputInNewParent = newParentDiv.querySelector('input');
+          if (inputInNewParent) {
+            inputInNewParent.focus(); // Focus on the input inside the new parent div
+          }
+
+          // Update activeDiv to the newly created parent div
+          activeDiv = newParentDiv;
+        }
+      }
+    };
+
+    // Function to handle Ctrl+Right key press (navigate to or create a child div)
+    const createOrFocusRightChild = (event) => {
+      if (event.ctrlKey && event.key === 'ArrowRight') {
+        event.preventDefault();
+
+        // Check if the activeDiv has any children (only element nodes)
+        const childElements = Array.from(activeDiv.children);
+        console.log(childElements)
+        if (childElements.length > 1) {
+          // Find the child that has the 'node' class and focus on it
+          const nodeChild = childElements.find(child => child.classList.contains('node'));
+
+          activeDiv.classList.remove('active'); // Remove 'active' class from the current div
+          nodeChild.classList.add('active'); // Add 'active' class to the found child
+          const input = nodeChild.querySelector('input'); // Get the input inside the child
+          input.focus(); // Focus on that child's input
+          activeDiv = nodeChild; // Update activeDiv to the newly focused child
+
+        } else {
+          // If there are no children, create a new child div with an input inside
+          const newDiv = document.createElement('div');
+          const input = document.createElement('input');
+          input.type = 'text'; // Create an input element
+          newDiv.appendChild(input); // Add the input inside the new div
+          activeDiv.appendChild(newDiv); // Append the new div inside activeDiv
+          activeDiv.classList.add('node');
+          activeDiv.classList.remove('active'); // Remove 'active' class from the current div
+          newDiv.classList.add('active'); // Add 'active' class to the new child div
+          input.focus();
+          activeDiv = newDiv;
+        }
+      }
+    };
+
+
+    // Event listener for keydown to handle Ctrl+Right key press
+    document.addEventListener('keydown', (event) => {
+      saveState(); // Save state before handling navigation
+      createOrFocusNextSibling(event);
+      createOrFocusPrevSibling(event);
+      deleteActiveDiv(event);
+      createOrFocusParent(event);
+      createOrFocusRightChild(event); // Add the Ctrl+Right functionality
+    });
+
+    // Load the saved state when the page loads
+    window.onload = () => {
+      loadState(); // Load the saved state and restore divs
+
+      // If no active div is restored, create a new one and set it as active
+      if (!activeDiv) {
+        activeDiv = document.createElement('div');
+        activeDiv.classList.add('active');
+        document.body.appendChild(activeDiv);
+
+        // Create an input inside the new div and focus it
+        const input = document.createElement('input');
+        input.type = 'text';
+        activeDiv.appendChild(input);
+        input.focus();
+      } else {
+        // If an active div exists after loading, ensure the input is focused
+        const input = activeDiv.querySelector('input');
+        if (input) {
+          input.focus();
+        }
+      }
+    };
+
+  </script>
+</body>
+
+</html>

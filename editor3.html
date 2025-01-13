@@ -6,8 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Div Navigation</title>
     <style>
+        * {
+            all: unset;
+        }
+
+        script, head {
+            display: none;
+        }
+
         body {
+            width: 100%;
+            height: 100%;
             background-color: black;
+        }
+
+        div,
+        input {
+            display: block;
         }
 
         input {
@@ -16,19 +31,22 @@
             background-color: none;
             padding: 0;
             font-family: monospace;
+            width: 128px;
+            height: 16px;
         }
 
         div {
             position: fixed;
             background-color: gray;
+            display: flex;
+            justify-content: center;
+            /* Horizontally center */
+            align-items: center;
+            /* Vertically center */
+            width: 128px;
+            height: 16px;
         }
 
-        div,
-        input {
-            width: 8em;
-            height: 1em;
-            font-size: 1em;
-        }
 
 
         .node {
@@ -181,7 +199,8 @@
 
         // Function to handle Ctrl+Down key press
         const createOrFocusNextSibling = (event) => {
-            if (event.ctrlKey && event.key === 'ArrowDown') {
+            let input = activeDiv.querySelector('input')
+            if ((event.ctrlKey && event.key === 'ArrowDown') || (event.key === 'ArrowDown' && input.selectionStart === input.value.length || (event.key === 'Enter' && input.selectionStart === input.value.length))) {
                 event.preventDefault();
                 let nextDiv = activeDiv.nextElementSibling;
 
@@ -228,7 +247,8 @@
 
         // Function to handle Ctrl+Up key press
         const createOrFocusPrevSibling = (event) => {
-            if (event.ctrlKey && event.key === 'ArrowUp') {
+            let input = activeDiv.querySelector('input')
+            if ((event.ctrlKey && event.key === 'ArrowUp') || (event.key === 'ArrowUp' && input.selectionStart === 0)) {
                 event.preventDefault();
                 let prevDiv = activeDiv.previousElementSibling;
                 if (prevDiv.tagName !== 'DIV') { return; }
@@ -277,7 +297,8 @@
         // Function to handle Ctrl+Backspace key press
         const deleteActiveDiv = (event) => {
             // Check if Ctrl key is pressed and the key is Backspace
-            if (event.ctrlKey && event.key === 'Backspace') {
+            let input = activeDiv.querySelector('input')
+            if ((event.ctrlKey && event.key === 'Backspace') || (event.key === 'Backspace' && input.selectionStart === 0)) {
                 event.preventDefault(); // Prevent the default browser action
 
                 const parent = activeDiv.parentNode;
@@ -285,28 +306,40 @@
 
                 // Case 1: If there are multiple divs, navigate to a sibling div or create a new one if no sibling exists
                 if (divChildren.length > 1) {
-                    let nextDiv = activeDiv.previousElementSibling || activeDiv.nextElementSibling;
+                    let nextDiv = activeDiv.nextElementSibling || activeDiv.previousElementSibling;
 
                     // If a sibling div exists, make it the active div
                     if (nextDiv && nextDiv.tagName === 'DIV') {
-                        parent.removeChild(activeDiv);
-                        nextDiv.classList.add('active');
-
-                        const input = nextDiv.querySelector('input');
-                        if (input) input.focus();
-
-                        activeDiv = nextDiv;
 
                         centerActiveDiv()
 
-                        // Move all other divs downwards
+                        // Move the next siblings upward if there are any
+                        // Move all other divs downwards there are no next siblings
                         const allDivs = document.querySelectorAll('div');
-                        allDivs.forEach(div => {
-                            if (div !== activeDiv) {
+                        const followingDivs = Array.from(activeDiv.parentNode.children)
+                            .slice(Array.from(activeDiv.parentNode.children).indexOf(activeDiv) + 1)
+                            .filter(sibling => sibling.tagName === 'DIV');
+                        console.log(followingDivs)
+                        if (activeDiv.nextElementSibling) {
+                            followingDivs.forEach(div => {
                                 const currentTop = parseFloat(window.getComputedStyle(div).top) || 0;
-                                div.style.top = `${currentTop + computedFontSize}px`; // Move 1em down (opposite of ArrowDown)
-                            }
-                        });
+                                div.style.top = `${currentTop - computedFontSize}px`; // Move 1em down (opposite of ArrowDown)
+                            });
+                        } else {
+                            allDivs.forEach(div => {
+                                if (div !== activeDiv) {
+                                    const currentTop = parseFloat(window.getComputedStyle(div).top) || 0;
+                                    div.style.top = `${currentTop + computedFontSize}px`; // Move 1em down (opposite of ArrowDown)
+                                }
+                            });
+
+                        }
+                        parent.removeChild(activeDiv);
+                        nextDiv.classList.add('active');
+                        const input = nextDiv.querySelector('input');
+                        if (input) input.focus();
+                        activeDiv = nextDiv;
+
                     } else {
                         // If no sibling div exists, create a new div
                         const newDiv = document.createElement('div');
@@ -377,7 +410,8 @@
 
         // Function to handle Ctrl+Left key press (navigate to or create a parent div)
         const createOrFocusParent = (event) => {
-            if (event.ctrlKey && event.key === 'ArrowLeft') {
+            let input = activeDiv.querySelector('input')
+            if ((event.ctrlKey && event.key === 'ArrowLeft') || (event.key === 'ArrowLeft' && input.selectionStart === 0)) {
                 event.preventDefault();
                 // Find the parent div of the current active div
                 const parentDiv = activeDiv.parentElement.closest('div');
@@ -482,7 +516,8 @@
 
         // Function to handle Ctrl+Right key press (navigate to or create a child div)
         const createOrFocusRightChild = (event) => {
-            if (event.ctrlKey && event.key === 'ArrowRight') {
+            let input = activeDiv.querySelector('input')
+            if ((event.ctrlKey && event.key === 'ArrowRight') || (event.key === 'ArrowRight' && input.selectionStart === input.value.length) || (event.key === 'Tab' && input.selectionStart === input.value.length)) {
                 event.preventDefault();
 
                 // Check if the activeDiv has any children (only element nodes)
@@ -539,7 +574,6 @@
 
             }
         };
-
 
         // Event listener for keydown to handle Ctrl+Right key press
         document.addEventListener('keydown', (event) => {

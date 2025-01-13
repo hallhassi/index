@@ -157,6 +157,7 @@
 
                 const input = document.createElement('input');
                 input.type = 'text';
+                input.spellcheck = false
                 input.value = inputValue;  // Set the input value
                 div.appendChild(input);    // Append the input inside the div
 
@@ -194,6 +195,7 @@
                     nextDiv = document.createElement('div');
                     const input = document.createElement('input');
                     input.type = 'text'; // Create an input element
+                    input.spellcheck = false
                     nextDiv.appendChild(input); // Add the input as the first child
                     activeDiv.parentNode.appendChild(nextDiv);
                 }
@@ -312,6 +314,7 @@
 
                         parent.removeChild(activeDiv);
                         input.type = 'text';
+                        input.spellcheck = false
                         newDiv.appendChild(input);
                         parent.appendChild(newDiv);
                         newDiv.classList.add('active');
@@ -357,6 +360,7 @@
                         const input = document.createElement('input');
 
                         input.type = 'text';
+                        input.spellcheck = false
                         newDiv.appendChild(input);
                         parent.appendChild(newDiv);
                         parent.removeChild(activeDiv);
@@ -424,6 +428,7 @@
                     const newParentDiv = document.createElement('div');
                     const input = document.createElement('input');
                     input.type = 'text';
+                    input.spellcheck = false
                     newParentDiv.appendChild(input); // Input is the first child of newParentDiv
 
                     // Insert a new empty text node as the first child
@@ -511,6 +516,7 @@
                     const newDiv = document.createElement('div');
                     const input = document.createElement('input');
                     input.type = 'text'; // Create an input element
+                    input.spellcheck = false
                     newDiv.appendChild(input); // Add the input inside the new div
                     activeDiv.appendChild(newDiv); // Append the new div inside activeDiv
                     activeDiv.classList.add('node');
@@ -558,6 +564,7 @@
                 // Create an input inside the new div and focus it
                 const input = document.createElement('input');
                 input.type = 'text';
+                input.spellcheck = false
                 activeDiv.appendChild(input);
                 input.focus();
 

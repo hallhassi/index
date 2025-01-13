@@ -10,7 +10,8 @@
             all: unset;
         }
 
-        script, head {
+        script,
+        head {
             display: none;
         }
 
@@ -175,7 +176,8 @@
 
                 const input = document.createElement('input');
                 input.type = 'text';
-                input.spellcheck = false
+                input.size = '16';
+                input.spellcheck = false; input.addEventListener('input', adjustInputSize);
                 input.value = inputValue;  // Set the input value
                 div.appendChild(input);    // Append the input inside the div
 
@@ -203,18 +205,18 @@
             if ((event.ctrlKey && event.key === 'ArrowDown') || (event.key === 'ArrowDown' && input.selectionStart === input.value.length || (event.key === 'Enter' && input.selectionStart === input.value.length))) {
                 event.preventDefault();
                 let nextDiv = activeDiv.nextElementSibling;
-
-                // Find the next div containing an input
+                // Loop through siblings to find the next <div>
                 while (nextDiv && nextDiv.tagName !== 'DIV') {
                     nextDiv = nextDiv.nextElementSibling;
                 }
-
+                // At this point, nextDiv will either be the next <div> or null if there are no more <div> elements
                 if (!nextDiv) {
                     // Create a new div with a text input as its first child
                     nextDiv = document.createElement('div');
                     const input = document.createElement('input');
-                    input.type = 'text'; // Create an input element
-                    input.spellcheck = false
+                    input.type = 'text';
+                    input.size = '16'; // Create an input element
+                    input.spellcheck = false; input.addEventListener('input', adjustInputSize);
                     nextDiv.appendChild(input); // Add the input as the first child
                     activeDiv.parentNode.appendChild(nextDiv);
                 }
@@ -253,20 +255,6 @@
                 let prevDiv = activeDiv.previousElementSibling;
                 if (prevDiv.tagName !== 'DIV') { return; }
 
-                // Find the previous div containing an input
-                // while (prevDiv && prevDiv.tagName !== 'DIV') {
-                //     prevDiv = prevDiv.previousElementSibling;
-                // }
-
-                // if (!prevDiv) {
-                //     // Create a new div with a text input as its first child
-                //     prevDiv = document.createElement('div');
-                //     const input = document.createElement('input');
-                //     input.type = 'text'; // Create an input element
-                //     prevDiv.appendChild(input); // Add the input as the first child
-                //     activeDiv.parentNode.insertBefore(prevDiv, activeDiv);
-                // }
-
                 // Remove active class from current div, add to the previous
                 activeDiv.classList.remove('active');
                 prevDiv.classList.add('active');
@@ -302,111 +290,96 @@
                 event.preventDefault(); // Prevent the default browser action
 
                 const parent = activeDiv.parentNode;
-                const divChildren = Array.from(parent.children).filter(child => child.tagName === 'DIV');
 
-                // Case 1: If there are multiple divs, navigate to a sibling div or create a new one if no sibling exists
-                if (divChildren.length > 1) {
-                    let nextDiv = activeDiv.nextElementSibling || activeDiv.previousElementSibling;
+                // If there are multiple divs, navigate to a sibling div or create a new one if no sibling exists
+                let nextDiv = activeDiv.nextElementSibling;
+                let prevDiv = activeDiv.previousElementSibling;
+                const allDivs = document.querySelectorAll('div');
+                const followingDivs = Array.from(activeDiv.parentNode.children)
+                    .slice(Array.from(activeDiv.parentNode.children).indexOf(activeDiv) + 1) // Get siblings after the active div
+                    .filter(sibling => sibling.tagName === 'DIV'); // Only select <div> elements
+                const followingAndChildren = followingDivs.flatMap(div => [div, ...Array.from(div.querySelectorAll('*'))]);
+                const allDivsMinusFollowingAndChildren = Array.from(allDivs).filter(div => !followingAndChildren.includes(div));
 
-                    // If a sibling div exists, make it the active div
-                    if (nextDiv && nextDiv.tagName === 'DIV') {
-
-                        centerActiveDiv()
-
-                        // Move the next siblings upward if there are any
-                        // Move all other divs downwards there are no next siblings
-                        const allDivs = document.querySelectorAll('div');
-                        const followingDivs = Array.from(activeDiv.parentNode.children)
-                            .slice(Array.from(activeDiv.parentNode.children).indexOf(activeDiv) + 1)
-                            .filter(sibling => sibling.tagName === 'DIV');
-                        console.log(followingDivs)
-                        if (activeDiv.nextElementSibling) {
-                            followingDivs.forEach(div => {
-                                const currentTop = parseFloat(window.getComputedStyle(div).top) || 0;
-                                div.style.top = `${currentTop - computedFontSize}px`; // Move 1em down (opposite of ArrowDown)
-                            });
-                        } else {
-                            allDivs.forEach(div => {
-                                if (div !== activeDiv) {
-                                    const currentTop = parseFloat(window.getComputedStyle(div).top) || 0;
-                                    div.style.top = `${currentTop + computedFontSize}px`; // Move 1em down (opposite of ArrowDown)
-                                }
-                            });
-
+                // if there's a prev sibling, everything moves down except for following siblings and their children
+                if (prevDiv && prevDiv.tagName === 'DIV') {
+                    // Convert allDivs to an array and filter out the followingDivs
+                    const allDivsMinusFollowing = Array.from(allDivs).filter(div => !followingDivs.includes(div));
+                    allDivsMinusFollowingAndChildren.forEach(div => {
+                        if (div !== activeDiv) {
+                            const currentTop = parseFloat(window.getComputedStyle(div).top) || 0;
+                            div.style.top = `${currentTop + computedFontSize}px`; // Move 1em down (opposite of ArrowDown)
                         }
-                        parent.removeChild(activeDiv);
-                        nextDiv.classList.add('active');
-                        const input = nextDiv.querySelector('input');
-                        if (input) input.focus();
-                        activeDiv = nextDiv;
+                    });
+                    parent.removeChild(activeDiv);
+                    prevDiv.classList.add('active');
+                    const input = prevDiv.querySelector('input');
+                    if (input) input.focus();
+                    activeDiv = prevDiv;
+                    centerActiveDiv()
+                }
+                // otherwise if there's next siblings, move them and their children up
+                // Get all following divs and their children
+                else if (nextDiv && nextDiv.tagName === 'DIV') {
+                    const followingAndChildren = followingDivs.flatMap(div => [div, ...Array.from(div.querySelectorAll('*'))]);
+                    followingAndChildren.forEach(div => {
+                        const currentTop = parseFloat(window.getComputedStyle(div).top) || 0;
+                        div.style.top = `${currentTop - computedFontSize}px`; // Move 1em up (opposite of ArrowDown)
+                    });
+                    parent.removeChild(activeDiv);
+                    nextDiv.classList.add('active');
+                    const input = nextDiv.querySelector('input');
+                    if (input) input.focus();
+                    activeDiv = nextDiv;
+                    centerActiveDiv()
+                } else if (parent.tagName !== 'BODY') {
+                    // If the parent is not BODY, activate the parent div
+                    parent.removeChild(activeDiv);
+                    parent.classList.add('active');
 
-                    } else {
-                        // If no sibling div exists, create a new div
-                        const newDiv = document.createElement('div');
-                        const input = document.createElement('input');
+                    const input = parent.querySelector('input');
+                    if (input) input.focus();
 
-                        parent.removeChild(activeDiv);
-                        input.type = 'text';
-                        input.spellcheck = false
-                        newDiv.appendChild(input);
-                        parent.appendChild(newDiv);
-                        newDiv.classList.add('active');
 
-                        input.focus();
-                        activeDiv = newDiv;
 
-                    }
+                    // Move all other divs right
+                    const allDivs = document.querySelectorAll('div');
+
+                    const child = activeDiv.getBoundingClientRect();
+                    const parentRect = parent.getBoundingClientRect();
+
+                    // Update the activeDiv reference
+                    activeDiv = parent;
+
+                    centerActiveDiv()
+
+                    allDivs.forEach(div => {
+                        if (div !== activeDiv) {
+                            const currentLeft = parseFloat(window.getComputedStyle(div).left) || 0;
+                            div.style.left = `${currentLeft + computedDivSize}px`;
+                        }
+                    });
                 } else {
-                    // Case 2: If there are no sibling divs, check if the parent is BODY
-                    if (parent.tagName !== 'BODY') {
-                        // If the parent is not BODY, activate the parent div
-                        parent.removeChild(activeDiv);
-                        parent.classList.add('active');
+                    // If the parent is BODY, create a new div as a child of BODY
+                    const newDiv = document.createElement('div');
+                    const input = document.createElement('input');
 
-                        const input = parent.querySelector('input');
-                        if (input) input.focus();
+                    input.type = 'text';
+                    input.size = '16';
+                    input.spellcheck = false; input.addEventListener('input', adjustInputSize);
+                    newDiv.appendChild(input);
+                    parent.appendChild(newDiv);
+                    parent.removeChild(activeDiv);
+                    newDiv.classList.add('active');
 
+                    input.focus();
+                    activeDiv = newDiv;
+                    centerActiveDiv()
 
-
-                        // Move all other divs right
-                        const allDivs = document.querySelectorAll('div');
-
-                        const child = activeDiv.getBoundingClientRect();
-                        const parentRect = parent.getBoundingClientRect();
-
-                        // Update the activeDiv reference
-                        activeDiv = parent;
-
-                        centerActiveDiv()
-
-                        allDivs.forEach(div => {
-                            if (div !== activeDiv) {
-                                const currentLeft = parseFloat(window.getComputedStyle(div).left) || 0;
-                                div.style.left = `${currentLeft + computedDivSize}px`;
-                            }
-                        });
-
-
-                    } else {
-                        // If the parent is BODY, create a new div as a child of BODY
-                        const newDiv = document.createElement('div');
-                        const input = document.createElement('input');
-
-                        input.type = 'text';
-                        input.spellcheck = false
-                        newDiv.appendChild(input);
-                        parent.appendChild(newDiv);
-                        parent.removeChild(activeDiv);
-                        newDiv.classList.add('active');
-
-                        input.focus();
-                        activeDiv = newDiv;
-                        centerActiveDiv()
-
-                    }
                 }
             }
-        };
+        }
+
 
         // Function to handle Ctrl+Left key press (navigate to or create a parent div)
         const createOrFocusParent = (event) => {
@@ -422,6 +395,7 @@
                     activeDiv.classList.add('node');
                     activeDiv.classList.remove('active');
                     parentDiv.classList.add('active');
+                    parentDiv.classList.remove('node');
 
                     const input = parentDiv.querySelector('input');
                     if (input) {
@@ -462,7 +436,8 @@
                     const newParentDiv = document.createElement('div');
                     const input = document.createElement('input');
                     input.type = 'text';
-                    input.spellcheck = false
+                    input.size = '16';
+                    input.spellcheck = false; input.addEventListener('input', adjustInputSize);
                     newParentDiv.appendChild(input); // Input is the first child of newParentDiv
 
                     // Insert a new empty text node as the first child
@@ -550,8 +525,9 @@
                     // If there are no children, create a new child div with an input inside
                     const newDiv = document.createElement('div');
                     const input = document.createElement('input');
-                    input.type = 'text'; // Create an input element
-                    input.spellcheck = false
+                    input.type = 'text';
+                    input.size = '16'; // Create an input element
+                    input.spellcheck = false; input.addEventListener('input', adjustInputSize);
                     newDiv.appendChild(input); // Add the input inside the new div
                     activeDiv.appendChild(newDiv); // Append the new div inside activeDiv
                     activeDiv.classList.add('node');
@@ -598,7 +574,8 @@
                 // Create an input inside the new div and focus it
                 const input = document.createElement('input');
                 input.type = 'text';
-                input.spellcheck = false
+                input.size = '16';
+                input.spellcheck = false; input.addEventListener('input', adjustInputSize);
                 activeDiv.appendChild(input);
                 input.focus();
 
@@ -636,6 +613,64 @@
             });
         });
 
+        function adjustInputSize() {
+            if (this.size == this.value.length) {
+                let nextDiv = activeDiv.nextElementSibling;
+
+                // Find the next div containing an input
+                while (nextDiv && nextDiv.tagName !== 'DIV') {
+                    nextDiv = nextDiv.nextElementSibling;
+                }
+
+                // Create a new div with a text input as its first child
+                nextDiv = document.createElement('div');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.size = '16'; // Create an input element
+                input.spellcheck = false; input.addEventListener('input', adjustInputSize);
+                nextDiv.appendChild(input); // Add the input as the first child
+                activeDiv.parentNode.appendChild(nextDiv);
+
+                // Remove active class from current div, add to the next
+                activeDiv.classList.remove('active');
+                nextDiv.classList.add('active');
+
+                // Focus on the input inside the next div
+                input.focus();
+
+                // Update active div reference
+                activeDiv = nextDiv;
+
+                centerActiveDiv()
+                const allDivs = document.querySelectorAll('div');
+                if (!nextDiv) {
+                    // Move all other divs 1em upwards
+                    allDivs.forEach(div => {
+                        if (div !== activeDiv) {
+                            const currentTop = parseFloat(window.getComputedStyle(div).top) || 0;
+                            div.style.top = `${currentTop - computedFontSize}px`; // Use computed font size for 1em
+                        }
+                    });
+                } else {
+                    // move every div that doesn't succeed active div 1em upwards
+                    const followingDivs = Array.from(activeDiv.parentNode.children)
+                        .slice(Array.from(activeDiv.parentNode.children).indexOf(activeDiv) + 1) // Get siblings after the active div
+                        .filter(sibling => sibling.tagName === 'DIV'); // Only select <div> elements
+
+                    // Convert allDivs to an array and filter out the followingDivs
+                    const resultDivs = Array.from(allDivs).filter(div => !followingDivs.includes(div));
+                    resultDivs.forEach(div => {
+                        if (div !== activeDiv) {
+                            const currentTop = parseFloat(window.getComputedStyle(div).top) || 0;
+                            div.style.top = `${currentTop - computedFontSize}px`; // Use computed font size for 1em
+                        }
+                    });
+
+                }
+
+
+            }
+        }
 
     </script>
 </body>

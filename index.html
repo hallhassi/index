@@ -4,9 +4,8 @@ body{font-size:500%;background-color: var(--bg);color: var(--color);font-family:
 <span>default</span>
 <div contenteditable="true"></div>
 <script>
-let div = document.querySelector("div")
-let pageHtml = document.documentElement.outerHTML
-let script = document.querySelector("script")
-div.innerHTML = pageHtml.toString().replace(/</g, "&lt;").replace(/>/g, "&gt;")
-div.focus()
+var div = document.querySelector("div");
+var pageHtml = document.documentElement.outerHTML.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+div.innerHTML = pageHtml;
+div.focus();
 </script>

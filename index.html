@@ -1,18 +1,12 @@
 <style>:root{--color: #000;--bg: #fff;}  
-body{background-color: var(--bg);color: var(--color);font-family: sans-serif;}div{background-color: var(--bg2);color: var(--color2);border-radius: 1ch;}span{background-color: var(--color);color: var(--bg);}
+body{font-size:500%;background-color: var(--bg);color: var(--color);font-family: sans-serif;}div{background-color: var(--bg2);color: var(--color2);border-radius: 1ch;}span{background-color: var(--color);color: var(--bg);}
 </style>
 <span>default</span>
 <div contenteditable="true"></div>
 <script>
 let div = document.querySelector("div")
-div.focus()
-document.addEventListener("keydown", handlekeydown)
-function handlekeydown(e) {
-    let pageHtml = document.documentElement.outerHTML
-    localStorage.setItem("log", {'pageHtml': pageHtml, 'time': Date.now()})
-}
-</script>   
-<script>
+let pageHtml = document.documentElement.outerHTML
 let script = document.querySelector("script")
-div.innerHTML = script.innerHTML
+div.innerHTML = pageHtml.toString().replace(/</g, "&lt;").replace(/>/g, "&gt;")
+div.focus()
 </script>

@@ -1,17 +1,1 @@
-<style>:root{--color: #000;--bg: #fff;}  
-body{font-size:500%;background-color: var(--bg);color: var(--color);font-family: sans-serif;}div{background-color: var(--bg2);color: var(--color2);border-radius: 1ch;}span{background-color: var(--color);color: var(--bg);}
-</style>
-<span onclick="dark()">default</span>
-<div contenteditable="true"></div>
-<script>
-var div = document.querySelector("div");
-var pageHtml = document.documentElement.outerHTML.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-div.innerHTML = pageHtml;
-div.focus();
-function dark() {
-  var color = getComputedStyle(document.documentElement).getPropertyValue("--color");
-  var bg = getComputedStyle(document.documentElement).getPropertyValue("--bg");
-  document.documentElement.style.setProperty("--color", bg);
-  document.documentElement.style.setProperty("--bg", color);
-}
-</script>
+<a href="davidhockney.tumblr.com.pdf">davidhockney.tumblr.com.pdf</a

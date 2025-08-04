@@ -2,18 +2,7 @@ import re
 
 # Your list of work titles
 work_titles = [
-    "comets comets",
-    "3 books",
-    "mirror mirror",
-    "bernie",
-    "2001",
-    "my parents",
-    "altcomics magazine 1-6",
-    "hawaii",
-    "rogues gallery",
-    "stephen story",
-    "mom's mad at me",
-    "sarah story altcomics magazine 7"
+    "47905"
 ]
 
 def format_title_to_filename(title):

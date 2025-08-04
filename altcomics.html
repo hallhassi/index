@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <title>
+   altcomics
+  </title>
+ </head>
+ <body>
+  <h1>
+   altcomics
+  </h1>
+  <img alt="Image for altcomics" id="randomImage" style="max-width: 100%; height: auto; display: block; margin-bottom: 20px;"/>
+  <script>
+   const imageList = ["hi/2015-altcomicsmagazine1-01.jpg", "hi/2016-altcomicsmagazine4-02.jpg", "hi/2016-altcomicsmagazine4-01.jpg", "hi/2016-altcomicsmagazine2-01.jpg"];
+
+    function displayRandomImage() {
+        const imageElement = document.getElementById('randomImage');
+        if (imageList.length > 0) {
+            const randomIndex = Math.floor(Math.random() * imageList.length);
+            imageElement.src = imageList[randomIndex];
+        } else {
+            imageElement.alt = "No images found.";
+        }
+    }
+
+    window.onload = displayRandomImage;
+  </script>
+ </body>
+</html>

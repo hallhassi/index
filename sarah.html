@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <title>
+   sarah
+  </title>
+ </head>
+ <body>
+  <h1>
+   sarah
+  </h1>
+  <img alt="Image for sarah" id="randomImage" style="max-width: 100%; height: auto; display: block; margin-bottom: 20px;"/>
+  <script>
+   const imageList = ["hi/2024-sarah-03.jpg", "hi/2024-sarah-07.jpg", "hi/2024-sarah-01.jpg", "hi/2024-sarah-08.jpg", "hi/2024-sarah-11.jpg", "hi/2024-sarah-02.jpg", "hi/2024-sarah-05.jpg", "hi/2024-sarah-10.jpg", "hi/2024-sarah-12.jpg", "hi/2024-sarah-09.jpg", "hi/2024-sarah-04.jpg", "hi/2024-sarah-06.jpg", "hi/2024-sarah-13.jpg"];
+
+    function displayRandomImage() {
+        const imageElement = document.getElementById('randomImage');
+        if (imageList.length > 0) {
+            const randomIndex = Math.floor(Math.random() * imageList.length);
+            imageElement.src = imageList[randomIndex];
+        } else {
+            imageElement.alt = "No images found.";
+        }
+    }
+
+    window.onload = displayRandomImage;
+  </script>
+ </body>
+</html>

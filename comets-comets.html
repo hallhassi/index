@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   comets comets
+  </title>
+ </head>
+ <body>
+  <h1>
+   comets comets
+  </h1>
+  <img alt="Image for comets comets" id="randomImage" style="max-width: 100%; height: auto; display: block; margin-bottom: 20px;"/>
+  <p>
+   This is the page for 'comets comets'.
+  </p>
+  <p>
+   <a href="index.html">
+    Back to main list
+   </a>
+  </p>
+  <script>
+   const imageList = ["hi/2014-cometscomets-05.jpg", "hi/2014-cometscomets-17.jpg", "hi/2014-cometscomets-07.jpg", "hi/2014-cometscomets-15.jpg", "hi/2014-cometscomets-14.jpg", "hi/2014-cometscomets-16.jpg", "hi/2014-cometscomets-01.jpg", "hi/2014-cometscomets-10.jpg", "hi/2014-cometscomets-11.jpg", "hi/2014-cometscomets-06.jpg", "hi/2014-cometscomets-04.jpg", "hi/2014-cometscomets-03.jpg", "hi/2014-cometscomets-09.jpg", "hi/2014-cometscomets-08.jpg", "hi/2014-cometscomets-13.jpg", "hi/2014-cometscomets-02.jpg", "hi/2014-cometscomets-12.jpg"];
+
+    function displayRandomImage() {
+        const imageElement = document.getElementById('randomImage');
+        if (imageList.length > 0) {
+            const randomIndex = Math.floor(Math.random() * imageList.length);
+            imageElement.src = imageList[randomIndex];
+        } else {
+            imageElement.alt = "No images found.";
+        }
+    }
+
+    window.onload = displayRandomImage;
+  </script>
+ </body>
+</html>

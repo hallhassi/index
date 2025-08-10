@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   3 books
+  </title>
+ </head>
+ <body>
+  <h1>
+   3 books
+  </h1>
+  <img alt="Image for 4905" id="randomImage" style="max-width: 100%; height: auto; display: block; margin-bottom: 20px;"/>
+  <p>
+   This is the page for '3 books'.
+  </p>
+  <p>
+   <a href="index.html">
+    Back to main list
+   </a>
+  </p>
+  <script>
+   const imageList = ["hi/490573981_2546238945768410_4216792838171494299_n_109352149457114.jpg", "hi/489701278_2546237785768526_5602395646666624905_n_109349976123998.jpg", "hi/490598063_2546238919101746_6158879138794143691_n_109351026123893.jpg"];
+
+    function displayRandomImage() {
+        const imageElement = document.getElementById('randomImage');
+        if (imageList.length > 0) {
+            const randomIndex = Math.floor(Math.random() * imageList.length);
+            imageElement.src = imageList[randomIndex];
+        } else {
+            imageElement.alt = "No images found.";
+        }
+    }
+
+    window.onload = displayRandomImage;
+  </script>
+ </body>
+</html>

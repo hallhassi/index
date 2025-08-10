@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   nudes
+  </title>
+ </head>
+ <body>
+  <h1>
+   nudes
+  </h1>
+  <img alt="Image for nudes" id="randomImage" style="max-width: 100%; height: auto; display: block; margin-bottom: 20px;"/>
+  <p>
+   This is the page for 'nudes'.
+  </p>
+  <p>
+   <a href="index.html">
+    Back to main list
+   </a>
+  </p>
+  <script>
+   const imageList = ["hi/2013-nudes-019.jpg", "hi/2013-nudes-006.jpg", "hi/2013-nudes-005.jpg", "hi/2013-nudes-017.jpg", "hi/2014-nudes-01.jpg", "hi/2013-nudes-004.jpg", "hi/2013-nudes-009.jpg", "hi/2013-nudes-023.jpg", "hi/2013-nudes-020.jpg", "hi/2013-nudes-007.jpg", "hi/2013-nudes-013.jpg", "hi/2013-nudes-022.jpg", "hi/2013-nudes-018.jpg", "hi/2013-nudes-001.jpg", "hi/2013-nudes-003.jpg", "hi/2013-nudes-002.jpg", "hi/2013-nudes-010.jpg"];
+
+    function displayRandomImage() {
+        const imageElement = document.getElementById('randomImage');
+        if (imageList.length > 0) {
+            const randomIndex = Math.floor(Math.random() * imageList.length);
+            imageElement.src = imageList[randomIndex];
+        } else {
+            imageElement.alt = "No images found.";
+        }
+    }
+
+    window.onload = displayRandomImage;
+  </script>
+ </body>
+</html>

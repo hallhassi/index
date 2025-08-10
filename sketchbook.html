@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   sketchbook
+  </title>
+ </head>
+ <body>
+  <h1>
+   sketchbook
+  </h1>
+  <img alt="Image for sketchbook" id="randomImage" style="max-width: 100%; height: auto; display: block; margin-bottom: 20px;"/>
+  <p>
+   This is the page for 'sketchbook'.
+  </p>
+  <p>
+   <a href="index.html">
+    Back to main list
+   </a>
+  </p>
+  <script>
+   const imageList = ["hi/2017-sketchbook-03.jpg", "hi/2017-sketchbook1-03.jpg", "hi/2017-sketchbook1-04.jpg", "hi/2017-sketchbook1-08.jpg", "hi/2017-sketchbook2-03.jpg", "hi/2007-sketchbook-07.jpg", "hi/2017-sketchbook1-12.jpg", "hi/2017-sketchbook-04.jpg", "hi/2016-sketchbook-01.jpg", "hi/2017-sketchbook1-09.jpg", "hi/2007-sketchbook-04.jpg", "hi/2017-sketchbook1-13.jpg", "hi/2017-sketchbook1-19.jpg", "hi/2017-sketchbook1-16.jpg", "hi/2017-sketchbook1-02.jpg", "hi/2017-sketchbook2-04.jpg", "hi/2017-sketchbook1-17.jpg", "hi/2017-sketchbook2-05.jpg", "hi/2007-sketchbook-06.jpg", "hi/2017-sketchbook1-10.jpg", "hi/2017-sketchbook-01.jpg", "hi/2007-sketchbook-05.jpg", "hi/2007-sketchbook-01.jpg", "hi/2017-sketchbook1-11.jpg", "hi/2017-sketchbook1-14.jpg", "hi/2007-sketchbook-02.jpg", "hi/2017-sketchbook2-02.jpg", "hi/2007-sketchbook-03.jpg", "hi/2017-sketchbook2-01.jpg", "hi/2017-sketchbook1-22.jpg", "hi/2017-sketchbook1-06.jpg", "hi/2017-sketchbook1-20.jpg", "hi/2017-sketchbook1-18.jpg", "hi/2017-sketchbook-02.jpg", "hi/2017-sketchbook1-21.jpg", "hi/2017-sketchbook1-01.jpg", "hi/2009-sketchbook-01.jpg", "hi/2017-sketchbook-07.jpg", "hi/2017-sketchbook1-15.jpg", "hi/2017-sketchbook-06.jpg", "hi/2017-sketchbook1-05.jpg", "hi/2017-sketchbook1-23.jpg", "hi/2017-sketchbook1-07.jpg", "hi/2007-sketchbook-08.jpg", "hi/2016-sketchbook-02.jpg", "hi/2017-sketchbook-05.jpg"];
+
+    function displayRandomImage() {
+        const imageElement = document.getElementById('randomImage');
+        if (imageList.length > 0) {
+            const randomIndex = Math.floor(Math.random() * imageList.length);
+            imageElement.src = imageList[randomIndex];
+        } else {
+            imageElement.alt = "No images found.";
+        }
+    }
+
+    window.onload = displayRandomImage;
+  </script>
+ </body>
+</html>

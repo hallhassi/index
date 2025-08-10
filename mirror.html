@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   mirror
+  </title>
+ </head>
+ <body>
+  <h1>
+   mirror
+  </h1>
+  <img alt="Image for mirror" id="randomImage" style="max-width: 100%; height: auto; display: block; margin-bottom: 20px;"/>
+  <p>
+   This is the page for 'mirror'.
+  </p>
+  <p>
+   <a href="index.html">
+    Back to main list
+   </a>
+  </p>
+  <script>
+   const imageList = ["hi/2016-mirrormirror-73.jpg", "hi/2016-mirrormirror-89.jpg", "hi/2016-mirrormirror-40.jpg", "hi/2016-mirrormirror-57.jpg", "hi/2016-mirrormirror-18.jpg", "hi/2016-mirrormirror-63.jpg", "hi/2016-mirrormirror-79.jpg", "hi/2016-mirrormirror-49.jpg", "hi/2016-mirrormirror-21.jpg", "hi/2016-mirrormirror-27.jpg", "hi/2016-mirrormirror-34.jpg", "hi/2016-mirrormirror-77.jpg", "hi/2016-mirrormirror-05.jpg", "hi/2016-mirrormirror-62.jpg", "hi/2016-mirrormirror-55.jpg", "hi/2016-mirrormirror-47.jpg", "hi/2016-mirrormirror-16.jpg", "hi/2016-mirrormirror-26.jpg", "hi/2016-mirrormirror-88.jpg", "hi/2016-mirrormirror-69.jpg", "hi/2016-mirrormirror-09.jpg", "hi/2016-mirrormirror-67.jpg", "hi/2016-mirrormirror-07.jpg", "hi/2016-mirrormirror-01.jpg", "hi/2016-mirrormirror-83.jpg", "hi/2016-mirrormirror-45.jpg", "hi/2016-mirrormirror-12.jpg", "hi/2016-mirrormirror-20.jpg", "hi/2016-mirrormirror-36.jpg", "hi/2016-mirrormirror-33.jpg", "hi/2016-mirrormirror-06.jpg", "hi/2016-mirrormirror-03.jpg", "hi/2016-mirrormirror-51.jpg", "hi/2016-mirrormirror-24.jpg", "hi/2016-mirrormirror-85.jpg", "hi/2016-mirrormirror-11.jpg", "hi/2016-mirrormirror-68.jpg", "hi/2016-mirrormirror-65.jpg", "hi/2016-mirrormirror-53.jpg", "hi/2016-mirrormirror-30.jpg", "hi/2016-mirrormirror-25.jpg", "hi/2016-mirrormirror-13.jpg", "hi/2016-mirrormirror-42.jpg", "hi/2016-mirrormirror-87.jpg", "hi/2016-mirrormirror-35.jpg", "hi/2016-mirrormirror-38.jpg", "hi/2016-mirrormirror-59.jpg", "hi/2016-mirrormirror-61.jpg", "hi/2016-mirrormirror-94.jpg", "hi/2016-mirrormirror-04.jpg", "hi/2016-mirrormirror-74.jpg", "hi/2016-mirrormirror-32.jpg", "hi/2016-mirrormirror-76.jpg", "hi/2016-mirrormirror-71.jpg", "hi/2016-mirrormirror-19.jpg", "hi/2016-mirrormirror-84.jpg", "hi/2016-mirrormirror-56.jpg", "hi/2016-mirrormirror-58.jpg", "hi/2016-mirrormirror-48.jpg", "hi/2016-mirrormirror-95.jpg", "hi/2016-mirrormirror-43.jpg", "hi/2016-mirrormirror-31.jpg", "hi/2016-mirrormirror-86.jpg", "hi/2016-mirrormirror-10.jpg", "hi/2016-mirrormirror-22.jpg", "hi/2016-mirrormirror-44.jpg", "hi/2016-mirrormirror-50.jpg", "hi/2016-mirrormirror-81.jpg", "hi/2016-mirrormirror-23.jpg", "hi/2016-mirrormirror-96.jpg", "hi/2016-mirrormirror-93.jpg", "hi/2016-mirrormirror-80.jpg", "hi/2016-mirrormirror-70.jpg", "hi/2016-mirrormirror-66.jpg", "hi/2016-mirrormirror-64.jpg", "hi/2016-mirrormirror-37.jpg", "hi/2016-mirrormirror-08.jpg", "hi/2016-mirrormirror-14.jpg", "hi/2016-mirrormirror-02.jpg", "hi/2016-mirrormirror-90.jpg", "hi/2016-mirrormirror-75.jpg", "hi/2016-mirrormirror-82.jpg", "hi/2016-mirrormirror-60.jpg", "hi/2016-mirrormirror-78.jpg", "hi/2016-mirrormirror-39.jpg", "hi/2016-mirrormirror-91.jpg", "hi/2016-mirrormirror-46.jpg", "hi/2016-mirrormirror-17.jpg", "hi/2016-mirrormirror-15.jpg", "hi/2016-mirrormirror-28.jpg", "hi/2016-mirrormirror-54.jpg", "hi/2016-mirrormirror-72.jpg", "hi/2016-mirrormirror-97.jpg", "hi/2016-mirrormirror-52.jpg", "hi/2016-mirrormirror-41.jpg", "hi/2016-mirrormirror-92.jpg", "hi/2016-mirrormirror-29.jpg"];
+
+    function displayRandomImage() {
+        const imageElement = document.getElementById('randomImage');
+        if (imageList.length > 0) {
+            const randomIndex = Math.floor(Math.random() * imageList.length);
+            imageElement.src = imageList[randomIndex];
+        } else {
+            imageElement.alt = "No images found.";
+        }
+    }
+
+    window.onload = displayRandomImage;
+  </script>
+ </body>
+</html>

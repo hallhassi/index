@@ -1,17 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
  <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>
-   my-parents
+   books
   </title>
  </head>
  <body>
   <h1>
-   my-parents
+   books
   </h1>
-  <img alt="Image for my-parents" id="randomImage" style="max-width: 100%; height: auto; display: block; margin-bottom: 20px;"/>
+  <img alt="Image for books" id="randomImage" style="max-width: 100%; height: auto; display: block; margin-bottom: 20px;"/>
+  <p>
+   This is the page for 'books'.
+  </p>
+  <p>
+   <a href="index.html">
+    Back to main list
+   </a>
+  </p>
   <script>
-   const imageList = [];
+   const imageList = ["hi/2015-3books-02.jpg", "hi/2015-3books-01.jpg"];
 
     function displayRandomImage() {
         const imageElement = document.getElementById('randomImage');

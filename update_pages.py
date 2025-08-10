@@ -10,20 +10,15 @@ IMAGE_DIR = 'hi/'
 
 # Your list of work titles
 work_titles = [
-    
-    "comets comets",
-    "4905",
-    "mirror mirror",
-    "bernie",
-    "2001",
-    "myparents",
-    "apartment",
-    "stephen",
-    "mom",
-    "sarah",
-    "altcomicsmagazine1",
-    "hawaii"
+    "nudes", "yoko", "boys", "aleks", "2018", "2019", "2020", "malachi", "sarah", "bernie", "parents", "apartment","comets", "lions","2001","books","mirror","sketchbook","drawing","book"
 ]
+
+# The log file name
+LOG_FILE = 'new_filenames.log'
+
+# -----------------
+# Helper Functions
+# -----------------
 
 def format_title_for_filenames(title):
     """
@@ -152,13 +147,31 @@ def update_html_page_with_js(title):
         file.write(str(soup.prettify()))
         
     print(f"Updated '{html_filepath}' with JavaScript for random image selection.")
+    return html_filename # Return the filename to be logged
+
+# -----------------
+# Main Function
+# -----------------
 
 def main():
     """
-    Main function to update all HTML pages.
+    Main function to update all HTML pages and log the filenames.
     """
+    # List to store the names of the created/updated HTML files
+    log_filenames = []
+
     for title in work_titles:
-        update_html_page_with_js(title)
+        filename = update_html_page_with_js(title)
+        log_filenames.append(filename)
+
+    # Write the log file
+    with open(LOG_FILE, 'w', encoding='utf-8') as log_file:
+        for filename in log_filenames:
+            log_file.write(f"{filename}\n")
+    
+    print(f"\nSuccessfully logged the following filenames to '{LOG_FILE}':")
+    for filename in log_filenames:
+        print(f"- {filename}")
 
 if __name__ == "__main__":
     main()

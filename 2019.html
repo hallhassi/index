@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   2019
+  </title>
+ </head>
+ <body>
+  <h1>
+   2019
+  </h1>
+  <img alt="Image for 2019" id="randomImage" style="max-width: 100%; height: auto; display: block; margin-bottom: 20px;"/>
+  <p>
+   This is the page for '2019'.
+  </p>
+  <p>
+   <a href="index.html">
+    Back to main list
+   </a>
+  </p>
+  <script>
+   const imageList = ["hi/2019-drawing-15.jpg", "hi/2019-drawing-08.jpg", "hi/2019-drawing-09.jpg", "hi/2019-drawing-04.gif", "hi/2019-drawing-02.jpg", "hi/2019-drawing-16.jpg", "hi/2019-drawing-03.jpg", "hi/2019-drawing-10.jpg", "hi/2019-drawing-07.jpg", "hi/2019-drawing-01.gif", "hi/2019-drawing-09.gif", "hi/2019-drawing-02.gif", "hi/2019-drawing-04.jpg", "hi/2019-drawing-11.gif", "hi/2019-drawing-18.jpg", "hi/2019-tee-01.jpg", "hi/2019-painting-01.jpg", "hi/2019-drawing-13.jpg", "hi/2019-drawing-06.jpg", "hi/2019-drawing-11.jpg", "hi/2019-drawing-03.gif", "hi/2019-drawing-08.gif", "hi/2019-drawing-05.jpg", "hi/2019-drawing-05.gif", "hi/2019-drawing-07.gif", "hi/2019-drawing-01.jpg", "hi/2019-tee-02.jpg", "hi/2019-drawing-14.jpg", "hi/2019-drawing-06.gif", "hi/2019-drawing-17.jpg", "hi/2019-drawing-12.jpg", "hi/2019-drawing-10.gif"];
+
+    function displayRandomImage() {
+        const imageElement = document.getElementById('randomImage');
+        if (imageList.length > 0) {
+            const randomIndex = Math.floor(Math.random() * imageList.length);
+            imageElement.src = imageList[randomIndex];
+        } else {
+            imageElement.alt = "No images found.";
+        }
+    }
+
+    window.onload = displayRandomImage;
+  </script>
+ </body>
+</html>

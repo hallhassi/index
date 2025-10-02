@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +47,64 @@
 <li><a href="book.html">book</a></li>
 <li><a href="cruise.html">cruise</a></li> -->
     </ul>
+    
     <script>
+        // Get the first unordered list (ul) element
+const ul = document.querySelector('ul');
+
+// Check if a ul exists
+if (ul) {
+  // Get all the list items (li) within that ul
+  const listItems = ul.querySelectorAll('li');
+
+  // Check if there are any list items
+  if (listItems.length > 0) {
+    // Generate a random index
+    const randomIndex = Math.floor(Math.random() * listItems.length);
+
+    // Select the random list item
+    const randomListItem = listItems[randomIndex];
+
+    // Create a new ul to hold the single random li
+    const newUl = document.createElement('ul');
+
+    // Append the random li to the new ul (this moves the element)
+    newUl.appendChild(randomListItem);
+
+    // Optional: Replace the original ul with the new ul containing only the random li
+    // or just append the new ul somewhere else.
+
+    // Example: Replace the original ul
+    ul.parentNode.replaceChild(newUl, ul);
+
+    // Or, if you want to keep the original ul and display only the random li,
+    // you need to remove all other lis from the original ul:
+
+    /*
+    // Loop through all list items (backwards is often safer when removing)
+    for (let i = listItems.length - 1; i >= 0; i--) {
+      // If the current item is NOT the random one, remove it
+      if (i !== randomIndex) {
+        ul.removeChild(listItems[i]);
+      }
+    }
+    */
+
+    // Or, a cleaner approach to display only the random one is to hide all others:
+    /*
+    listItems.forEach((item, index) => {
+      if (index !== randomIndex) {
+        item.style.display = 'none';
+      }
+    });
+    */
+
+  } else {
+    console.log('The ul has no list items.');
+  }
+} else {
+  console.log('No ul element found on the page.');
+}
         const list = document.querySelector('ul');
         const items = Array.from(list.children);
 

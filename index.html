@@ -31,8 +31,16 @@
         }
 
         #spacer {
-            /* Adjust this to control how "fast" the scroll animation feels */
-            height: 100000px; 
+            /* Default for Desktop */
+            height: 100000px;
+        }
+
+        /* Adjust for Mobile (screens smaller than 768px) */
+        @media (max-width: 767px) {
+            #spacer {
+                /* 10x less than desktop */
+                height: 10000px;
+            }
         }
     </style>
 </head>
@@ -50,23 +58,47 @@
         const settings = {
             totalFrames: 2001,
             perSheet: 100,
-            // Updated Dimensions:
-            // Desktop: 300x400 | Mobile: 150x200
             isMobile: window.innerWidth < 768,
             sourceWidth: window.innerWidth < 768 ? 150 : 300,
             sourceHeight: window.innerWidth < 768 ? 200 : 400
         };
 
-        let loadedSheets = {};
-        let hasScrolled = false;
+        // Store decoded Bitmaps here for instant drawing
+        let loadedBitmaps = {};
 
-        function resize() {
-            // Set internal canvas resolution to match screen
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            
-            if (hasScrolled) {
-                updateFrame();
+        async function init() {
+            // 1. Immediately render the first sheet
+            await loadAndDrawFirstFrame();
+
+            // 2. Listen for scroll to handle the rest
+            window.addEventListener('scroll', () => {
+                requestAnimationFrame(updateFrame);
+            });
+        }
+
+        async function loadAndDrawFirstFrame() {
+            const firstSheetUrl = getSheetUrl(0);
+            const bitmap = await fetchAndDecode(firstSheetUrl);
+            if (bitmap) {
+                loadedBitmaps[firstSheetUrl] = bitmap;
+                render(0); // Draw frame 0 immediately
+            }
+        }
+
+        function getSheetUrl(index) {
+            const mode = settings.isMobile ? 'mobile' : 'desktop';
+            return `./output/${mode}_sheet_${index}.jpg`;
+        }
+
+        async function fetchAndDecode(url) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                // This decodes the JPG off the main thread!
+                return await createImageBitmap(blob);
+            } catch (e) {
+                console.error("Failed to load sheet:", url);
+                return null;
             }
         }
 
@@ -77,67 +109,46 @@
             render(scrollFraction);
         }
 
-        window.addEventListener('resize', resize);
-        resize();
-
-        function render(scrollFraction) {
-            const frameIndex = Math.min(
-                settings.totalFrames - 1,
-                Math.max(0, Math.floor(scrollFraction * settings.totalFrames))
-            );
-
+        async function render(scrollFraction) {
+            const frameIndex = Math.floor(scrollFraction * (settings.totalFrames - 1));
             const sheetIndex = Math.floor(frameIndex / settings.perSheet);
             const indexInSheet = frameIndex % settings.perSheet;
-            const mode = settings.isMobile ? 'mobile' : 'desktop';
-            const sheetUrl = `./output/${mode}_sheet_${sheetIndex}.jpg`;
+            const sheetUrl = getSheetUrl(sheetIndex);
 
-            if (!loadedSheets[sheetUrl]) {
-                const img = new Image();
-                img.src = sheetUrl;
-                img.onload = () => {
-                    loadedSheets[sheetUrl] = img;
-                    drawFrame(img, indexInSheet);
-                };
+            if (loadedBitmaps[sheetUrl]) {
+                drawFrame(loadedBitmaps[sheetUrl], indexInSheet);
             } else {
-                drawFrame(loadedSheets[sheetUrl], indexInSheet);
+                // If not loaded, fetch it and it will show up on the next scroll tick
+                fetchAndDecode(sheetUrl).then(bitmap => {
+                    if (bitmap) loadedBitmaps[sheetUrl] = bitmap;
+                });
             }
         }
 
-        function drawFrame(image, index) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Calculate "Cover" scale (ensures canvas is filled)
-            const scale = Math.max(
-                canvas.width / settings.sourceWidth, 
-                canvas.height / settings.sourceHeight
-            );
-
-            // Center the image
+        function drawFrame(imageBitmap, index) {
+            // Calculate "Cover" scale
+            const scale = Math.max(canvas.width / settings.sourceWidth, canvas.height / settings.sourceHeight);
             const x = (canvas.width / 2) - (settings.sourceWidth / 2) * scale;
             const y = (canvas.height / 2) - (settings.sourceHeight / 2) * scale;
 
+            // Drawing an ImageBitmap is significantly faster than a raw Image object
             ctx.drawImage(
-                image, 
-                0,                          // Source X (always 0 for 1 col)
-                index * settings.sourceHeight, // Source Y (stacking vertically)
-                settings.sourceWidth,       // Source Width
-                settings.sourceHeight,      // Source Height
-                x,                          // Dest X
-                y,                          // Dest Y
-                settings.sourceWidth * scale, // Dest Width
-                settings.sourceHeight * scale // Dest Height
+                imageBitmap,
+                0, index * settings.sourceHeight, settings.sourceWidth, settings.sourceHeight,
+                x, y, settings.sourceWidth * scale, settings.sourceHeight * scale
             );
         }
 
-        window.addEventListener('scroll', () => {
-            if (!hasScrolled && window.scrollY > 0) {
-                hasScrolled = true;
-            }
-
-            if (hasScrolled) {
-                requestAnimationFrame(updateFrame);
-            }
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            updateFrame();
         });
+
+        // Start the engine
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        init();
     </script>
 </body>
 

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            height:100000px;
             margin: 0;
-            overflow-x: hidden; /* Prevent horizontal scroll */
+            overflow-x: hidden;
         }
 
         canvas {
@@ -16,8 +16,10 @@
             width: 100vw;
             height: 100vh;
             display: block;
-            z-index: -1;
-            object-fit: cover; 
+            z-index: 1;
+            /* Object-fit: cover via CSS is ignored by Canvas drawing, 
+               so we handle the "cover" math in JS below */
+            pointer-events: none;
         }
 
         .text-container {
@@ -25,92 +27,118 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            pointer-events: none;
+            z-index: 0;
         }
 
         #spacer {
-            height: 500vh;
+            /* Adjust this to control how "fast" the scroll animation feels */
+            height: 100000px; 
         }
     </style>
 </head>
+
 <body>
 
     <div class="text-container">scroll</div>
     <canvas id="anim-canvas"></canvas>
-    <div id="spacer"></div> 
+    <div id="spacer"></div>
 
     <script>
-    const canvas = document.getElementById('anim-canvas');
-    const ctx = canvas.getContext('2d');
-    
-    const settings = {
-        totalFrames: 2001,
-        perSheet: 100,
-        isMobile: window.innerWidth < 768,
-        // Match these to the actual source image dimensions in your spritesheet
-        sourceWidth: window.innerWidth < 768 ? 300 : 600,
-        sourceHeight: window.innerWidth < 768 ? 300 : 600
-    };
-    
-    let loadedSheets = {};
+        const canvas = document.getElementById('anim-canvas');
+        const ctx = canvas.getContext('2d');
 
-    // Update canvas internal resolution to match the window
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        render(window.scrollY / (document.documentElement.scrollHeight - window.innerHeight));
-    }
+        const settings = {
+            totalFrames: 2001,
+            perSheet: 100,
+            // Updated Dimensions:
+            // Desktop: 300x400 | Mobile: 150x200
+            isMobile: window.innerWidth < 768,
+            sourceWidth: window.innerWidth < 768 ? 150 : 300,
+            sourceHeight: window.innerWidth < 768 ? 200 : 400
+        };
 
-    window.addEventListener('resize', resize);
-    resize();
-    
-    function render(scrollFraction) {
-        const frameIndex = Math.min(
-            settings.totalFrames - 1,
-            Math.max(0, Math.floor(scrollFraction * settings.totalFrames))
-        );
-    
-        const sheetIndex = Math.floor(frameIndex / settings.perSheet);
-        const indexInSheet = frameIndex % settings.perSheet;
-        const mode = settings.isMobile ? 'mobile' : 'desktop';
-        const sheetUrl = `./output/${mode}_sheet_${sheetIndex}.jpg`;
-    
-        if (!loadedSheets[sheetUrl]) {
-            const img = new Image();
-            img.src = sheetUrl;
-            img.onload = () => {
-                loadedSheets[sheetUrl] = img;
-                drawFrame(img, indexInSheet);
-            };
-        } else {
-            drawFrame(loadedSheets[sheetUrl], indexInSheet);
+        let loadedSheets = {};
+        let hasScrolled = false;
+
+        function resize() {
+            // Set internal canvas resolution to match screen
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            if (hasScrolled) {
+                updateFrame();
+            }
         }
-    }
-    
-    function drawFrame(image, index) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Calculate aspect ratio to "Cover" the screen (similar to background-size: cover)
-        const scale = Math.max(canvas.width / settings.sourceWidth, canvas.height / settings.sourceHeight);
-        const x = (canvas.width / 2) - (settings.sourceWidth / 2) * scale;
-        const y = (canvas.height / 2) - (settings.sourceHeight / 2) * scale;
+        function updateFrame() {
+            const scrollTop = window.scrollY;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollFraction = Math.max(0, Math.min(1, scrollTop / maxScroll));
+            render(scrollFraction);
+        }
 
-        ctx.drawImage(
-            image, 
-            0, index * settings.sourceHeight, settings.sourceWidth, settings.sourceHeight, // Source
-            x, y, settings.sourceWidth * scale, settings.sourceHeight * scale // Destination
-        );
-    }
-    
-    window.addEventListener('scroll', () => {
-        const scrollTop = window.scrollY;
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollFraction = scrollTop / maxScroll;
-        
-        requestAnimationFrame(() => render(scrollFraction));
-    });
-    
-    render(0);
+        window.addEventListener('resize', resize);
+        resize();
+
+        function render(scrollFraction) {
+            const frameIndex = Math.min(
+                settings.totalFrames - 1,
+                Math.max(0, Math.floor(scrollFraction * settings.totalFrames))
+            );
+
+            const sheetIndex = Math.floor(frameIndex / settings.perSheet);
+            const indexInSheet = frameIndex % settings.perSheet;
+            const mode = settings.isMobile ? 'mobile' : 'desktop';
+            const sheetUrl = `./output/${mode}_sheet_${sheetIndex}.jpg`;
+
+            if (!loadedSheets[sheetUrl]) {
+                const img = new Image();
+                img.src = sheetUrl;
+                img.onload = () => {
+                    loadedSheets[sheetUrl] = img;
+                    drawFrame(img, indexInSheet);
+                };
+            } else {
+                drawFrame(loadedSheets[sheetUrl], indexInSheet);
+            }
+        }
+
+        function drawFrame(image, index) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Calculate "Cover" scale (ensures canvas is filled)
+            const scale = Math.max(
+                canvas.width / settings.sourceWidth, 
+                canvas.height / settings.sourceHeight
+            );
+
+            // Center the image
+            const x = (canvas.width / 2) - (settings.sourceWidth / 2) * scale;
+            const y = (canvas.height / 2) - (settings.sourceHeight / 2) * scale;
+
+            ctx.drawImage(
+                image, 
+                0,                          // Source X (always 0 for 1 col)
+                index * settings.sourceHeight, // Source Y (stacking vertically)
+                settings.sourceWidth,       // Source Width
+                settings.sourceHeight,      // Source Height
+                x,                          // Dest X
+                y,                          // Dest Y
+                settings.sourceWidth * scale, // Dest Width
+                settings.sourceHeight * scale // Dest Height
+            );
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!hasScrolled && window.scrollY > 0) {
+                hasScrolled = true;
+            }
+
+            if (hasScrolled) {
+                requestAnimationFrame(updateFrame);
+            }
+        });
     </script>
 </body>
+
 </html>

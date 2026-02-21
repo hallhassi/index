@@ -117,22 +117,47 @@
             const frameIndex = Math.floor(scrollFraction * (settings.totalFrames - 1));
             const sheetIndex = Math.floor(frameIndex / settings.perSheet);
             const indexInSheet = frameIndex % settings.perSheet;
-            const sheetUrl = getSheetUrl(sheetIndex);
 
-            if (loadedBitmaps[sheetUrl]) {
-                drawFrame(loadedBitmaps[sheetUrl], indexInSheet);
-            } else if (!loadingTracker[sheetUrl]) {
-                // ONLY fetch if we haven't started fetching this URL yet
-                loadingTracker[sheetUrl] = true;
+            // 1. Trigger the smart preload for surrounding sheets
+            preloadSheets(sheetIndex);
 
-                fetchAndDecode(sheetUrl).then(bitmap => {
-                    if (bitmap) {
-                        loadedBitmaps[sheetUrl] = bitmap;
-                        // Redraw once the new sheet arrives
-                        render();
-                    }
-                });
+            // 2. Draw the current frame if available
+            const currentSheetUrl = getSheetUrl(sheetIndex);
+            if (loadedBitmaps[currentSheetUrl]) {
+                drawFrame(loadedBitmaps[currentSheetUrl], indexInSheet);
             }
+        }
+
+        function preloadSheets(currentIndex) {
+            // Define how many sheets ahead/behind to keep in memory
+            // 1 ahead and 1 behind is usually plenty for smooth scrolling
+            const buffer = [-1, 0, 1];
+
+            buffer.forEach(offset => {
+                const targetIndex = currentIndex + offset;
+
+                // Don't try to load sheets that don't exist (e.g., sheet -1)
+                const totalSheets = Math.ceil(settings.totalFrames / settings.perSheet);
+                if (targetIndex < 0 || targetIndex >= totalSheets) return;
+
+                const url = getSheetUrl(targetIndex);
+
+                // If not loaded and not already fetching, start the fetch
+                if (!loadedBitmaps[url] && !loadingTracker[url]) {
+                    loadingTracker[url] = true;
+                    fetchAndDecode(url).then(bitmap => {
+                        if (bitmap) {
+                            loadedBitmaps[url] = bitmap;
+                            // Only re-render if the newly loaded sheet is the one we actually need right now
+                            const currentScrollIndex = Math.floor((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * (settings.totalFrames - 1));
+                            const currentSheetIndex = Math.floor(currentScrollIndex / settings.perSheet);
+                            if (targetIndex === currentSheetIndex) {
+                                render();
+                            }
+                        }
+                    });
+                }
+            });
         }
 
         function drawFrame(imageBitmap, index) {
@@ -154,7 +179,7 @@
         });
 
         init();
-        
+
     </script>
 </body>
 

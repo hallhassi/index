@@ -63,25 +63,27 @@
             sourceHeight: window.innerWidth < 768 ? 200 : 400
         };
 
-        // Store decoded Bitmaps here for instant drawing
         let loadedBitmaps = {};
+        let loadingTracker = {}; // NEW: Keeps track of active fetches
 
         async function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
             // 1. Immediately render the first sheet
             await loadAndDrawFirstFrame();
 
-            // 2. Listen for scroll to handle the rest
-            window.addEventListener('scroll', () => {
-                requestAnimationFrame(updateFrame);
-            });
+            // 2. Listen for scroll
+            window.addEventListener('scroll', updateFrame, { passive: true });
         }
 
         async function loadAndDrawFirstFrame() {
             const firstSheetUrl = getSheetUrl(0);
+            loadingTracker[firstSheetUrl] = true; // Mark as loading
             const bitmap = await fetchAndDecode(firstSheetUrl);
             if (bitmap) {
                 loadedBitmaps[firstSheetUrl] = bitmap;
-                render(0); // Draw frame 0 immediately
+                render();
             }
         }
 
@@ -94,22 +96,24 @@
             try {
                 const response = await fetch(url);
                 const blob = await response.blob();
-                // This decodes the JPG off the main thread!
                 return await createImageBitmap(blob);
             } catch (e) {
                 console.error("Failed to load sheet:", url);
+                delete loadingTracker[url]; // Allow retry if it failed
                 return null;
             }
         }
 
         function updateFrame() {
-            const scrollTop = window.scrollY;
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const scrollFraction = Math.max(0, Math.min(1, scrollTop / maxScroll));
-            render(scrollFraction);
+            // RequestAnimationFrame is better for performance than raw scroll events
+            requestAnimationFrame(render);
         }
 
-        async function render(scrollFraction) {
+        function render() {
+            const scrollTop = window.scrollY;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollFraction = Math.max(0, Math.min(1, scrollTop / (maxScroll || 1)));
+
             const frameIndex = Math.floor(scrollFraction * (settings.totalFrames - 1));
             const sheetIndex = Math.floor(frameIndex / settings.perSheet);
             const indexInSheet = frameIndex % settings.perSheet;
@@ -117,21 +121,26 @@
 
             if (loadedBitmaps[sheetUrl]) {
                 drawFrame(loadedBitmaps[sheetUrl], indexInSheet);
-            } else {
-                // If not loaded, fetch it and it will show up on the next scroll tick
+            } else if (!loadingTracker[sheetUrl]) {
+                // ONLY fetch if we haven't started fetching this URL yet
+                loadingTracker[sheetUrl] = true;
+
                 fetchAndDecode(sheetUrl).then(bitmap => {
-                    if (bitmap) loadedBitmaps[sheetUrl] = bitmap;
+                    if (bitmap) {
+                        loadedBitmaps[sheetUrl] = bitmap;
+                        // Redraw once the new sheet arrives
+                        render();
+                    }
                 });
             }
         }
 
         function drawFrame(imageBitmap, index) {
-            // Calculate "Cover" scale
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clean slate
             const scale = Math.max(canvas.width / settings.sourceWidth, canvas.height / settings.sourceHeight);
             const x = (canvas.width / 2) - (settings.sourceWidth / 2) * scale;
             const y = (canvas.height / 2) - (settings.sourceHeight / 2) * scale;
 
-            // Drawing an ImageBitmap is significantly faster than a raw Image object
             ctx.drawImage(
                 imageBitmap,
                 0, index * settings.sourceHeight, settings.sourceWidth, settings.sourceHeight,
@@ -142,13 +151,11 @@
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            updateFrame();
+            render();
         });
 
-        // Start the engine
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
         init();
+        
     </script>
 </body>
 

@@ -17,8 +17,6 @@
             height: 100vh;
             display: block;
             z-index: -1;
-            /* Object-fit: cover via CSS is ignored by Canvas drawing, 
-               so we handle the "cover" math in JS below */
             pointer-events: none;
         }
 
@@ -31,14 +29,11 @@
         }
 
         #spacer {
-            /* Default for Desktop */
             height: 100000px;
         }
 
-        /* Adjust for Mobile (screens smaller than 768px) */
         @media (max-width: 767px) {
             #spacer {
-                /* 10x less than desktop */
                 height: 10000px;
             }
         }
@@ -64,22 +59,18 @@
         };
 
         let loadedBitmaps = {};
-        let loadingTracker = {}; // NEW: Keeps track of active fetches
+        let loadingTracker = {};
 
         async function init() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-
-            // 1. Immediately render the first sheet
             await loadAndDrawFirstFrame();
-
-            // 2. Listen for scroll
             window.addEventListener('scroll', updateFrame, { passive: true });
         }
 
         async function loadAndDrawFirstFrame() {
             const firstSheetUrl = getSheetUrl(0);
-            loadingTracker[firstSheetUrl] = true; // Mark as loading
+            loadingTracker[firstSheetUrl] = true;
             const bitmap = await fetchAndDecode(firstSheetUrl);
             if (bitmap) {
                 loadedBitmaps[firstSheetUrl] = bitmap;
@@ -99,13 +90,12 @@
                 return await createImageBitmap(blob);
             } catch (e) {
                 console.error("Failed to load sheet:", url);
-                delete loadingTracker[url]; // Allow retry if it failed
+                delete loadingTracker[url];
                 return null;
             }
         }
 
         function updateFrame() {
-            // RequestAnimationFrame is better for performance than raw scroll events
             requestAnimationFrame(render);
         }
 
@@ -118,10 +108,8 @@
             const sheetIndex = Math.floor(frameIndex / settings.perSheet);
             const indexInSheet = frameIndex % settings.perSheet;
 
-            // 1. Trigger the smart preload for surrounding sheets
             preloadSheets(sheetIndex);
 
-            // 2. Draw the current frame if available
             const currentSheetUrl = getSheetUrl(sheetIndex);
             if (loadedBitmaps[currentSheetUrl]) {
                 drawFrame(loadedBitmaps[currentSheetUrl], indexInSheet);
@@ -129,26 +117,21 @@
         }
 
         function preloadSheets(currentIndex) {
-            // Define how many sheets ahead/behind to keep in memory
-            // 1 ahead and 1 behind is usually plenty for smooth scrolling
             const buffer = [-1, 0, 1];
 
             buffer.forEach(offset => {
                 const targetIndex = currentIndex + offset;
-
-                // Don't try to load sheets that don't exist (e.g., sheet -1)
                 const totalSheets = Math.ceil(settings.totalFrames / settings.perSheet);
+                
                 if (targetIndex < 0 || targetIndex >= totalSheets) return;
 
                 const url = getSheetUrl(targetIndex);
 
-                // If not loaded and not already fetching, start the fetch
                 if (!loadedBitmaps[url] && !loadingTracker[url]) {
                     loadingTracker[url] = true;
                     fetchAndDecode(url).then(bitmap => {
                         if (bitmap) {
                             loadedBitmaps[url] = bitmap;
-                            // Only re-render if the newly loaded sheet is the one we actually need right now
                             const currentScrollIndex = Math.floor((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * (settings.totalFrames - 1));
                             const currentSheetIndex = Math.floor(currentScrollIndex / settings.perSheet);
                             if (targetIndex === currentSheetIndex) {
@@ -179,7 +162,6 @@
         });
 
         init();
-
     </script>
 </body>
 

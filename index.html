@@ -136,7 +136,6 @@
         }
 
         function drawFrame(imageBitmap, index) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clean slate
             const scale = Math.max(canvas.width / settings.sourceWidth, canvas.height / settings.sourceHeight);
             const x = (canvas.width / 2) - (settings.sourceWidth / 2) * scale;
             const y = (canvas.height / 2) - (settings.sourceHeight / 2) * scale;

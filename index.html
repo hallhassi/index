@@ -1,148 +1,127 @@
+const fs = require('fs');
+const { createCanvas, loadImage } = require('canvas');
+const path = require('path');
+
+// Canvas dimensions (The actual stitched sheets)
+const MAX_W = 300;
+const MAX_H = 400;
+const COLS = 4;
+const BATCH_SIZES = [12, 48, 48, 42];
+const SOURCE_DIR = './thumbnails'; 
+
+async function run() {
+    // Filter out hidden files (.DS_Store) and non-images
+    const files = fs.readdirSync(SOURCE_DIR)
+        .filter(f => !f.startsWith('.') && f.match(/\.(jpg|jpeg|png|webp)$/i))
+        .sort();
+    
+    if (files.length > 0) {
+        console.log(`First file detected: "${files[0]}"`);
+    } else {
+        console.error("No images found in the directory!");
+        return;
+    }
+
+    // Table width: 4 columns * (400px img + 400px text) = 3200px
+    let htmlContent = '<table border="1" style="border-collapse: collapse; table-layout: fixed; width: 3200px;">';
+    let filePointer = 0;
+    let globalImageCount = 0;
+
+    for (let s = 0; s < BATCH_SIZES.length; s++) {
+        const count = BATCH_SIZES[s];
+        const rows = Math.ceil(count / COLS);
+        const actualCount = Math.min(count, files.length - filePointer);
+        
+        if (actualCount <= 0) break;
+
+        const canvas = createCanvas(COLS * MAX_W, rows * MAX_H);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < actualCount; i++) {
+            const fileName = files[filePointer];
+            const imgPath = path.join(SOURCE_DIR, fileName);
+
+            try {
+                const img = await loadImage(imgPath);
+                
+                // SHEET DRAWING LOGIC
+                const ratio = Math.min(MAX_W / img.width, MAX_H / img.height);
+                const drawW = img.width * ratio;
+                const drawH = img.height * ratio;
+
+                const cellX = (i % COLS) * MAX_W;
+                const cellY = Math.floor(i / COLS) * MAX_H;
+                const offsetX = cellX + (MAX_W - drawW) / 2;
+                const offsetY = cellY + (MAX_H - drawH) / 2;
+
+                ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+
+                // HTML TABLE LOGIC
+                if (globalImageCount % COLS === 0) {
+                    htmlContent += '<tr>';
+                }
+
+                // Image Cell (400px)
+                htmlContent += `<td style="width:400px; height:600px; text-align:center; vertical-align:middle; overflow:hidden;">`;
+                htmlContent += `<img src="${imgPath}" style="max-width:300px; max-height:400px; vertical-align:middle;"></td>`;
+                
+                // Filename Cell (400px)
+                htmlContent += `<td style="width:400px; text-align: center; vertical-align: middle; padding: 10px; word-wrap: break-word; overflow-wrap: any-where;">${fileName}</td>`;
+
+                if (globalImageCount % COLS === 3) {
+                    htmlContent += '</tr>';
+                }
+
+                globalImageCount++;
+            } catch (err) {
+                console.error(`Skipping file ${fileName} due to error: ${err.message}`);
+            }
+            filePointer++;
+        }
+
+        // Save sheet as JPG 70%
+        const out = fs.createWriteStream(`sheet_${s + 1}.jpg`);
+        const stream = canvas.createJPEGStream({ quality: 0.7 });
+        stream.pipe(out);
+        await new Promise((res) => out.on('finish', res));
+        console.log(`Successfully saved sheet_${s + 1}.jpg`);
+    }
+
+    // Close row if it ends mid-column
+    if (globalImageCount % COLS !== 0) {
+        htmlContent += '</tr>';
+    }
+
+    htmlContent += '</table>';
+    
+    const finalHtml = `
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>DOOM</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>scanner</title>    
     <style>
-        body {
-            margin: 0;
-            overflow-x: hidden;
-            background: #000;
-        }
+        td { border: none; }
+        img {
+            border: 10px solid white;
+            
+            /* X-offset | Y-offset | Blur | Spread | Color */
+            /* We set Y to 10px so it pushes the shadow down */
+            box-shadow: 0px 10px 15px -5px rgba(0, 0, 0, 0.3);
+            
+            box-sizing: border-box;
+          }    </style>
 
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: block;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .text-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        #spacer {
-            height: 15000px;
-        }
-    </style>
 </head>
-
 <body>
-
-    <div class="text-container">scroll</div>
-    <canvas id="anim-canvas"></canvas>
-    <div id="spacer"></div>
-
-    <script>
-        const canvas = document.getElementById('anim-canvas');
-        const ctx = canvas.getContext('2d');
-
-        const CONFIG = {
-            totalFrames: 350,
-            perSheet: 50,
-            width: 400,
-            height: 300
-        };
-
-        let loadedBitmaps = {};
-        let loadingTracker = {};
-
-        async function init() {
-            handleResize();
-            await loadInitialFrame();
-            window.addEventListener('scroll', () => requestAnimationFrame(render), { passive: true });
-            window.addEventListener('resize', handleResize);
-        }
-
-        function getSheetUrl(index) {
-            return `./output/small_landscape_sheet_${index}.jpg`;
-        }
-
-        async function fetchAndDecode(url) {
-            if (loadedBitmaps[url]) return loadedBitmaps[url];
-            try {
-                const response = await fetch(url);
-                const blob = await response.blob();
-                const bitmap = await createImageBitmap(blob);
-                loadedBitmaps[url] = bitmap;
-                return bitmap;
-            } catch (e) {
-                delete loadingTracker[url];
-                return null;
-            }
-        }
-
-        async function loadInitialFrame() {
-            const url = getSheetUrl(0);
-            loadingTracker[url] = true;
-            await fetchAndDecode(url);
-            render();
-        }
-
-        function render() {
-            const scrollTop = window.scrollY;
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const scrollFraction = Math.max(0, Math.min(1, scrollTop / (maxScroll || 1)));
-
-            const frameIndex = Math.floor(scrollFraction * (CONFIG.totalFrames - 1));
-            const sheetIndex = Math.floor(frameIndex / CONFIG.perSheet);
-            const indexInSheet = frameIndex % CONFIG.perSheet;
-
-            preloadSheets(sheetIndex);
-
-            const currentUrl = getSheetUrl(sheetIndex);
-            if (loadedBitmaps[currentUrl]) {
-                drawFrame(loadedBitmaps[currentUrl], indexInSheet);
-            }
-        }
-
-        function preloadSheets(currentIndex) {
-            [-1, 0, 1].forEach(offset => {
-                const targetIndex = currentIndex + offset;
-                const totalSheets = Math.ceil(CONFIG.totalFrames / CONFIG.perSheet);
-                if (targetIndex < 0 || targetIndex >= totalSheets) return;
-
-                const url = getSheetUrl(targetIndex);
-                if (!loadedBitmaps[url] && !loadingTracker[url]) {
-                    loadingTracker[url] = true;
-                    fetchAndDecode(url).then(() => render());
-                }
-            });
-        }
-
-        function drawFrame(bitmap, index) {
-            const scale = Math.max(canvas.width / CONFIG.width, canvas.height / CONFIG.height);
-            const drawW = CONFIG.width * scale;
-            const drawH = CONFIG.height * scale;
-            const offsetX = (canvas.width - drawW) / 2;
-            const offsetY = (canvas.height - drawH) / 2;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(
-                bitmap,
-                index * CONFIG.width, 0, CONFIG.width, CONFIG.height,
-                offsetX, offsetY, drawW, drawH
-            );
-        }
-
-        function handleResize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            render();
-        }
-
-        init();
-    </script>
+    ${htmlContent}
 </body>
+</html>`;
 
-</html>
+    fs.writeFileSync('index.html', finalHtml);
+    console.log('Successfully generated index.html');
+}
+
+run().catch(console.error);

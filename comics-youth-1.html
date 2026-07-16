@@ -14,8 +14,36 @@
     </div>
     <div class="center">
         <h1>Comics Youth 1</h1>
+        <img src="lo/comics-youth-1.jpg">
         <p>$5, 16 pages, half letter, self-published, 2009</p>
-        <blockquote>"A true classic of zine making and comics journalism, this is a comic magazine edited by Blaise Larmee where he interviews Jason T. Miles, Jason Overby and the person writing this. Lots of ideas that were in the air at the time of Domino's early 2010's birth can be found here." Austin English</blockquote>
-        <a class="buy" href="https://buy.stripe.com/3cI7sLdOq4XT0CG6ssbV600">BUY</a>
+        <blockquote>"A true classic of zine making and comics journalism, this is a comic magazine edited by Blaise
+            Larmee where he interviews Jason T. Miles, Jason Overby and the person writing this. Lots of ideas that were
+            in the air at the time of Domino's early 2010's birth can be found here." Austin English</blockquote>
+        <a class="buy" href="https://buy.stripe.com/8x214ndOqgGB8586ssbV62Z">BUY</a>
         <img src="hi/comics-youth-1.jpg">
+        <div class="grid">
+            <div class="book combo-link" data-url="combo-01.html">
+                <div class="combo">
+                    <img src="lo/comics-youth-1.jpg"><img src="lo/comics-youth-2.jpg">
+                </div>
+                <p>Comics Youth 1 and 2</p>
+                <p>$10</p>
+                <a class="buy" href="https://buy.stripe.com/7sY8wP6lYfCx714aIIbV631">BUY</a>
+            </div>
+        </div>
     </div>
+
+    <script>
+        const books = document.querySelectorAll('.book');
+
+        books.forEach(book => {
+            book.addEventListener('click', (e) => {
+                if (e.target.closest('a')) {
+                    return;
+                }
+                if (book.dataset.url) {
+                    window.location.href = book.dataset.url;
+                }
+            });
+        });
+    </script>

@@ -15,7 +15,7 @@
     <div class="center">
         <h1>2001</h1>
         <p>$25, 176 pages, 7 by 10 inches, 2dcloud, 2017</p>
-        <a class="buy" href="https://buy.stripe.com/3cI7sLdOq4XT0CG6ssbV600">BUY</a>
+        <a class="buy" href="https://buy.stripe.com/fZueVd11Eaidclo2ccbV62X">BUY</a>
         <blockquote>
             "This is Larmee's best book, in a career marked by many thoughtful projects. Here, we find Larmee continuing
             to create systems that invert themselves into each other. He compliments one stream of thinking only to
@@ -27,6 +27,31 @@
         </blockquote>
         <img id="random">
     </div>
+    <div class="grid">
+        <div class="book combo-link" data-url="combo-02.html">
+            <div class="combo">
+                <img src="lo/2001.jpg"><img src="lo/mirror-mirror.jpg">
+            </div>
+            <p>2001 and Mirror Mirror</p>
+            <p>$53</p>
+            <a class="buy" href="https://buy.stripe.com/3cI4gzbGi3TP99c3ggbV632">BUY</a>
+        </div>
+    </div>
+
+    <script>
+        const books = document.querySelectorAll('.book');
+
+        books.forEach(book => {
+            book.addEventListener('click', (e) => {
+                if (e.target.closest('a')) {
+                    return;
+                }
+                if (book.dataset.url) {
+                    window.location.href = book.dataset.url;
+                }
+            });
+        });
+    </script>
     <script>
         const imageData = [
             {

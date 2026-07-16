@@ -1,4 +1,15 @@
 import os
+import json
+
+# 1. Load the generated Stripe links mapping file
+try:
+    with open("stripe_links.json", "r", encoding="utf-8") as f:
+        stripe_data = json.load(f)
+    # Create a fast lookup map: { "filename.html": "https://buy.stripe.com/abc..." }
+    link_map = {item["dataUrl"]: item["buyUrl"] for item in stripe_data}
+except FileNotFoundError:
+    print("❌ Error: 'stripe_links.json' not found. Run your Node.js generator first!")
+    exit(1)
 
 # Define the dataset mapping the two-digit number to its price
 books_data = [
@@ -32,7 +43,7 @@ books_data = [
     { "number": "28", "price": 50 }
 ]
 
-# Define the HTML template with placeholders for the number and price
+# Define the HTML template with placeholders
 html_template = """<html>
 <head>
     <title>3 Books by Blaise Larmee</title>
@@ -47,8 +58,9 @@ html_template = """<html>
     </div>
     <div class="center">
         <h1>3 Books Artist Edition {num}</h1>
+        <img src="lo/3-books-artist-edition-{num}.jpg">
         <p>${price}, 0 pages, 6 by 9 inches, 2dcloud, 2015</p>
-        <a class="buy" href="https://buy.stripe.com/3cI7sLdOq4XT0CG6ssbV600">BUY</a>
+        <a class="buy" href="{buy_url}">BUY</a>
         <img src="hi/3-books-artist-edition-{num}.jpg">
         <a href="3-books-artist-editions.html">3 Books Artist Editions</a>
     </div>"""
@@ -57,12 +69,15 @@ html_template = """<html>
 for book in books_data:
     num_str = book["number"]
     price_val = book["price"]
-    
-    # Insert the formatted number and price into the template
-    page_content = html_template.format(num=num_str, price=price_val)
-    
-    # Create the unique filename
     filename = f"3-books-artist-edition-{num_str}.html"
+    
+    # 2. Lookup the dynamic buy url from our map
+    buy_url = link_map.get(filename, "#")
+    if buy_url == "#":
+        print(f"⚠️ Warning: No Stripe link found for {filename}")
+
+    # Insert the values into the template
+    page_content = html_template.format(num=num_str, price=price_val, buy_url=buy_url)
     
     # Save the file
     with open(filename, "w", encoding="utf-8") as file:

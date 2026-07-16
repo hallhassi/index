@@ -8,7 +8,8 @@ script {
 }
 
 body {
-    margin: 1em 1em 8em 1em;
+    display: block;
+    margin: 0 0 8em 0;
     line-height: 3em;
     background-color: red;
 }
@@ -75,7 +76,7 @@ img {
     margin-top: 1em;
 }
 
-#book .buy {
+#book>div>.buy {
     cursor: pointer;
     padding: 1em;
     margin: 8em auto 11em auto;
@@ -83,11 +84,19 @@ img {
     border-radius: 1em;
 }
 
-#book h1 {
+
+#book h1,
+#show h1 {
     margin: 3em auto 8em auto;
 }
 
-#book img {
+#show img {
+    display: block;
+    margin: auto;
+}
+
+#book>div>img,
+#book>div>.combo {
     margin-bottom: 8em;
 }
 
@@ -106,6 +115,10 @@ a.editions {
     display: grid;
 }
 
+.combo-link {
+    grid-column: 2;
+}
+
 .book {
     display: flex;
     flex-direction: column;
@@ -122,17 +135,45 @@ a.editions {
     object-fit: contain;
 }
 
-@media (min-width: 450px) {
+.combo {
+    margin-bottom: 1em;
+}
+
+.combo>* {
+    padding:0;
+    display: inline;
+    max-width: 50%;
+}
+
+.combo-grid {
+    display: flex;
+    justify-content: center;
+}
+
+@media (min-width: 400px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 400px) {
+    .show>.grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 150px));
+    }
+}
+
+@media (min-width: 700px) {
     .grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media (min-width: 450px) {
+@media (min-width: 700px) {
     .show>.grid {
         grid-template-columns: repeat(auto-fill, minmax(100px, 150px));
     }
 }
+
 
 #image img {
     max-width: 100%;

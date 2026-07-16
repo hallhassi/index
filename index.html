@@ -18,128 +18,71 @@
     <div id="nav">
         <a href="bio.html">bio</a>
     </div>
-    <script>
-        const imageData = [
-            {
-                "src": "2001.html",
-                "hrefs": [
-                    "lo/2017-2001-01.jpg",
-                    "lo/2017-2001-02.jpg",
-                    "lo/2017-2001-03.jpg",
-                    "lo/2017-2001-04.jpg",
-                    "lo/2017-2001-05.jpg",
-                    "lo/2017-2001-06.jpg",
-                    "lo/2017-2001-07.jpg",
-                    "lo/2017-2001-08.jpg",
-                    "lo/2017-2001-09.jpg",
-                    "lo/2017-2001-10.jpg",
-                    "lo/2017-2001-11.jpg",
-                    "lo/2017-2001-12.jpg",
-                    "lo/2017-2001-13.jpg",
-                    "lo/2017-2001-14.jpg",
-                    "lo/2017-2001-15.jpg",
-                    "lo/2017-2001-16.jpg",
-                    "lo/2017-2001-17.jpg",
-                    "lo/2017-2001-18.jpg",
-                    "lo/2017-2001-19.jpg",
-                    "lo/2017-2001-20.jpg",
-                    "lo/2017-2001-21.jpg",
-                    "lo/2017-2001-22.jpg",
-                    "lo/2017-2001-23.jpg",
-                    "lo/2017-2001-24.jpg",
-                    "lo/2017-2001-25.jpg",
-                    "lo/2017-2001-26.jpg",
-                    "lo/2017-2001-27.jpg",
-                    "lo/2017-2001-28.jpg",
-                    "lo/2017-2001-29.jpg",
-                    "lo/2017-2001-30.jpg",
-                    "lo/2017-2001-31.jpg",
-                    "lo/2017-2001-32.jpg",
-                    "lo/2017-2001-33.jpg",
-                    "lo/2017-2001-34.jpg",
-                    "lo/2017-2001-35.jpg",
-                    "lo/2017-2001-36.jpg",
-                    "lo/2017-2001-37.jpg",
-                    "lo/2017-2001-38.jpg",
-                    "lo/2017-2001-39.jpg",
-                    "lo/2017-2001-40.jpg",
-                    "lo/2017-2001-41.jpg",
-                    "lo/2017-2001-42.jpg",
-                    "lo/2017-2001-43.jpg",
-                    "lo/2017-2001-44.jpg",
-                    "lo/2017-2001-45.jpg",
-                    "lo/2017-2001-46.jpg",
-                    "lo/2017-2001-47.jpg",
-                    "lo/2017-2001-48.jpg",
-                    "lo/2017-2001-49.jpg",
-                    "lo/2017-2001-50.jpg",
-                    "lo/2017-2001-51.jpg",
-                    "lo/2017-2001-52.jpg",
-                    "lo/2017-2001-53.jpg",
-                    "lo/2017-2001-54.jpg",
-                    "lo/2017-2001-55.jpg",
-                    "lo/2017-2001-56.jpg",
-                    "lo/2017-2001-57.jpg",
-                    "lo/2017-2001-58.jpg",
-                    "lo/2017-2001-59.jpg",
-                    "lo/2017-2001-60.jpg",
-                    "lo/2017-2001-61.jpg",
-                    "lo/2017-2001-62.jpg",
-                    "lo/2017-2001-63.jpg",
-                    "lo/2017-2001-64.jpg",
-                    "lo/2017-2001-65.jpg",
-                    "lo/2017-2001-66.jpg",
-                    "lo/2017-2001-67.jpg",
-                    "lo/2017-2001-68.jpg",
-                    "lo/2017-2001-69.jpg",
-                    "lo/2017-2001-70.jpg",
-                    "lo/2017-2001-71.jpg",
-                    "lo/2017-2001-72.jpg",
-                    "lo/2017-2001-73.jpg",
-                    "lo/2017-2001-74.jpg",
-                    "lo/2017-2001-75.jpg",
-                    "lo/2017-2001-76.jpg",
-                    "lo/2017-2001-77.jpg",
-                    "lo/2017-2001-78.jpg",
-                    "lo/2017-2001-79.jpg",
-                    "lo/2017-2001-80.jpg",
-                    "lo/2017-2001-81.jpg",
-                    "lo/2017-2001-82.jpg",
-                    "lo/2017-2001-83.jpg",
-                    "lo/2017-2001-84.jpg",
-                    "lo/2017-2001-85.jpg",
-                    "lo/2017-2001-86.jpg",
-                    "lo/2017-2001-87.jpg",
-                    "lo/2017-2001-88.jpg",
-                    "lo/2017-2001-89.jpg",
-                    "lo/2017-2001-90.jpg",
-                    "lo/2017-2001-91.jpg"
-                ]
-            }
-        ]
-        // 1. Pick a random object from the main array
-        const randomIndex = Math.floor(Math.random() * imageData.length);
-        const randomItem = imageData[randomIndex];
-
-        // 2. Target your elements
-        const imgElement = document.getElementById('random');
-        const linkElement = imgElement ? imgElement.parentElement : null;
-
-        // 3. Update the DOM
-        if (imgElement && randomItem) {
-            // A. Pick a random image from the "hrefs" array of this specific item
-            const randomHrefsIndex = Math.floor(Math.random() * randomItem.hrefs.length);
-            const randomImageSrc = randomItem.hrefs[randomHrefsIndex];
-
-            // B. Update the <img> tag's src attribute with the image path
-            imgElement.src = randomImageSrc;
-
-            // C. If the image is inside an <a> tag, update its destination to the page URL ("src")
-            if (linkElement && linkElement.tagName === 'A') {
-                linkElement.href = randomItem.src;
-            }
+<script>
+    // Helper function to dynamically generate sequential image arrays
+    // Set folderPrefix to 'lo/' if these new images are also in your 'lo' folder
+    function generateImages(template, maxCount, folderPrefix = 'lo/') {
+        const list = [];
+        for (let i = 1; i <= maxCount; i++) {
+            const paddedNum = String(i).padStart(2, '0'); // Formats 1 as '01', 2 as '02', etc.
+            list.push(`${folderPrefix}${template}${paddedNum}.jpg`);
         }
-    </script>
+        return list;
+    }
+
+    const imageData = [
+        // 1. Your original dataset (91 images)
+        {
+            "src": "2001.html",
+            "hrefs": generateImages("2017-2001-", 91)
+        },
+        // 2. 3 Books Artist Edition (28 images)
+        {
+            "src": "3-books-artist-editions.html",
+            "hrefs": generateImages("3-books-artist-edition-", 28)
+        },
+        // 3. Young Lions Artist Edition (10 images)
+        {
+            "src": "young-lions-artist-editions.html",
+            "hrefs": generateImages("young-lions-artist-edition-", 10)
+        },
+        // 4. 2024 Apartment Gallery (10 images)
+        {
+            "src": "apartment-gallery.html",
+            "hrefs": generateImages("2024-apartment-", 10)
+        },
+        // 5. 2017 My Parents (7 images)
+        {
+            "src": "my-parents.html",
+            "hrefs": generateImages("2017-myparents-", 7)
+        }
+    ];
+
+    // --- DOM Manipulation Logic (Unchanged) ---
+
+    // 1. Pick a random object from the main array
+    const randomIndex = Math.floor(Math.random() * imageData.length);
+    const randomItem = imageData[randomIndex];
+
+    // 2. Target your elements
+    const imgElement = document.getElementById('random');
+    const linkElement = imgElement ? imgElement.parentElement : null;
+
+    // 3. Update the DOM
+    if (imgElement && randomItem) {
+        // A. Pick a random image from the "hrefs" array of this specific item
+        const randomHrefsIndex = Math.floor(Math.random() * randomItem.hrefs.length);
+        const randomImageSrc = randomItem.hrefs[randomHrefsIndex];
+
+        // B. Update the <img> tag's src attribute with the image path
+        imgElement.src = randomImageSrc;
+
+        // C. If the image is inside an <a> tag, update its destination to the page URL ("src")
+        if (linkElement && linkElement.tagName === 'A') {
+            linkElement.href = randomItem.src;
+        }
+    }
+</script>
 </body>
 
 </html>

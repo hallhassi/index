@@ -1,0 +1,67 @@
+<html>
+
+<head>
+    <title>Jaywalk featuring Blaise Larmee</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css.css">
+</head>
+
+<body id="book">
+    <div id="header">
+        <a href="index.html">Blaise Larmee</a>
+        <a href="books.html">books</a>
+        <a href="shows.html">shows</a>
+    </div>
+    <div class="center">
+        <h1>Jaywalk</h1>
+        <p>$15, 116 page anthology featuring 14 pages by Blaise Larmee, 8 by 11 inches, Domino Books, 2025</p>
+        <a class="buy" href="https://buy.stripe.com/3cI7sLdOq4XT0CG6ssbV600">BUY</a>
+        <p>I Watch Stephen's Phone Rise Up and Down, 6 pages</p>
+        <img id="random-one">
+        <p>What's This Say? 8 pages</p>
+        <img id="random-two">
+    </div>
+    <script>
+            const imageData = [
+            {
+                "hrefs": [
+                    "hi/jaywalk-01.jpg",
+                    "hi/jaywalk-02.jpg",
+                    "hi/jaywalk-03.jpg",
+                    "hi/jaywalk-04.jpg",
+                    "hi/jaywalk-05.jpg",
+                    "hi/jaywalk-06.jpg",
+                    "hi/jaywalk-07.jpg",
+                ]
+            }
+        ]
+        // 1. Pick a random object from the main array
+const randomIndex = Math.floor(Math.random() * imageData.length);
+const randomItem = imageData[randomIndex];
+
+// 2. Target your elements (Using IDs for precision)
+const imgOne = document.getElementById('random-one');
+const imgTwo = document.getElementById('random-two');
+
+// 3. Update the DOM
+if (randomItem) {
+    
+    // --- FIRST IMAGE (Picks from the first 3 hrefs: index 0, 1, 2) ---
+    if (imgOne && randomItem.hrefs.length >= 3) {
+        // Slice the first 3 items
+        const firstPool = randomItem.hrefs.slice(0, 3); 
+        const randomIdxOne = Math.floor(Math.random() * firstPool.length);
+        
+        imgOne.src = firstPool[randomIdxOne];
+    }
+
+    // --- SECOND IMAGE (Picks from the next 4 hrefs: index 3, 4, 5, 6) ---
+    if (imgTwo && randomItem.hrefs.length >= 7) {
+        // Slice the next 4 items (starting at index 3 up to, but not including, 7)
+        const secondPool = randomItem.hrefs.slice(3, 7); 
+        const randomIdxTwo = Math.floor(Math.random() * secondPool.length);
+        
+        imgTwo.src = secondPool[randomIdxTwo];
+    }
+}
+    </script>

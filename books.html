@@ -1,15 +1,141 @@
 <html>
+
 <head>
-<style>a{text-decoration:none;color:black;display:block;padding:1em;float:left;}</style>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="/favicon.svg" rel="icon" type="image/svg+xml"/>
+    <title>Blaise Larmee books</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css.css">
 </head>
+
 <body>
-<a href="index.html">Blaise Larmee</a>
-<a href="books.html">books</a>
-<a href="websites.html">websites</a>
-<a href="2001.html">2001</a>
-<a href="3-books.html">3 Books</a>
-<a href="mirror-mirror.html">Mirror Mirror</a>
-<a href="young-lions.html">Young Lions </a>
-<img src="hi/2017-2001-14.jpg">
+    <div id="header">
+        <a href="index.html">Blaise Larmee</a>
+        <h1>books</h1>
+        <a href="shows.html">shows</a>
+    </div>
+    <div class="grid">
+        <div class="book" data-url="comics-youth-2.html">
+            <img src="lo/comics-youth-2.jpg">
+            <p>Comics Youth 2</p>
+            <p>$5</p>
+            <a class="buy" href="https://buy.stripe.com/3cI7sLdOq4XT0CG6ssbV600">BUY</a>
+        </div>
+        <div class="book" data-url="altcomics-7.html">
+            <img src="lo/altcomics-7.jpg">
+            <p>Altcomics 7</p>
+            <p>$7</p>
+            <a class="buy" href="https://buy.stripe.com/3cI7sLdOq4XT0CG6ssbV600">BUY</a>
+        </div>
+        <div class="book" data-url="2001.html">
+            <img src="lo/2001.jpg">
+            <p>2001</p>
+            <p>$25</p>
+            <a class="buy" href="https://buy.stripe.com/3cI7sLdOq4XT0CG6ssbV600">BUY</a>
+        </div>
+        <div class="book" data-url="mirror-mirror.html">
+            <img src="lo/mirror-mirror.jpg">
+            <p>Mirror Mirror</p>
+            <p>$30</p>
+            <a class="buy" href="https://buy.stripe.com/3cI7sLdOq4XT0CG6ssbV600">BUY</a>
+        </div>
+        <div class="book" data-url="3-books-artist-editions.html">
+            <img id="random-one">
+            <p>3 Books </p>
+            <p>$50-500</p>
+            <a class="buy" href="3-books-artist-editions.html">BROWSE</a>
+        </div>
+        <div class="book" data-url="young-lions-artist-editions.html">
+            <img id="random-two">
+            <p>Young Lions </p>
+            <p>$25</p>
+            <a class="buy" href="young-lions-artist-editions.html">BROWSE</a>
+        </div>
+        <div class="book" data-url="comics-youth-1.html">
+            <img src="lo/comics-youth-1.jpg">
+            <p>Comics Youth 1</p>
+            <p>$5</p>
+            <a class="buy" href="https://buy.stripe.com/3cI7sLdOq4XT0CG6ssbV600">BUY</a>
+        </div>
+        <div class="book" data-url="the-whale.html">
+            <img src="lo/the-whale.jpg">
+            <p>The Whale </p>
+            <p>$50</p>
+            <a class="buy" href="https://buy.stripe.com/3cI7sLdOq4XT0CG6ssbV600">BUY</a>
+        </div>
+    </div>
+
+    <script>
+        const imageData = {
+            threeBooks: [
+                "lo/3-books-artist-edition-01.jpg",
+                "lo/3-books-artist-edition-02.jpg",
+                "lo/3-books-artist-edition-03.jpg",
+                "lo/3-books-artist-edition-04.jpg",
+                "lo/3-books-artist-edition-05.jpg",
+                "lo/3-books-artist-edition-06.jpg",
+                "lo/3-books-artist-edition-07.jpg",
+                "lo/3-books-artist-edition-08.jpg",
+                "lo/3-books-artist-edition-09.jpg",
+                "lo/3-books-artist-edition-10.jpg",
+                "lo/3-books-artist-edition-11.jpg",
+                "lo/3-books-artist-edition-12.jpg",
+                "lo/3-books-artist-edition-13.jpg",
+                "lo/3-books-artist-edition-14.jpg",
+                "lo/3-books-artist-edition-15.jpg",
+                "lo/3-books-artist-edition-16.jpg",
+                "lo/3-books-artist-edition-17.jpg",
+                "lo/3-books-artist-edition-18.jpg",
+                "lo/3-books-artist-edition-19.jpg",
+                "lo/3-books-artist-edition-20.jpg",
+                "lo/3-books-artist-edition-21.jpg",
+                "lo/3-books-artist-edition-22.jpg",
+                "lo/3-books-artist-edition-23.jpg",
+                "lo/3-books-artist-edition-24.jpg",
+                "lo/3-books-artist-edition-25.jpg",
+                "lo/3-books-artist-edition-26.jpg",
+                "lo/3-books-artist-edition-27.jpg",
+                "lo/3-books-artist-edition-28.jpg"
+            ],
+            youngLions: [
+                "lo/young-lions-artist-edition-01.jpg",
+                "lo/young-lions-artist-edition-02.jpg",
+                "lo/young-lions-artist-edition-03.jpg",
+                "lo/young-lions-artist-edition-04.jpg",
+                "lo/young-lions-artist-edition-05.jpg",
+                "lo/young-lions-artist-edition-06.jpg",
+                "lo/young-lions-artist-edition-07.jpg",
+                "lo/young-lions-artist-edition-08.jpg",
+                "lo/young-lions-artist-edition-09.jpg",
+                "lo/young-lions-artist-edition-10.jpg"
+            ]
+        };
+
+        // Target your elements
+        const imgOne = document.getElementById('random-one');
+        const imgTwo = document.getElementById('random-two');
+
+        // 1. Handle "3 Books" Pool for imgOne
+        if (imgOne && imageData.threeBooks.length > 0) {
+            const randomIdxOne = Math.floor(Math.random() * imageData.threeBooks.length);
+            imgOne.src = imageData.threeBooks[randomIdxOne];
+        }
+
+        // 2. Handle "Young Lions" Pool for imgTwo
+        if (imgTwo && imageData.youngLions.length > 0) {
+            const randomIdxTwo = Math.floor(Math.random() * imageData.youngLions.length);
+            imgTwo.src = imageData.youngLions[randomIdxTwo];
+        }
+    </script>
+    <script>
+        const books = document.querySelectorAll('.book');
+
+        books.forEach(book => {
+            book.addEventListener('click', (e) => {
+                if (e.target.closest('a')) {
+                    return;
+                }
+                if (book.dataset.url) {
+                    window.location.href = book.dataset.url;
+                }
+            });
+        });
+    </script>

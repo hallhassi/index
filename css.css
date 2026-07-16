@@ -1,0 +1,175 @@
+* {
+    all: unset;
+}
+
+head,
+script {
+    display: none;
+}
+
+body {
+    margin: 1em 1em 8em 1em;
+    line-height: 3em;
+    background-color: red;
+}
+
+div,
+p,
+a,
+blockquote {
+    display: block;
+}
+
+blockquote {
+    text-align: center;
+    line-height: 1.5em;
+    margin: 2em;
+}
+
+#header>* {
+    display: inline-block;
+}
+
+a,
+.book,
+.show {
+    cursor: pointer;
+}
+
+img {
+    max-width: 100%;
+}
+
+.book,
+#image {
+    padding: 2em;
+    text-align: center;
+    margin: 1em;
+    width: fit-content;
+}
+
+.show {
+    margin: 1em;
+    padding: 2em;
+    text-align: center;
+}
+
+.book>img {
+    margin: auto;
+    margin-bottom:1em;
+}
+
+#image {
+    float: left;
+}
+
+.book,
+.show,
+.buy,
+#image {
+    background-color: rgba(9, 9, 9, .1);
+    border-radius: 1em;
+}
+
+.buy {
+    margin-top: 1em;
+}
+
+#book .buy {
+    cursor: pointer;
+    padding: 1em;
+    margin: 8em auto 11em auto;
+    width: fit-content;
+    border-radius: 1em;
+}
+
+#book h1 {
+    margin: 3em auto 8em auto;
+}
+
+#book img {
+    margin-bottom: 8em;
+}
+
+.show p {
+    text-align: left;
+}
+
+a,
+h1,
+a.editions {
+    display: block;
+    padding: 1em;
+}
+
+.grid {
+    display: grid;
+}
+
+.book {
+    display: flex;
+    flex-direction: column;
+}
+
+.book>a:first-child {
+    width: 100%;
+    height: 200px;
+}
+
+.book>a:first-child>img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+@media (min-width: 450px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 450px) {
+    .show>.grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 150px));
+    }
+}
+
+#image img {
+    max-width: 100%;
+}
+
+#image {
+    width: fit-content;
+    margin: 1em;
+}
+
+#image img.full-size {
+    max-width: none;
+}
+
+#nav,
+#image {
+    float: left;
+}
+
+#bio{
+    line-height: 1.3em;
+    padding: 1em;
+    font-family: 'Courier New', Courier, monospace;
+    white-space: pre;
+}
+
+#text {
+    white-space: pre-wrap;
+}
+
+#bio a,
+blockquote a {
+    display: inline;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.center {
+    text-align: center;
+}

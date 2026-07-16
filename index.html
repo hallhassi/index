@@ -1,17 +1,145 @@
 <html>
-<head><title>Blaise Larmee</title>
-<style>a{text-decoration:none;color:black;display:block;padding:1em;float:left;}</style>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="/favicon.svg" rel="icon" type="image/svg+xml"/>
+
+<head>
+    <title>Blaise Larmee</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css.css">
 </head>
+
 <body>
-<a href="2001.html">2001</a>
-<a href="3-books.html">3 Books</a>
-<a href="young-lions.html">Young Lions </a>
-<a href="https://apartment.gallery">apartment.gallery</a>
-<img src="hi/2017-2001-13.jpg">
-<img src="hi/2017-2001-14.jpg">
-<img src="hi/2017-2001-15.jpg">
+    <div id="header">
+        <h1>Blaise Larmee</h1>
+        <a href="books.html">books</a>
+        <a href="shows.html">shows</a>
+    </div>
+    <div id="image">
+        <a><img id="random"></a>
+    </div>
+    <div id="nav">
+        <a href="bio.html">bio</a>
+    </div>
+    <script>
+        const imageData = [
+            {
+                "src": "2001.html",
+                "hrefs": [
+                    "lo/2017-2001-01.jpg",
+                    "lo/2017-2001-02.jpg",
+                    "lo/2017-2001-03.jpg",
+                    "lo/2017-2001-04.jpg",
+                    "lo/2017-2001-05.jpg",
+                    "lo/2017-2001-06.jpg",
+                    "lo/2017-2001-07.jpg",
+                    "lo/2017-2001-08.jpg",
+                    "lo/2017-2001-09.jpg",
+                    "lo/2017-2001-10.jpg",
+                    "lo/2017-2001-11.jpg",
+                    "lo/2017-2001-12.jpg",
+                    "lo/2017-2001-13.jpg",
+                    "lo/2017-2001-14.jpg",
+                    "lo/2017-2001-15.jpg",
+                    "lo/2017-2001-16.jpg",
+                    "lo/2017-2001-17.jpg",
+                    "lo/2017-2001-18.jpg",
+                    "lo/2017-2001-19.jpg",
+                    "lo/2017-2001-20.jpg",
+                    "lo/2017-2001-21.jpg",
+                    "lo/2017-2001-22.jpg",
+                    "lo/2017-2001-23.jpg",
+                    "lo/2017-2001-24.jpg",
+                    "lo/2017-2001-25.jpg",
+                    "lo/2017-2001-26.jpg",
+                    "lo/2017-2001-27.jpg",
+                    "lo/2017-2001-28.jpg",
+                    "lo/2017-2001-29.jpg",
+                    "lo/2017-2001-30.jpg",
+                    "lo/2017-2001-31.jpg",
+                    "lo/2017-2001-32.jpg",
+                    "lo/2017-2001-33.jpg",
+                    "lo/2017-2001-34.jpg",
+                    "lo/2017-2001-35.jpg",
+                    "lo/2017-2001-36.jpg",
+                    "lo/2017-2001-37.jpg",
+                    "lo/2017-2001-38.jpg",
+                    "lo/2017-2001-39.jpg",
+                    "lo/2017-2001-40.jpg",
+                    "lo/2017-2001-41.jpg",
+                    "lo/2017-2001-42.jpg",
+                    "lo/2017-2001-43.jpg",
+                    "lo/2017-2001-44.jpg",
+                    "lo/2017-2001-45.jpg",
+                    "lo/2017-2001-46.jpg",
+                    "lo/2017-2001-47.jpg",
+                    "lo/2017-2001-48.jpg",
+                    "lo/2017-2001-49.jpg",
+                    "lo/2017-2001-50.jpg",
+                    "lo/2017-2001-51.jpg",
+                    "lo/2017-2001-52.jpg",
+                    "lo/2017-2001-53.jpg",
+                    "lo/2017-2001-54.jpg",
+                    "lo/2017-2001-55.jpg",
+                    "lo/2017-2001-56.jpg",
+                    "lo/2017-2001-57.jpg",
+                    "lo/2017-2001-58.jpg",
+                    "lo/2017-2001-59.jpg",
+                    "lo/2017-2001-60.jpg",
+                    "lo/2017-2001-61.jpg",
+                    "lo/2017-2001-62.jpg",
+                    "lo/2017-2001-63.jpg",
+                    "lo/2017-2001-64.jpg",
+                    "lo/2017-2001-65.jpg",
+                    "lo/2017-2001-66.jpg",
+                    "lo/2017-2001-67.jpg",
+                    "lo/2017-2001-68.jpg",
+                    "lo/2017-2001-69.jpg",
+                    "lo/2017-2001-70.jpg",
+                    "lo/2017-2001-71.jpg",
+                    "lo/2017-2001-72.jpg",
+                    "lo/2017-2001-73.jpg",
+                    "lo/2017-2001-74.jpg",
+                    "lo/2017-2001-75.jpg",
+                    "lo/2017-2001-76.jpg",
+                    "lo/2017-2001-77.jpg",
+                    "lo/2017-2001-78.jpg",
+                    "lo/2017-2001-79.jpg",
+                    "lo/2017-2001-80.jpg",
+                    "lo/2017-2001-81.jpg",
+                    "lo/2017-2001-82.jpg",
+                    "lo/2017-2001-83.jpg",
+                    "lo/2017-2001-84.jpg",
+                    "lo/2017-2001-85.jpg",
+                    "lo/2017-2001-86.jpg",
+                    "lo/2017-2001-87.jpg",
+                    "lo/2017-2001-88.jpg",
+                    "lo/2017-2001-89.jpg",
+                    "lo/2017-2001-90.jpg",
+                    "lo/2017-2001-91.jpg"
+                ]
+            }
+        ]
+        // 1. Pick a random object from the main array
+        const randomIndex = Math.floor(Math.random() * imageData.length);
+        const randomItem = imageData[randomIndex];
+
+        // 2. Target your elements
+        const imgElement = document.getElementById('random');
+        const linkElement = imgElement ? imgElement.parentElement : null;
+
+        // 3. Update the DOM
+        if (imgElement && randomItem) {
+            // A. Pick a random image from the "hrefs" array of this specific item
+            const randomHrefsIndex = Math.floor(Math.random() * randomItem.hrefs.length);
+            const randomImageSrc = randomItem.hrefs[randomHrefsIndex];
+
+            // B. Update the <img> tag's src attribute with the image path
+            imgElement.src = randomImageSrc;
+
+            // C. If the image is inside an <a> tag, update its destination to the page URL ("src")
+            if (linkElement && linkElement.tagName === 'A') {
+                linkElement.href = randomItem.src;
+            }
+        }
+    </script>
 </body>
 
 </html>

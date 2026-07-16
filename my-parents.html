@@ -1,29 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
- <head>
-  <title>
-   my-parents
-  </title>
- </head>
- <body>
-  <h1>
-   my-parents
-  </h1>
-  <img alt="Image for my-parents" id="randomImage" style="max-width: 100%; height: auto; display: block; margin-bottom: 20px;"/>
-  <script>
-   const imageList = [];
+<html>
 
-    function displayRandomImage() {
-        const imageElement = document.getElementById('randomImage');
-        if (imageList.length > 0) {
-            const randomIndex = Math.floor(Math.random() * imageList.length);
-            imageElement.src = imageList[randomIndex];
-        } else {
-            imageElement.alt = "No images found.";
-        }
-    }
+<head>
+    <title>Blaise Larmee show at My Parents</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css.css">
+</head>
 
-    window.onload = displayRandomImage;
-  </script>
- </body>
-</html>
+<body>
+    <div id="header">
+        <a href="index.html">Blaise Larmee</a>
+        <a href="books.html">books</a>
+        <a href="shows.html">shows</a>
+    </div>
+    <img src="hi/2017-myparents-01.jpg">
+    <img src="hi/2017-myparents-02.jpg">
+    <img src="hi/2017-myparents-03.jpg">
+    <img src="hi/2017-myparents-04.jpg">
+    <img src="hi/2017-myparents-05.jpg">
+    <img src="hi/2017-myparents-06.jpg">
+    <img src="hi/2017-myparents-07.jpg">

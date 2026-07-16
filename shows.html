@@ -1,0 +1,64 @@
+<html>
+
+<head>
+    <title>Blaise Larmee shows</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css.css">
+</head>
+
+<body id="shows">
+    <div id="header">
+        <a href="index.html">Blaise Larmee</a>
+        <a href="books.html">books</a>
+        <h1>shows</h1>
+    </div>
+    <div class="show" data-url="piratesofthecarbombinfantry.html">
+        <p>piratesofthecarbombinfantry, 2025</p>
+        <div class="grid">
+            <a href="https://www.instagram.com/stories/highlights/18065215226652086/"><img src="2025-piratesofthecarbombinfantry-01.jpg"></a>
+         </div>
+    </div>
+    <div class="show" data-url="apartment-gallery.html">
+        <p>Apartment Gallery, 2023</p>
+        <div class="grid">
+            <a href="hi/2024-apartment-01.jpg"><img src="lo/2024-apartment-01.jpg"></a>
+            <a href="hi/2024-apartment-02.jpg"><img src="lo/2024-apartment-02.jpg"></a>
+            <a href="hi/2024-apartment-03.jpg"><img src="lo/2024-apartment-03.jpg"></a>
+            <a href="hi/2024-apartment-04.jpg"><img src="lo/2024-apartment-04.jpg"></a>
+            <a href="hi/2024-apartment-05.jpg"><img src="lo/2024-apartment-05.jpg"></a>
+            <a href="hi/2024-apartment-06.jpg"><img src="lo/2024-apartment-06.jpg"></a>
+            <a href="hi/2024-apartment-07.jpg"><img src="lo/2024-apartment-07.jpg"></a>
+            <a href="hi/2024-apartment-08.jpg"><img src="lo/2024-apartment-08.jpg"></a>
+            <a href="hi/2024-apartment-09.jpg"><img src="lo/2024-apartment-09.jpg"></a>
+            <a href="hi/2024-apartment-10.jpg"><img src="lo/2024-apartment-10.jpg"></a>
+        </div>
+    </div>
+    <div class="show" data-url="my-parents.html">
+        <p>My Parents, 2017</p>
+        <div class="grid">
+            <a href="hi/2017-myparents-01.jpg"><img src="lo/2017-myparents-01.jpg"></a>
+            <a href="hi/2017-myparents-02.jpg"><img src="lo/2017-myparents-02.jpg"></a>
+            <a href="hi/2017-myparents-03.jpg"><img src="lo/2017-myparents-03.jpg"></a>
+            <a href="hi/2017-myparents-04.jpg"><img src="lo/2017-myparents-04.jpg"></a>
+            <a href="hi/2017-myparents-05.jpg"><img src="lo/2017-myparents-05.jpg"></a>
+            <a href="hi/2017-myparents-06.jpg"><img src="lo/2017-myparents-06.jpg"></a>
+            <a href="hi/2017-myparents-07.jpg"><img src="lo/2017-myparents-07.jpg"></a>
+        </div>
+    </div>
+        <script>
+        const books = document.querySelectorAll('.show');
+
+        books.forEach(book => {
+            book.addEventListener('click', (e) => {
+                if (e.target.closest('a')) {
+                    return;
+                }
+                if (book.dataset.url) {
+                    window.location.href = book.dataset.url;
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

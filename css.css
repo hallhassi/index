@@ -41,6 +41,7 @@ img {
     max-width: 100%;
     width: auto;
     height: auto;
+    object-fit: contain;
 }
 
 .book,

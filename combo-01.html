@@ -7,33 +7,34 @@
 </head>
 
 <body id="book">
-    <div id="header">
+    <header>
         <a href="index.html">Blaise Larmee</a>
         <a href="books.html">books</a>
         <a href="shows.html">shows</a>
-    </div>
-    <div class="center">
+    </header>
+    <main>
         <h1>Combo 01</h1>
-        <p>Comics Youth 1 and Comics Youth 2</p>
+        <img src="combo-01.png">
         <p>$10</p>
+        <p>Comics Youth 1 and Comics Youth 2</p>
         <a class="buy" href="https://buy.stripe.com/7sY8wP6lYfCx714aIIbV631">BUY</a>
-        <div class="combo-grid">
-            <div class="book" data-url="comics-youth-1.html">
+        <div class="grid">
+            <article data-url="comics-youth-1.html">
                 <img src="lo/comics-youth-1.jpg">
                 <p>Comics Youth 1</p>
                 <p>$5</p>
                 <a class="buy" href="https://buy.stripe.com/8x214ndOqgGB8586ssbV62Z">BUY</a>
-            </div>
-            <div class="book" data-url="comics-youth-2.html">
+            </article>
+            <article data-url="comics-youth-2.html">
                 <img src="lo/comics-youth-2.jpg">
                 <p>Comics Youth 2</p>
                 <p>$5</p>
                 <a class="buy" href="https://buy.stripe.com/eVq4gz11Eaid4SW9EEbV62V">BUY</a>
-            </div>
+            </article>
         </div>
-    </div>
+    </main>
     <script>
-        const books = document.querySelectorAll('.book');
+        const books = document.querySelectorAll('article');
 
         books.forEach(book => {
             book.addEventListener('click', (e) => {

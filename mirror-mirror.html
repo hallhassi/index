@@ -7,12 +7,12 @@
 </head>
 
 <body id="book">
-    <div id="header">
+    <header>
         <a href="index.html">Blaise Larmee</a>
         <a href="books.html">books</a>
         <a href="shows.html">shows</a>
-    </div>
-    <div class="center">
+    </header>
+    <main>
         <h1>Mirror Mirror</h1>
         <img src="lo/mirror-mirror.jpg">
         <p>$28, 192 pages, 7 by 10 inches, 2dcloud, 2016</p>
@@ -25,20 +25,20 @@
         </p>
         <a class="buy" href="https://buy.stripe.com/9B600jdOqbmh7145oobV62Y">BUY</a>
         <img id="random">
-    </div>
-        <div class="grid">
-        <div class="book combo-link" data-url="combo-02.html">
+    </main>
+    <div class="grid">
+        <article class="combo-link" data-url="combo-02.html">
             <div class="combo">
                 <img src="lo/2001.jpg"><img src="lo/mirror-mirror.jpg">
-            </div>
+            </main>
             <p>2001 and Mirror Mirror</p>
             <p>$53</p>
             <a class="buy" href="https://buy.stripe.com/3cI4gzbGi3TP99c3ggbV632">BUY</a>
-        </div>
+        </article>
     </div>
 
     <script>
-        const books = document.querySelectorAll('.book');
+        const books = document.querySelectorAll('article');
 
         books.forEach(book => {
             book.addEventListener('click', (e) => {

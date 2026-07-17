@@ -7,12 +7,12 @@
 </head>
 
 <body id="book">
-    <div id="header">
+    <header>
         <a href="index.html">Blaise Larmee</a>
         <a href="books.html">books</a>
         <a href="shows.html">shows</a>
-    </div>
-    <div class="center">
+    </header>
+    <main>
         <h1>Comics Youth 1</h1>
         <img src="lo/comics-youth-1.jpg">
         <p>$5, 16 pages, half letter, self-published, 2009</p>
@@ -21,20 +21,20 @@
             in the air at the time of Domino's early 2010's birth can be found here." Austin English</blockquote>
         <a class="buy" href="https://buy.stripe.com/8x214ndOqgGB8586ssbV62Z">BUY</a>
         <img src="hi/comics-youth-1.jpg">
-        <div class="grid">
-            <div class="book combo-link" data-url="combo-01.html">
-                <div class="combo">
-                    <img src="lo/comics-youth-1.jpg"><img src="lo/comics-youth-2.jpg">
-                </div>
-                <p>Comics Youth 1 and 2</p>
-                <p>$10</p>
-                <a class="buy" href="https://buy.stripe.com/7sY8wP6lYfCx714aIIbV631">BUY</a>
+    </main>
+    <div class="grid">
+        <article class="combo-link" data-url="combo-01.html">
+            <div class="combo">
+                <img src="lo/comics-youth-1.jpg"><img src="lo/comics-youth-2.jpg">
             </div>
-        </div>
+            <p>Comics Youth 1 and 2</p>
+            <p>$10</p>
+            <a class="buy" href="https://buy.stripe.com/7sY8wP6lYfCx714aIIbV631">BUY</a>
+        </article>
     </div>
 
     <script>
-        const books = document.querySelectorAll('.book');
+        const books = document.querySelectorAll('article');
 
         books.forEach(book => {
             book.addEventListener('click', (e) => {

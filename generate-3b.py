@@ -51,19 +51,19 @@ html_template = """<html>
     <link rel="stylesheet" href="css.css">
 </head>
 <body id="book">
-    <div id="header">
+    <header>
         <a href="index.html">Blaise Larmee</a>
         <a href="books.html">books</a>
         <a href="shows.html">shows</a>
-    </div>
-    <div class="center">
+    </header>
+    <main>
         <h1>3 Books Artist Edition {num}</h1>
         <img src="lo/3-books-artist-edition-{num}.jpg">
         <p>${price}, 0 pages, 6 by 9 inches, 2dcloud, 2015</p>
         <a class="buy" href="{buy_url}">BUY</a>
         <img src="hi/3-books-artist-edition-{num}.jpg">
         <a href="3-books-artist-editions.html">3 Books Artist Editions</a>
-    </div>"""
+    </main>"""
 
 # Loop through the list of book data to generate pages
 for book in books_data:

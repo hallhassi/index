@@ -6,47 +6,72 @@
     <link rel="stylesheet" href="css.css">
 </head>
 
-<body id="shows">
-    <div id="header">
+<body>
+    <header>
         <a href="index.html">Blaise Larmee</a>
         <a href="books.html">books</a>
         <h1>shows</h1>
+    </header>
+    <div class="grid">
+        <article data-url="piratesofthecarbombinfantry.html">
+            <img src="lo/piratesofthecarbombinfantry-01.jpg">
+            <p>Pirates of the Carbomb Infantry</p>
+            <p>2025</p>
+        </article>
+        <article data-url="apartment-gallery.html">
+            <img id="random-one">
+            <p>Apartment Gallery</p>
+            <p>2023</p>
+        </article>
+        <article data-url="my-parents.html">
+            <img id="random-two">
+            <p>My Parents</p>
+            <p>2017</p>
+        </article>
     </div>
-    <div class="show" data-url="piratesofthecarbombinfantry.html">
-        <p>piratesofthecarbombinfantry, 2025</p>
-        <div class="grid">
-            <a href="https://www.instagram.com/stories/highlights/18065215226652086/"><img src="2025-piratesofthecarbombinfantry-01.jpg"></a>
-         </div>
-    </div>
-    <div class="show" data-url="apartment-gallery.html">
-        <p>Apartment Gallery, 2023</p>
-        <div class="grid">
-            <a href="hi/2024-apartment-01.jpg"><img src="lo/2024-apartment-01.jpg"></a>
-            <a href="hi/2024-apartment-02.jpg"><img src="lo/2024-apartment-02.jpg"></a>
-            <a href="hi/2024-apartment-03.jpg"><img src="lo/2024-apartment-03.jpg"></a>
-            <a href="hi/2024-apartment-04.jpg"><img src="lo/2024-apartment-04.jpg"></a>
-            <a href="hi/2024-apartment-05.jpg"><img src="lo/2024-apartment-05.jpg"></a>
-            <a href="hi/2024-apartment-06.jpg"><img src="lo/2024-apartment-06.jpg"></a>
-            <a href="hi/2024-apartment-07.jpg"><img src="lo/2024-apartment-07.jpg"></a>
-            <a href="hi/2024-apartment-08.jpg"><img src="lo/2024-apartment-08.jpg"></a>
-            <a href="hi/2024-apartment-09.jpg"><img src="lo/2024-apartment-09.jpg"></a>
-            <a href="hi/2024-apartment-10.jpg"><img src="lo/2024-apartment-10.jpg"></a>
-        </div>
-    </div>
-    <div class="show" data-url="my-parents.html">
-        <p>My Parents, 2017</p>
-        <div class="grid">
-            <a href="hi/2017-myparents-01.jpg"><img src="lo/2017-myparents-01.jpg"></a>
-            <a href="hi/2017-myparents-02.jpg"><img src="lo/2017-myparents-02.jpg"></a>
-            <a href="hi/2017-myparents-03.jpg"><img src="lo/2017-myparents-03.jpg"></a>
-            <a href="hi/2017-myparents-04.jpg"><img src="lo/2017-myparents-04.jpg"></a>
-            <a href="hi/2017-myparents-05.jpg"><img src="lo/2017-myparents-05.jpg"></a>
-            <a href="hi/2017-myparents-06.jpg"><img src="lo/2017-myparents-06.jpg"></a>
-            <a href="hi/2017-myparents-07.jpg"><img src="lo/2017-myparents-07.jpg"></a>
-        </div>
-    </div>
-        <script>
-        const books = document.querySelectorAll('.show');
+    <script>
+        const imageData = {
+            threeBooks: [
+                "lo/2024-apartment-01.jpg",
+                "lo/2024-apartment-02.jpg",
+                "lo/2024-apartment-03.jpg",
+                "lo/2024-apartment-04.jpg",
+                "lo/2024-apartment-05.jpg",
+                "lo/2024-apartment-06.jpg",
+                "lo/2024-apartment-07.jpg",
+                "lo/2024-apartment-08.jpg",
+                "lo/2024-apartment-09.jpg",
+                "lo/2024-apartment-10.jpg"
+            ],
+            youngLions: [
+                "lo/2017-myparents-01.jpg",
+                "lo/2017-myparents-02.jpg",
+                "lo/2017-myparents-03.jpg",
+                "lo/2017-myparents-04.jpg",
+                "lo/2017-myparents-05.jpg",
+                "lo/2017-myparents-06.jpg",
+                "lo/2017-myparents-07.jpg"
+            ]
+        };
+
+        // Target your elements
+        const imgOne = document.getElementById('random-one');
+        const imgTwo = document.getElementById('random-two');
+
+        // 1. Handle "3 Books" Pool for imgOne
+        if (imgOne && imageData.threeBooks.length > 0) {
+            const randomIdxOne = Math.floor(Math.random() * imageData.threeBooks.length);
+            imgOne.src = imageData.threeBooks[randomIdxOne];
+        }
+
+        // 2. Handle "Young Lions" Pool for imgTwo
+        if (imgTwo && imageData.youngLions.length > 0) {
+            const randomIdxTwo = Math.floor(Math.random() * imageData.youngLions.length);
+            imgTwo.src = imageData.youngLions[randomIdxTwo];
+        }
+    </script>
+    <script>
+        const books = document.querySelectorAll('article');
 
         books.forEach(book => {
             book.addEventListener('click', (e) => {
@@ -59,6 +84,3 @@
             });
         });
     </script>
-</body>
-
-</html>

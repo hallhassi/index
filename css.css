@@ -7,33 +7,44 @@ script {
     display: none;
 }
 
-body {
-    display: block;
-    margin: 0 0 8em 0;
-    line-height: 3em;
-    background-color: red;
-}
-
+body,
+header,
+article,
 div,
 p,
 a,
+img,
 blockquote {
     display: block;
 }
 
-blockquote {
+body {
+    margin-bottom: 8em;
+    line-height: 3em;
+    background-color: red;
     text-align: center;
-    line-height: 1.5em;
-    margin: 2em;
 }
 
-#header>* {
+header {
+    text-align: left;
+}
+
+#bio,
+blockquote {
+    line-height: 1.5em;
+}
+
+blockquote {
+    margin: 1em 30px;
+}
+
+header>a,
+header>h1 {
     display: inline-block;
 }
 
 a,
-.book,
-.show {
+article {
     cursor: pointer;
 }
 
@@ -41,150 +52,76 @@ img {
     max-width: 100%;
     width: auto;
     height: auto;
-    object-fit: contain;
-}
-
-.book,
-#image {
-    padding: 2em;
-    text-align: center;
-    margin: 1em;
-    width: fit-content;
-}
-
-.show {
-    margin: 1em;
-    padding: 2em;
-    text-align: center;
-}
-
-.book>img {
     margin: auto;
-    margin-bottom:1em;
+}
+
+a,
+h1 {
+    padding: 1em;
+}
+
+div.grid {
+    display: grid;
+    gap: 10px;
+    margin: 0 10px
+}
+
+article {
+    margin: 1em auto;
+    padding: 1.5em 20px;
 }
 
 #image {
-    float: left;
+    width: fit-content;
+    margin: 1em 10px;
+    padding: 2em 20px;
 }
 
-.book,
-.show,
-.buy,
+article,
+a.buy,
 #image {
     background-color: rgba(9, 9, 9, .1);
     border-radius: 1em;
 }
 
-.buy {
+article>p:first-of-type,
+a.buy {
     margin-top: 1em;
 }
 
-#book>div>.buy {
-    cursor: pointer;
-    padding: 1em;
+main>a.buy {
+    padding: 1em 30px;
     margin: 8em auto 11em auto;
     width: fit-content;
-    border-radius: 1em;
 }
 
-
-#book h1,
-#show h1 {
+main h1 {
     margin: 3em auto 8em auto;
 }
 
-#show img {
-    display: block;
-    margin: auto;
+main img {
+    margin: 8em auto;
 }
 
-#book>div>img,
-#book>div>.combo {
-    margin-bottom: 8em;
+#image,
+main>img:first-of-type {
+    max-width:50%;
 }
 
-.show p {
-    text-align: left;
-}
-
-a,
-h1,
-a.editions {
-    display: block;
-    padding: 1em;
-}
-
-.grid {
-    display: grid;
-}
-
-.combo-link {
-    grid-column: 2;
-}
-
-.book {
-    display: flex;
-    flex-direction: column;
-}
-
-.book>img {
-    margin: auto;
-    margin-bottom: 1em;
-    width: 100%;
-    object-fit: contain;
-}
-
-.combo {
-    margin-bottom: 1em;
-}
-
-.combo>* {
-    padding:0;
-    display: inline;
+article.combo {
     max-width: 50%;
 }
 
-.combo-grid {
-    display: flex;
-    justify-content: center;
-}
-
-@media (min-width: 400px) {
+@media (min-width: 300px) {
     .grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (min-width: 400px) {
-    .show>.grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 150px));
-    }
-}
-
-@media (min-width: 700px) {
+@media (min-width: 500px) {
     .grid {
         grid-template-columns: repeat(3, 1fr);
     }
-}
-
-@media (min-width: 700px) {
-    .show>.grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 150px));
-    }
-}
-
-
-#image img {
-    max-width: 100%;
-}
-
-#image {
-    width: fit-content;
-    margin: 1em;
-}
-
-#image img.full-size {
-    max-width: none;
 }
 
 #nav,
@@ -193,14 +130,10 @@ a.editions {
 }
 
 #bio{
-    line-height: 1.3em;
-    padding: 1em;
+    margin: 1em 30px;
     font-family: 'Courier New', Courier, monospace;
-    white-space: pre;
-}
-
-#text {
     white-space: pre-wrap;
+    text-align: left;
 }
 
 #bio a,
@@ -208,8 +141,4 @@ blockquote a {
     display: inline;
     padding: 0;
     text-decoration: underline;
-}
-
-.center {
-    text-align: center;
 }

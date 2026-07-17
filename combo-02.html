@@ -7,34 +7,34 @@
 </head>
 
 <body id="book">
-    <div id="header">
+    <header>
         <a href="index.html">Blaise Larmee</a>
         <a href="books.html">books</a>
         <a href="shows.html">shows</a>
-    </div>
-    <div class="center">
+    </header>
+    <main>
         <h1>Combo 02</h1>
         <p>2001 and Mirror Mirror</p>
         <p>$53</p>
         <a class="buy" href="https://buy.stripe.com/3cI4gzbGi3TP99c3ggbV632">BUY</a>
-        <div class="combo-grid">
-            <div class="book" data-url="2001.html">
+        <div class="grid">
+            <article data-url="2001.html">
                 <img src="lo/2001.jpg">
                 <p>2001</p>
                 <p>$25</p>
                 <a class="buy" href="https://buy.stripe.com/fZueVd11Eaidclo2ccbV62X">BUY</a>
-            </div>
+            </article>
 
-            <div class="book" data-url="mirror-mirror.html">
+            <article data-url="mirror-mirror.html">
                 <img src="lo/mirror-mirror.jpg">
                 <p>Mirror Mirror</p>
                 <p>$28</p>
                 <a class="buy" href="https://buy.stripe.com/9B600jdOqbmh7145oobV62Y">BUY</a>
-            </div>
+            </article>
         </div>
-    </div>
+    </main>
         <script>
-        const books = document.querySelectorAll('.book');
+        const books = document.querySelectorAll('article');
 
         books.forEach(book => {
             book.addEventListener('click', (e) => {

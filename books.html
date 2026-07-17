@@ -7,66 +7,66 @@
 </head>
 
 <body>
-    <div id="header">
+    <header>
         <a href="index.html">Blaise Larmee</a>
         <h1>books</h1>
         <a href="shows.html">shows</a>
-    </div>
+    </header>
     <div class="grid">
-        <div class="book" data-url="comics-youth-2.html">
+        <article data-url="comics-youth-2.html">
             <img src="lo/comics-youth-2.jpg">
             <p>Comics Youth 2</p>
             <p>$5</p>
             <a class="buy" href="https://buy.stripe.com/eVq4gz11Eaid4SW9EEbV62V">BUY</a>
-        </div>
+        </article>
 
-        <div class="book" data-url="altcomics-7.html">
+        <article data-url="altcomics-7.html">
             <img src="lo/altcomics-7.jpg">
             <p>Altcomics 7</p>
             <p>$7</p>
             <a class="buy" href="https://buy.stripe.com/28EdR97q2cqlcloaIIbV62W">BUY</a>
-        </div>
+        </article>
 
-        <div class="book" data-url="2001.html">
+        <article data-url="2001.html">
             <img src="lo/2001.jpg">
             <p>2001</p>
             <p>$25</p>
             <a class="buy" href="https://buy.stripe.com/fZueVd11Eaidclo2ccbV62X">BUY</a>
-        </div>
+        </article>
 
-        <div class="book" data-url="mirror-mirror.html">
+        <article data-url="mirror-mirror.html">
             <img src="lo/mirror-mirror.jpg">
             <p>Mirror Mirror</p>
             <p>$30</p>
             <a class="buy" href="https://buy.stripe.com/9B600jdOqbmh7145oobV62Y">BUY</a>
-        </div>
+        </article>
 
-        <div class="book" data-url="3-books-artist-editions.html">
+        <article data-url="3-books-artist-editions.html">
             <img id="random-one">
             <p>3 Books </p>
             <p>$50-500</p>
             <a class="buy" href="3-books-artist-editions.html">BROWSE</a>
-        </div>
-        <div class="book" data-url="young-lions-artist-editions.html">
+        </article>
+        <article data-url="young-lions-artist-editions.html">
             <img id="random-two">
             <p>Young Lions </p>
             <p>$25</p>
             <a class="buy" href="young-lions-artist-editions.html">BROWSE</a>
-        </div>
+        </article>
 
-        <div class="book" data-url="comics-youth-1.html">
+        <article data-url="comics-youth-1.html">
             <img src="lo/comics-youth-1.jpg">
             <p>Comics Youth 1</p>
             <p>$5</p>
             <a class="buy" href="https://buy.stripe.com/8x214ndOqgGB8586ssbV62Z">BUY</a>
-        </div>
+        </article>
 
-        <div class="book" data-url="the-whale.html">
+        <article data-url="the-whale.html">
             <img src="lo/the-whale.jpg">
             <p>The Whale</p>
             <p>$50</p>
             <a class="buy" href="https://buy.stripe.com/4gM4gzbGibmhdps2ccbV630">BUY</a>
-        </div>
+        </article>
 
     </div>
 
@@ -133,7 +133,7 @@
         }
     </script>
     <script>
-        const books = document.querySelectorAll('.book');
+        const books = document.querySelectorAll('article');
 
         books.forEach(book => {
             book.addEventListener('click', (e) => {

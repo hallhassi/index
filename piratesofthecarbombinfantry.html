@@ -14,6 +14,51 @@
     </header>
     <main>
         <h1>Blaise's Show at Pirates of the Carbomb Infantry</h1>
-        <img src="lo/piratesofthecarbombinfantry-01.jpg">
+        <img id="random">
         <a class="buy" href="https://www.instagram.com/stories/highlights/18065215226652086/">VIEW ON INSTAGRAM</a>
     </main>
+    <script>
+        // Helper function to dynamically generate sequential image arrays
+        // Set folderPrefix to 'lo/' if these new images are also in your 'lo' folder
+        function generateImages(template, maxCount, folderPrefix = 'lo/') {
+            const list = [];
+            for (let i = 1; i <= maxCount; i++) {
+                const paddedNum = String(i).padStart(2, '0'); // Formats 1 as '01', 2 as '02', etc.
+                list.push(`${folderPrefix}${template}${paddedNum}.jpg`);
+            }
+            return list;
+        }
+
+        const imageData = [
+            // 1. Your original dataset (91 images)
+            {
+                "src": "https://www.instagram.com/stories/highlights/18065215226652086/",
+                "hrefs": generateImages("piratesofthecarbombinfantry-", 10)
+            }
+        ];
+
+        // --- DOM Manipulation Logic (Unchanged) ---
+
+        // 1. Pick a random object from the main array
+        const randomIndex = Math.floor(Math.random() * imageData.length);
+        const randomItem = imageData[randomIndex];
+
+        // 2. Target your elements
+        const imgElement = document.getElementById('random');
+        const linkElement = imgElement ? imgElement.parentElement : null;
+
+        // 3. Update the DOM
+        if (imgElement && randomItem) {
+            // A. Pick a random image from the "hrefs" array of this specific item
+            const randomHrefsIndex = Math.floor(Math.random() * randomItem.hrefs.length);
+            const randomImageSrc = randomItem.hrefs[randomHrefsIndex];
+
+            // B. Update the <img> tag's src attribute with the image path
+            imgElement.src = randomImageSrc;
+
+            // C. If the image is inside an <a> tag, update its destination to the page URL ("src")
+            if (linkElement && linkElement.tagName === 'A') {
+                linkElement.href = randomItem.src;
+            }
+        }
+    </script>

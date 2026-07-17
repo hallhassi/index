@@ -14,7 +14,7 @@
     </header>
     <div class="grid">
         <article data-url="piratesofthecarbombinfantry.html">
-            <img src="lo/piratesofthecarbombinfantry-01.jpg">
+            <img id="random-three">
             <p>Pirates of the Carbomb Infantry</p>
             <p>2025</p>
         </article>
@@ -51,23 +51,42 @@
                 "lo/2017-myparents-05.jpg",
                 "lo/2017-myparents-06.jpg",
                 "lo/2017-myparents-07.jpg"
+            ],
+            imgThree: [
+                "lo/piratesofthecarbombinfantry-01.jpg",
+                "lo/piratesofthecarbombinfantry-02.jpg",
+                "lo/piratesofthecarbombinfantry-03.jpg",
+                "lo/piratesofthecarbombinfantry-04.jpg",
+                "lo/piratesofthecarbombinfantry-05.jpg",
+                "lo/piratesofthecarbombinfantry-06.jpg",
+                "lo/piratesofthecarbombinfantry-07.jpg",
+                "lo/piratesofthecarbombinfantry-08.jpg",
+                "lo/piratesofthecarbombinfantry-09.jpg",
+                "lo/piratesofthecarbombinfantry-10.jpg"
             ]
         };
-
-        // Target your elements
+// Target your elements
         const imgOne = document.getElementById('random-one');
         const imgTwo = document.getElementById('random-two');
+        const imgThree = document.getElementById('random-three'); // New element
 
         // 1. Handle "3 Books" Pool for imgOne
-        if (imgOne && imageData.threeBooks.length > 0) {
+        if (imgOne && imageData.threeBooks && imageData.threeBooks.length > 0) {
             const randomIdxOne = Math.floor(Math.random() * imageData.threeBooks.length);
             imgOne.src = imageData.threeBooks[randomIdxOne];
         }
 
         // 2. Handle "Young Lions" Pool for imgTwo
-        if (imgTwo && imageData.youngLions.length > 0) {
+        if (imgTwo && imageData.youngLions && imageData.youngLions.length > 0) {
             const randomIdxTwo = Math.floor(Math.random() * imageData.youngLions.length);
             imgTwo.src = imageData.youngLions[randomIdxTwo];
+        }
+
+        // 3. Handle the new pool for imgThree 
+        // (Swap 'newPool' with the actual key name you added to your imageData object)
+        if (imgThree && imageData.imgThree && imageData.imgThree.length > 0) {
+            const randomIdxThree = Math.floor(Math.random() * imageData.imgThree.length);
+            imgThree.src = imageData.imgThree[randomIdxThree];
         }
     </script>
     <script>
